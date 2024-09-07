@@ -70,6 +70,12 @@ body {
     background-color: #fff;
 }
 
+body, html {
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* 스크롤 막기 */
+    font-family: Arial, sans-serif;
+  }
 
 [tabindex="-1"]:focus {
     outline: 0 !important;
@@ -9759,7 +9765,7 @@ body {
     background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url("../images/main-background.jpeg") no-repeat center center;
     background-size: cover;
     background-position: 50%;
-    height: 100vh;
+    height: 100dvh;
     min-height: 480px;
 }
 
@@ -9807,7 +9813,7 @@ body {
     background-color: rgba(245, 138, 119, 0.2);
     width: 100%;
     height: 100%;
-    height: 100vh;
+    height: 100dvh;
     min-height: 480px;
     position: absolute;
     left: 0;
@@ -10058,4 +10064,323 @@ body {
     bottom: 0;
     left: 0;
     margin: 0px 15px 15px 15px;
+}
+
+
+#pages {
+    position: relative;
+    height: 100dvh;
+    width: 100%;
+}
+
+/* 신규추가 */
+
+.page {
+  height: 100dvh;
+  width: 100%;
+  position: absolute;
+  top: 100%; /* 페이지를 화면 아래에 배치 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: top 1s ease; /* 페이지 전환 애니메이션 */
+  font-size: 2rem;
+  opacity: 0; /* 처음엔 보이지 않게 */
+  transform: translateY(50px); /* 페이지 슬라이드 효과용 */
+}
+
+.current-page {
+top: 0; /* 현재 페이지를 화면에 표시 */
+opacity: 1; /* 보이게 */
+transform: translateY(0); /* 슬라이드 효과 완료 */
+transition: top 1s ease, opacity 1.5s ease, transform 1.5s ease; /* 부드러운 전환 */
+}
+
+.page1 {
+  /* 애니메이션설정 */
+  opacity: 0; /* 처음엔 투명하게 */
+  animation: fadeInSlide 5s ease forwards; /* 페이드 인 + 슬라이드 인 */
+  /* page1 꾸미기용 css */
+  height: 100dvh;
+  width: 100%;
+  background-image: url('../images2/selphotoco-68.jpg'); /* 배경 이미지 */
+  background-size: cover; /* 이미지 커버 */
+  background-position: center; /* 이미지 중앙 정렬 */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* 하단에 정렬 */
+  align-items: center;
+  color: white;
+  text-align: center;
+}
+
+.page2 {
+	animation: fadeInSlide 5s ease forwards; /* 페이드 인 + 슬라이드 인 */
+  height: 100dvh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f9f9f9; /* 밝은 배경 */
+}
+.page3 {
+	background-color: #6b5b95;
+	animation: fadeInSlide 2s ease forwards; /* 페이드 인 + 슬라이드 인 */
+}
+.page4 { 
+background-color: #88b04b;
+animation: fadeInSlide 2s ease forwards; /* 페이드 인 + 슬라이드 인 */
+}
+.page5 {
+	background-color: #d65076;
+	animation: fadeInSlide 2s ease forwards; /* 페이드 인 + 슬라이드 인 */
+}
+.page6  {
+	background-color: #d65076;
+	animation: fadeInSlide 2s ease forwards; /* 페이드 인 + 슬라이드 인 */
+}
+.page7 {
+	background-color: #d65076;
+	animation: fadeInSlide 2s ease forwards; /* 페이드 인 + 슬라이드 인 */
+}
+.page8 {
+	background-color: #d65076;
+	animation: fadeInSlide 2s ease forwards; /* 페이드 인 + 슬라이드 인 */
+}
+/* 애니메이션: 첫 페이지가 천천히 보이도록 */
+@keyframes fadeInSlide {
+	0% {
+			opacity: 0;
+			transform: translateY(0px); /* 아래에서 슬라이드 인 */
+	}
+	100% {
+			opacity: 1;
+			transform: translateY(0); /* 정상 위치 */
+	}
+}
+
+/* 메뉴 버튼 */
+#menuButton {
+position: fixed;
+top: 20px;
+right: 20px;
+font-size: 2rem;
+cursor: pointer;
+}
+
+/* 목차 */
+#menu {
+display: none;
+position: fixed;
+top: 0;
+right: 0;
+background-color: rgba(0, 0, 0, 0.8);
+width: 200px;
+height: 100dvh;
+color: white;
+padding: 20px;
+box-sizing: border-box;
+}
+
+#menu ul {
+list-style: none;
+padding: 0;
+}
+
+#menu ul li {
+margin-bottom: 20px;
+cursor: pointer;
+}
+
+#menu ul li:hover {
+text-decoration: underline;
+}
+
+/* 메뉴 열렸을 때 표시 */
+#menu.active {
+display: block;
+}
+
+/* 텍스트 그라데이션과 패딩 */
+.ww-text-wrapper {
+  background: linear-gradient(to top, rgba(255, 255, 255, 1) 70%, rgba(255, 255, 255, 0) 100%);
+  padding: 20vw 0 10vw; /* 윗쪽 패딩 20vw, 아래쪽 패딩 10vw */
+  text-align: center; /* 텍스트 중앙 정렬 */
+  width: 100%; /* 모바일 화면을 고려한 너비 */
+  color: black; /* 글자 색 검정 */
+}
+
+body {
+  font-family: 'Noto Sans KR', sans-serif; /* 전체 폰트 설정 */
+  caret-color: transparent; /* 커서 색상을 투명하게 설정 */
+}
+
+/* 각 텍스트 크기와 스타일 */
+.title {
+  font-size: 7vw; /* 가장 큰 텍스트 */
+  font-weight: 200; /* 굵게 */
+  margin-top: 5vw;
+	margin-bottom: 3vw;
+}
+
+.date {
+  font-size: 3.5vw; /* 날짜 */
+  font-weight: 20;
+  margin-bottom: 1vw;
+}
+
+.location {
+  font-size: 3.5vw; /* 위치 */
+  font-weight: 200;
+}
+
+
+.ww-invitation-letter-wrapper {
+  background-color: white;
+  padding: 10vw 5vw; /* 텍스트 여백 */
+  text-align: center;
+  box-shadow: 0 2vw 5vw rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+  border-radius: 2vw; /* 모서리 둥글게 */
+  width: 90vw;
+}
+
+.invitation-header {
+  font-size: 5vw; /* 초대문 제목 크기 */
+  color: #d67d8f; /* 핑크 색상 */
+  font-family: 'Playfair Display', serif;
+  margin-bottom: 4vw;
+}
+
+.invitation-content {
+  font-size: 4vw; /* 초대문 내용 크기 */
+  line-height: 1.8;
+  color: #333;
+  font-family: 'Noto Sans KR', sans-serif;
+  margin-bottom: 6vw;
+}
+
+.family-info {
+  font-size: 3.8vw; /* 가족 정보 크기 */
+  color: #333;
+  font-family: 'Noto Sans KR', sans-serif;
+  margin-bottom: 5vw;
+}
+
+.groom-info, .bride-info {
+  margin-bottom: 2vw;
+}
+
+.contact-button {
+  font-size: 4vw;
+  padding: 3vw 6vw;
+  border: 0.3vw solid #ccc;
+  border-radius: 1.5vw;
+  display: inline-block;
+  text-align: center;
+  cursor: pointer;
+  color: #333;
+  background-color: #fff;
+  transition: background-color 0.3s ease;
+}
+
+.contact-button:hover {
+  background-color: #f0f0f0; /* 호버 시 색상 변경 */
+}
+
+.page3 {
+  height: 100dvh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f9f9f9;
+  padding: 0 5vw;
+}
+
+.calendar-wrapper {
+  text-align: center;
+  width: 100%;
+}
+
+.calendar-header {
+  margin-bottom: 5vw;
+}
+
+.calendar-title {
+  font-size: 5vw;
+  color: #d67d8f;
+  font-family: 'Playfair Display', serif;
+  margin-bottom: 2vw;
+}
+
+.event-date {
+  font-size: 4vw;
+  color: #333;
+}
+
+.calendar-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 5vw;
+}
+
+.calendar-table th, .calendar-table td {
+  padding: 3vw;
+  font-size: 4vw;
+  color: #333;
+}
+
+.highlight {
+  background-color: #d67d8f;
+  color: white;
+  border-radius: 50%;
+  padding: 1vw 2vw;
+}
+
+.countdown-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 5vw;
+  gap: 3vw; /* 각 카드 사이의 간격 */
+}
+
+.countdown-box {
+  text-align: center;
+  padding: 4vw;
+  border: 0.3vw solid #e8dcd6; /* 테두리 색상 */
+  border-radius: 2vw; /* 모서리 둥글게 */
+  background-color: #f9f6f5; /* 배경색 */
+  width: 20vw; /* 각 박스의 너비 설정 */
+}
+
+.countdown-box span {
+  font-size: 6vw;
+  color: #b08a86;
+  display: block;
+  margin-bottom: 0.5vw; /* 숫자와 글자 사이의 간격을 줄임 */
+}
+
+.countdown-box span + span {
+  font-size: 3vw;
+  font-weight: 400;
+  margin-top: -1vw; /* 텍스트 위쪽의 여백을 줄여서 간격을 좁힘 */
+  line-height: 1.2; /* 줄 간격을 줄여서 숫자와 글자가 가까워지게 함 */
+}
+
+.colon {
+  font-size: 5vw;
+  color: #b08a86; /* 구분자 색상 */
+  margin: 0 1vw;
+  font-weight: 700;
+}
+
+.days-left {
+  font-size: 4vw;
+  color: #666;
+}
+
+.calendar-table th:first-child, 
+.calendar-table td:first-child {
+  color: red; /* 일요일을 빨간색으로 설정 */
 }
