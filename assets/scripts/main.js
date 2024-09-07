@@ -96,7 +96,6 @@ pages.forEach((page, index) => {
 // 스크롤 및 터치 이벤트 처리
 let touchStartX = 0;
 let touchEndX = 0;
-
 window.addEventListener('wheel', (event) => {
   if (isAnimating) return; // 애니메이션 중일 때 스크롤 방지
 
@@ -106,6 +105,12 @@ window.addEventListener('wheel', (event) => {
     changePage(currentPageIndex - 1);
   }
 });
+
+// 터치 이벤트 추가
+window.addEventListener('touchmove', (event) => {
+  debugtouch = event.changedTouches[0].screenX;
+	console.log('Touch is moving', debugtouch);
+}, false);
 
 // 터치 이벤트 추가
 window.addEventListener('touchstart', (event) => {
@@ -208,3 +213,5 @@ const countdownInterval = setInterval(calculateCountdown, 1000);
 
 // 페이지 로드 시 즉시 실행
 calculateCountdown();
+
+// page4

@@ -10087,6 +10087,11 @@ body {
   font-size: 2rem;
   opacity: 0; /* 처음엔 보이지 않게 */
   transform: translateY(50px); /* 페이지 슬라이드 효과용 */
+
+	min-height: 100vh; /* 최소 높이를 설정해 화면에 꽉 차도록 */
+  flex-direction: column;
+
+	max-width: 600px; /* PC 화면에서 최대 너비를 고정 (예: 600px) */
 }
 
 .current-page {
@@ -10112,12 +10117,13 @@ transition: top 1s ease, opacity 1.5s ease, transform 1.5s ease; /* 부드러운
   align-items: center;
   color: white;
   text-align: center;
+
+	max-width: 600px; /* PC 화면에서 최대 너비를 고정 (예: 600px) */
 }
 
 .page2 {
 	animation: fadeInSlide 5s ease forwards; /* 페이드 인 + 슬라이드 인 */
   height: 100dvh;
-  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -10128,7 +10134,7 @@ transition: top 1s ease, opacity 1.5s ease, transform 1.5s ease; /* 부드러운
 	animation: fadeInSlide 2s ease forwards; /* 페이드 인 + 슬라이드 인 */
 }
 .page4 { 
-background-color: #88b04b;
+background-color: #f8f8f8;
 animation: fadeInSlide 2s ease forwards; /* 페이드 인 + 슬라이드 인 */
 }
 .page5 {
@@ -10210,9 +10216,38 @@ display: block;
   color: black; /* 글자 색 검정 */
 }
 
+@media (min-width: 600px) {
+	.ww-text-wrapper {
+		padding-top: 120px;
+		padding-bottom: 60px;
+		width: 600px;
+	}
+
+	.ww-text-wrapper > .title {
+		font-size: 42px;
+		line-height: 63px;
+		margin-bottom: 18px;
+		margin-top: 30px;
+	}
+
+	.ww-text-wrapper > .date {
+		font-size: 21px;
+		line-height: 31.5px;
+		margin-bottom: 6px;
+	}
+
+	.ww-text-wrapper > .location {
+		font-size: 21px;
+		line-height: 31.5px;
+	}
+}
+
 body {
   font-family: 'Noto Sans KR', sans-serif; /* 전체 폰트 설정 */
   caret-color: transparent; /* 커서 색상을 투명하게 설정 */
+  /* 중앙 정렬 및 고정 너비 */
+  max-width: 600px; /* PC 화면에서 최대 너비를 고정 (예: 600px) */
+  margin: 0 auto; /* 가로축에서 중앙 정렬 */
 }
 
 /* 각 텍스트 크기와 스타일 */
@@ -10234,7 +10269,6 @@ body {
   font-weight: 200;
 }
 
-
 .ww-invitation-letter-wrapper {
   background-color: white;
   padding: 10vw 5vw; /* 텍스트 여백 */
@@ -10242,6 +10276,8 @@ body {
   box-shadow: 0 2vw 5vw rgba(0, 0, 0, 0.1); /* 그림자 효과 */
   border-radius: 2vw; /* 모서리 둥글게 */
   width: 90vw;
+	max-width: 480px;
+  margin: 0 auto; /* 자식 요소를 중앙에 배치 */
 }
 
 .invitation-header {
@@ -10249,6 +10285,17 @@ body {
   color: #d67d8f; /* 핑크 색상 */
   font-family: 'Playfair Display', serif;
   margin-bottom: 4vw;
+}
+
+@media (min-width: 600px) {
+	.ww-invitation-letter-wrapper {
+		padding: 30px 60px;
+	}
+
+  .invitation-header {
+    font-size: 30px;
+    margin-bottom: 24px; /* 여백도 고정 */
+  }
 }
 
 .invitation-content {
@@ -10259,34 +10306,12 @@ body {
   margin-bottom: 6vw;
 }
 
-.family-info {
-  font-size: 3.8vw; /* 가족 정보 크기 */
-  color: #333;
-  font-family: 'Noto Sans KR', sans-serif;
-  margin-bottom: 5vw;
+@media (min-width: 600px) {
+	.invitation-content {
+		font-size: 24px;
+		margin-bottom: 36px; /* 여백도 고정 */
+	}
 }
-
-.groom-info, .bride-info {
-  margin-bottom: 2vw;
-}
-
-.contact-button {
-  font-size: 4vw;
-  padding: 3vw 6vw;
-  border: 0.3vw solid #ccc;
-  border-radius: 1.5vw;
-  display: inline-block;
-  text-align: center;
-  cursor: pointer;
-  color: #333;
-  background-color: #fff;
-  transition: background-color 0.3s ease;
-}
-
-.contact-button:hover {
-  background-color: #f0f0f0; /* 호버 시 색상 변경 */
-}
-
 .page3 {
   height: 100dvh;
   width: 100%;
@@ -10300,6 +10325,7 @@ body {
 .calendar-wrapper {
   text-align: center;
   width: 100%;
+	padding: 60px 30px;
 }
 
 .calendar-header {
@@ -10343,6 +10369,8 @@ body {
   align-items: center;
   margin-bottom: 5vw;
   gap: 3vw; /* 각 카드 사이의 간격 */
+	max-width: 480px;
+	margin: 10 auto; /* 자식 요소를 중앙에 배치 */
 }
 
 .countdown-box {
@@ -10368,13 +10396,6 @@ body {
   line-height: 1.2; /* 줄 간격을 줄여서 숫자와 글자가 가까워지게 함 */
 }
 
-.colon {
-  font-size: 5vw;
-  color: #b08a86; /* 구분자 색상 */
-  margin: 0 1vw;
-  font-weight: 700;
-}
-
 .days-left {
   font-size: 4vw;
   color: #666;
@@ -10383,4 +10404,61 @@ body {
 .calendar-table th:first-child, 
 .calendar-table td:first-child {
   color: red; /* 일요일을 빨간색으로 설정 */
+}
+
+/* 화면 크기가 600px 이상일 때 px로 고정 */
+@media (min-width: 600px) {
+	.calendar-header {
+		margin-bottom: 30px;
+	}
+
+  .calendar-title {
+    font-size: 30px;
+    margin-bottom: 10px;
+  }
+
+  .event-date {
+    font-size: 24px;
+  }
+
+	.calendar-wrapper {
+		max-width: 480px;
+		margin: 0 auto; /* 자식 요소를 중앙에 배치 */
+	}
+
+	.calendar-table {
+		margin-bottom: 30px;
+	}
+
+  .calendar-table th, .calendar-table td {
+    padding: 15px;
+    font-size: 18px;
+  }
+  .countdown-wrapper {
+		gap: 15px;
+		margin-bottom: 30px;
+	}
+
+  .highlight {
+    padding: 5px 10px;
+  }
+
+  .countdown-box {
+    padding: 20px;
+    width: 120px;
+  }
+
+  .countdown-box span {
+    font-size: 40px;
+		margin: 5px;
+  }
+
+  .countdown-box span + span {
+    font-size: 18px;
+    margin-top: -5px;
+  }
+
+  .days-left {
+    font-size: 20px;
+  }
 }
