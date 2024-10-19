@@ -18,7 +18,7 @@
   align-items: center;
   font-size: 2rem;
   opacity: 0; /* 처음엔 보이지 않게 */
-  transition: opacity 1.5s ease, transform 1.5s ease; /* opacity와 transform에 애니메이션 추가 */
+  transition: opacity 2s ease, transform 1.5s ease; /* opacity와 transform에 애니메이션 추가 */
   min-height: 100dvh; /* 최소 높이를 설정해 화면에 꽉 차도록 */
   flex-direction: column;
   max-width: 600px; /* PC 화면에서 최대 너비를 고정 (예: 600px) */
@@ -27,15 +27,10 @@
 .current-page {
   top: 0; /* 현재 페이지를 화면에 표시 */
   opacity: 1; /* 보이게 */
-  transform: translateY(0); /* 슬라이드 효과 완료 */
 }
 
 .page1 {
-  /* 애니메이션설정 */
-  opacity: 0; /* 처음엔 투명하게 */
-  animation: fadeInSlide 5s ease forwards; /* 페이드 인 + 슬라이드 인 */
   /* page1 꾸미기용 css */
-  height: 100dvh;
   width: 100%;
   background-image: url('../images2/selphotoco-68.jpg'); /* 배경 이미지 */
   background-size: cover; /* 이미지 커버 */
@@ -51,7 +46,6 @@
 }
 
 .page2 {
-  height: 100dvh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -68,15 +62,12 @@
 }
 .page6  {
 	background-color: #d65076;
-	animation: fadeInSlide 2s ease forwards; /* 페이드 인 + 슬라이드 인 */
 }
 .page7 {
 	background-color: #d65076;
-	animation: fadeInSlide 2s ease forwards; /* 페이드 인 + 슬라이드 인 */
 }
 .page8 {
 	background-color: #d65076;
-	animation: fadeInSlide 2s ease forwards; /* 페이드 인 + 슬라이드 인 */
 }
 /* 애니메이션: 첫 페이지가 천천히 보이도록 */
 @keyframes fadeInSlide {
@@ -390,12 +381,12 @@ body {
 
 .base-wrapper {
   opacity: 0; /* 기본적으로 투명 상태 */
-  transition: opacity 3s ease 2s; /* 부드러운 전환 애니메이션 */
+  transition: opacity 2s ease 1s; /* 부드러운 전환 애니메이션 */
 }
 
 .current-page .base-wrapper {
   opacity: 1; /* current-page가 있을 때 보이게 */
-  transition-delay: 0s; /* current-page가 추가될 때 지연 시간 없음 */
+  transition-delay: 0.2s; /* current-page가 추가될 때 지연 시간 있음 */
 }
 
 /* page4 gallery */
@@ -444,29 +435,3 @@ body {
   cursor: pointer;
 }
 /* page4 gallery */
-
-.fade-out {
-  animation: fadeOut 1s forwards; /* 현재 페이지가 서서히 사라지는 애니메이션 */
-}
-
-.fade-in {
-  animation: fadeIn 1s forwards; /* 다음 페이지가 서서히 나타나는 애니메이션 */
-}
-
-@keyframes fadeOut {
-  0% {
-      opacity: 1; /* 완전 보임 */
-  }
-  100% {
-      opacity: 0; /* 완전 투명 */
-  }
-}
-
-@keyframes fadeIn {
-  0% {
-      opacity: 0; /* 완전 투명 */
-  }
-  100% {
-      opacity: 1; /* 완전 보임 */
-  }
-}
