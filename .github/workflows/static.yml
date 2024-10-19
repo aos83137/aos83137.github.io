@@ -41,6 +41,7 @@ jobs:
       - name: set env
         env:
           NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
+      - run: echo $TEST2
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
