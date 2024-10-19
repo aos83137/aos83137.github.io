@@ -19,7 +19,7 @@
   font-size: 2rem;
   opacity: 0; /* 처음엔 보이지 않게 */
   transition: opacity 1.5s ease, transform 1.5s ease; /* opacity와 transform에 애니메이션 추가 */
-  min-height: 100vh; /* 최소 높이를 설정해 화면에 꽉 차도록 */
+  min-height: 100dvh; /* 최소 높이를 설정해 화면에 꽉 차도록 */
   flex-direction: column;
   max-width: 600px; /* PC 화면에서 최대 너비를 고정 (예: 600px) */
 }
