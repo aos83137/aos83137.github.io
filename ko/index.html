@@ -15,6 +15,7 @@
   <link href="https://fonts.googleapis.com/css?family=Great+Vibes" rel="stylesheet">
   <link href="../assets/css/ekko-lightbox.css" rel="stylesheet">
   <link href="../assets/styles/main.css" rel="stylesheet">
+  <link href="../assets/styles/main-sub.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Gamja+Flower|Gugi|Noto+Serif+KR|Stylish|Sunflower:300"
         rel="stylesheet">
   <script src="https://code.jquery.com/jquery-2.2.1.js"></script>
@@ -31,7 +32,7 @@
       </div>
     </div>
     <div class="page page2" data-title="초대의 글">
-      <div class="ww-invitation-letter-wrapper">
+      <div class="ww-invitation-letter-wrapper base-wrapper">
         <div class="invitation-header">Invite you</div>
         <div class="invitation-content">
           저희 두 사람이<br>
@@ -45,7 +46,7 @@
       </div>
     </div>
     <div class="page page3" data-title="달력">
-      <div class="calendar-wrapper">
+      <div class="calendar-wrapper base-wrapper">
         <div class="calendar-header">
           <div class="calendar-title">Calendar</div>
           <div class="event-date">2025년 2월 8일 토요일 오후 3시</div>
@@ -110,22 +111,37 @@
         </div>
       </div>
     </div>
-    <div class="page page4" data-title="갤러리"></div>
+    <div class="page page4" data-title="갤러리">
+      <h1 class="header">Gallery</h1>
+      <div class="gallery">
+          <img src="../assets/images2/IMG_7745.JPG" alt="Photo 1" class="gallery-item" />
+          <img src="../assets/images2/IMG_7746.JPG" alt="Photo 2" class="gallery-item" />
+          <img src="../assets/images2/IMG_7750.JPG" alt="Photo 3" class="gallery-item" />
+          <img src="../assets/images2/IMG_7754.JPG" alt="Photo 4" class="gallery-item" />
+          <img src="../assets/images2/IMG_7756.JPG" alt="Photo 5" class="gallery-item" />
+          <img src="../assets/images2/image5.JPG" alt="Photo 6" class="gallery-item" />
+      </div>
+      <div class="lightbox" id="lightbox">
+          <span class="close" id="lightboxClose">&times;</span>
+          <img class="lightbox-content" id="lightboxImage" />
+      </div>
+    </div>
     <div class="page page5" data-title="오시는 길">오시는 길</div>
     <div class="page page6" data-title="버스">버스</div>
     <div class="page page7" data-title="안내사항">안내사항</div>
     <div class="page page8" data-title="감사인사">감사인사</div>
+
+    <!-- 메뉴 버튼 -->
+    <div id="menuButton">☰</div>
+
+    <!-- 목차 -->
+    <div id="menu">
+      <ul id="menuList">
+        <!-- 목차 내용은 JS로 생성 -->
+      </ul>
+    </div>
   </div>
 
-  <!-- 메뉴 버튼 -->
-  <div id="menuButton">☰</div>
-
-  <!-- 목차 -->
-  <div id="menu">
-    <ul id="menuList">
-      <!-- 목차 내용은 JS로 생성 -->
-    </ul>
-  </div>
   <script src="../assets/scripts/main.js"></script>
 
 </body>

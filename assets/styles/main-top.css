@@ -1,0 +1,62 @@
+.container {
+    max-width: 420px; /* 모바일 크기를 기준으로 설정 */
+    margin: 0 auto;   /* 화면 중앙 정렬 */
+    padding: 10px;    /* 좌우 여백 */
+    box-sizing: border-box; /* 패딩 포함된 크기 계산 */
+    /* background-color:gray; */
+}
+
+/* section main-top */
+.main-top {
+    position: relative;
+    height: auto; /* 높이를 자동으로 조정 */
+    min-height: 100vh; /* 최소 높이를 뷰포트 높이로 설정 */
+    background-image: url('../images2/IMG_7754.JPG'); /* 세로형 메인 사진 */
+    background-size: contain; /* 이미지 비율 유지하면서 전체 보이게 설정 */
+    background-repeat: no-repeat; /* 배경 반복 방지 */
+    background-position: center;
+    background-color: black; /* 사진 외의 빈 공간에 색상 채움 */
+    padding: 20px; /* 내부 여백을 추가하여 여백 조절 */
+}
+
+.text-box {
+    position: absolute;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    color: white;
+}
+
+.text-box h1 {
+    font-size: 2.5rem;
+    margin: 0;
+}
+
+.text-box p {
+    font-size: 1.2rem;
+}
+
+.petals {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%; /* 부모 요소와 동일한 너비 */
+    height: 100%; /* 부모 요소와 동일한 높이 */
+    pointer-events: none;
+    background-image: url('../images2/ZOHV.gif'); /* GIF 파일 URL */
+    background-size: contain; /* 비율을 유지하며 GIF 크기를 맞춤 */
+    background-repeat: no-repeat; /* 배경 반복 방지 */
+    background-position: center; /* 중앙 정렬 */
+    opacity: 0.5; /* 투명도 */
+}
+
+@keyframes petals-fall {
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: 0 100%;
+    }
+}
+/* section main-top */

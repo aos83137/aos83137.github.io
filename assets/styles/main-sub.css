@@ -1,0 +1,472 @@
+
+#pages {
+    position: relative;
+    height: 100dvh;
+    width: 100%;
+    overflow: hidden; /* 넘치는 내용 숨기기 */
+}
+
+/* 신규추가 */
+
+.page {
+  height: 100dvh;
+  width: 100%;
+  position: absolute;
+  top: 100%; /* 페이지를 화면 아래에 배치 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  opacity: 0; /* 처음엔 보이지 않게 */
+  transition: opacity 1.5s ease, transform 1.5s ease; /* opacity와 transform에 애니메이션 추가 */
+  min-height: 100vh; /* 최소 높이를 설정해 화면에 꽉 차도록 */
+  flex-direction: column;
+  max-width: 600px; /* PC 화면에서 최대 너비를 고정 (예: 600px) */
+}
+
+.current-page {
+  top: 0; /* 현재 페이지를 화면에 표시 */
+  opacity: 1; /* 보이게 */
+  transform: translateY(0); /* 슬라이드 효과 완료 */
+}
+
+.page1 {
+  /* 애니메이션설정 */
+  opacity: 0; /* 처음엔 투명하게 */
+  animation: fadeInSlide 5s ease forwards; /* 페이드 인 + 슬라이드 인 */
+  /* page1 꾸미기용 css */
+  height: 100dvh;
+  width: 100%;
+  background-image: url('../images2/selphotoco-68.jpg'); /* 배경 이미지 */
+  background-size: cover; /* 이미지 커버 */
+  background-position: center; /* 이미지 중앙 정렬 */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* 하단에 정렬 */
+  align-items: center;
+  color: white;
+  text-align: center;
+
+	max-width: 600px; /* PC 화면에서 최대 너비를 고정 (예: 600px) */
+}
+
+.page2 {
+  height: 100dvh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f9f9f9; /* 밝은 배경 */
+}
+.page3 {
+	background-color: #6b5b95;
+}
+.page4 { 
+  background-color: #f8f8f8;
+}
+.page5 {
+	background-color: #d65076;
+}
+.page6  {
+	background-color: #d65076;
+	animation: fadeInSlide 2s ease forwards; /* 페이드 인 + 슬라이드 인 */
+}
+.page7 {
+	background-color: #d65076;
+	animation: fadeInSlide 2s ease forwards; /* 페이드 인 + 슬라이드 인 */
+}
+.page8 {
+	background-color: #d65076;
+	animation: fadeInSlide 2s ease forwards; /* 페이드 인 + 슬라이드 인 */
+}
+/* 애니메이션: 첫 페이지가 천천히 보이도록 */
+@keyframes fadeInSlide {
+	0% {
+			opacity: 0;
+			transform: translateY(0px); /* 아래에서 슬라이드 인 */
+	}
+	100% {
+			opacity: 1;
+			transform: translateY(0); /* 정상 위치 */
+	}
+}
+
+/* 메뉴 버튼 */
+#menuButton {
+  position: absolute; /* fixed에서 absolute로 변경 */
+  top: 20px;
+  right: 20px;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+/* 목차 */
+#menu {
+display: none;
+position: absolute;
+top: 0;
+right: 0;
+background-color: rgba(0, 0, 0, 0.8);
+width: 200px;
+height: 100dvh;
+color: white;
+padding: 20px;
+box-sizing: border-box;
+}
+
+#menu ul {
+list-style: none;
+padding: 0;
+}
+
+#menu ul li {
+margin-bottom: 20px;
+cursor: pointer;
+}
+
+#menu ul li:hover {
+text-decoration: underline;
+}
+
+/* 메뉴 열렸을 때 표시 */
+#menu.active {
+display: block;
+}
+
+/* 텍스트 그라데이션과 패딩 */
+.ww-text-wrapper {
+  background: linear-gradient(to top, rgba(255, 255, 255, 1) 70%, rgba(255, 255, 255, 0) 100%);
+  padding: 20vw 0 10vw; /* 윗쪽 패딩 20vw, 아래쪽 패딩 10vw */
+  text-align: center; /* 텍스트 중앙 정렬 */
+  width: 100%; /* 모바일 화면을 고려한 너비 */
+  color: black; /* 글자 색 검정 */
+}
+
+@media (min-width: 600px) {
+	.ww-text-wrapper {
+		padding-top: 120px;
+		padding-bottom: 60px;
+		width: 600px;
+	}
+
+	.ww-text-wrapper > .title {
+		font-size: 42px;
+		line-height: 63px;
+		margin-bottom: 18px;
+		margin-top: 30px;
+	}
+
+	.ww-text-wrapper > .date {
+		font-size: 21px;
+		line-height: 31.5px;
+		margin-bottom: 6px;
+	}
+
+	.ww-text-wrapper > .location {
+		font-size: 21px;
+		line-height: 31.5px;
+	}
+}
+
+body {
+  font-family: 'Noto Sans KR', sans-serif; /* 전체 폰트 설정 */
+  caret-color: transparent; /* 커서 색상을 투명하게 설정 */
+  /* 중앙 정렬 및 고정 너비 */
+  max-width: 600px; /* PC 화면에서 최대 너비를 고정 (예: 600px) */
+  margin: 0 auto; /* 가로축에서 중앙 정렬 */
+}
+
+/* 각 텍스트 크기와 스타일 */
+.title {
+  font-size: 7vw; /* 가장 큰 텍스트 */
+  font-weight: 200; /* 굵게 */
+  margin-top: 5vw;
+	margin-bottom: 3vw;
+}
+
+.date {
+  font-size: 3.5vw; /* 날짜 */
+  font-weight: 20;
+  margin-bottom: 1vw;
+}
+
+.location {
+  font-size: 3.5vw; /* 위치 */
+  font-weight: 200;
+}
+
+.ww-invitation-letter-wrapper {
+  background-color: white;
+  padding: 10vw 5vw; /* 텍스트 여백 */
+  text-align: center;
+  box-shadow: 0 2vw 5vw rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+  border-radius: 2vw; /* 모서리 둥글게 */
+  width: 90vw;
+	max-width: 480px;
+  margin: 0 auto; /* 자식 요소를 중앙에 배치 */
+}
+
+.invitation-header {
+  font-size: 5vw; /* 초대문 제목 크기 */
+  color: #d67d8f; /* 핑크 색상 */
+  font-family: 'Playfair Display', serif;
+  margin-bottom: 4vw;
+}
+
+@media (min-width: 600px) {
+	.ww-invitation-letter-wrapper {
+		padding: 30px 60px;
+	}
+
+  .invitation-header {
+    font-size: 30px;
+    margin-bottom: 24px; /* 여백도 고정 */
+  }
+}
+
+.invitation-content {
+  font-size: 4vw; /* 초대문 내용 크기 */
+  line-height: 1.8;
+  color: #333;
+  font-family: 'Noto Sans KR', sans-serif;
+  margin-bottom: 6vw;
+}
+
+@media (min-width: 600px) {
+	.invitation-content {
+		font-size: 24px;
+		margin-bottom: 36px; /* 여백도 고정 */
+	}
+}
+.page3 {
+  height: 100dvh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f9f9f9;
+  padding: 0 5vw;
+}
+
+.calendar-wrapper {
+  text-align: center;
+  width: 100%;
+	padding: 60px 30px;
+}
+
+.calendar-header {
+  margin-bottom: 5vw;
+}
+
+.calendar-title {
+  font-size: 5vw;
+  color: #d67d8f;
+  font-family: 'Playfair Display', serif;
+  margin-bottom: 2vw;
+}
+
+.event-date {
+  font-size: 4vw;
+  color: #333;
+}
+
+.calendar-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 5vw;
+}
+
+.calendar-table th, .calendar-table td {
+  padding: 3vw;
+  font-size: 4vw;
+  color: #333;
+}
+
+.highlight {
+  background-color: #d67d8f;
+  color: white;
+  border-radius: 50%;
+  padding: 1vw 2vw;
+}
+
+.countdown-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 5vw;
+  gap: 3vw; /* 각 카드 사이의 간격 */
+	max-width: 480px;
+	margin: 10 auto; /* 자식 요소를 중앙에 배치 */
+}
+
+.countdown-box {
+  text-align: center;
+  padding: 4vw;
+  border: 0.3vw solid #e8dcd6; /* 테두리 색상 */
+  border-radius: 2vw; /* 모서리 둥글게 */
+  background-color: #f9f6f5; /* 배경색 */
+  width: 20vw; /* 각 박스의 너비 설정 */
+}
+
+.countdown-box span {
+  font-size: 6vw;
+  color: #b08a86;
+  display: block;
+  margin-bottom: 0.5vw; /* 숫자와 글자 사이의 간격을 줄임 */
+}
+
+.countdown-box span + span {
+  font-size: 3vw;
+  font-weight: 400;
+  margin-top: -1vw; /* 텍스트 위쪽의 여백을 줄여서 간격을 좁힘 */
+  line-height: 1.2; /* 줄 간격을 줄여서 숫자와 글자가 가까워지게 함 */
+}
+
+.days-left {
+  font-size: 4vw;
+  color: #666;
+}
+
+.calendar-table th:first-child, 
+.calendar-table td:first-child {
+  color: red; /* 일요일을 빨간색으로 설정 */
+}
+
+/* 화면 크기가 600px 이상일 때 px로 고정 */
+@media (min-width: 600px) {
+	.calendar-header {
+		margin-bottom: 30px;
+	}
+
+  .calendar-title {
+    font-size: 30px;
+    margin-bottom: 10px;
+  }
+
+  .event-date {
+    font-size: 24px;
+  }
+
+	.calendar-wrapper {
+		max-width: 480px;
+		margin: 0 auto; /* 자식 요소를 중앙에 배치 */
+	}
+
+	.calendar-table {
+		margin-bottom: 30px;
+	}
+
+  .calendar-table th, .calendar-table td {
+    padding: 15px;
+    font-size: 18px;
+  }
+  .countdown-wrapper {
+		gap: 15px;
+		margin-bottom: 30px;
+	}
+
+  .highlight {
+    padding: 5px 10px;
+  }
+
+  .countdown-box {
+    padding: 20px;
+    width: 120px;
+  }
+
+  .countdown-box span {
+    font-size: 40px;
+		margin: 5px;
+  }
+
+  .countdown-box span + span {
+    font-size: 18px;
+    margin-top: -5px;
+  }
+
+  .days-left {
+    font-size: 20px;
+  }
+}
+
+.base-wrapper {
+  opacity: 0; /* 기본적으로 투명 상태 */
+  transition: opacity 3s ease 2s; /* 부드러운 전환 애니메이션 */
+}
+
+.current-page .base-wrapper {
+  opacity: 1; /* current-page가 있을 때 보이게 */
+  transition-delay: 0s; /* current-page가 추가될 때 지연 시간 없음 */
+}
+
+/* page4 gallery */
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.gallery-item {
+  width: calc(33.33% - 10px); /* 3개씩 표시 */
+  cursor: pointer;
+  border-radius: 5px; /* 모서리 둥글게 */
+  transition: transform 0.2s; /* 확대 효과 */
+}
+
+.gallery-item:hover {
+  transform: scale(1.05); /* 마우스 오버 시 확대 */
+}
+
+.lightbox {
+  display: none; /* 기본적으로 숨김 */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8); /* 어두운 배경 */
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* 최상단 */
+}
+
+.lightbox-content {
+  max-width: 90%;
+  max-height: 90%;
+}
+
+.close {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 2rem;
+  color: white;
+  cursor: pointer;
+}
+/* page4 gallery */
+
+.fade-out {
+  animation: fadeOut 1s forwards; /* 현재 페이지가 서서히 사라지는 애니메이션 */
+}
+
+.fade-in {
+  animation: fadeIn 1s forwards; /* 다음 페이지가 서서히 나타나는 애니메이션 */
+}
+
+@keyframes fadeOut {
+  0% {
+      opacity: 1; /* 완전 보임 */
+  }
+  100% {
+      opacity: 0; /* 완전 투명 */
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+      opacity: 0; /* 완전 투명 */
+  }
+  100% {
+      opacity: 1; /* 완전 보임 */
+  }
+}

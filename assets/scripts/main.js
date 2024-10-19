@@ -215,3 +215,29 @@ const countdownInterval = setInterval(calculateCountdown, 1000);
 calculateCountdown();
 
 // page4
+// 갤러리 이미지 클릭 시 라이트박스 열기
+const galleryItems = document.querySelectorAll('.gallery-item');
+const lightbox = document.getElementById('lightbox');
+const lightboxImage = document.getElementById('lightboxImage');
+const lightboxClose = document.getElementById('lightboxClose');
+
+galleryItems.forEach(item => {
+    item.addEventListener('click', () => {
+        lightbox.style.display = 'flex';
+        lightboxImage.src = item.src; // 클릭한 이미지의 src를 가져옴
+    });
+});
+
+// 라이트박스 닫기
+lightboxClose.addEventListener('click', () => {
+    lightbox.style.display = 'none';
+});
+
+// 라이트박스 배경 클릭 시 닫기
+lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) {
+        lightbox.style.display = 'none';
+    }
+});
+
+// page4
