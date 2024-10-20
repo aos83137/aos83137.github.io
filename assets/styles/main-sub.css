@@ -241,15 +241,22 @@ body {
 }
 
 .calendar-wrapper {
-  text-align: center;
   width: 100%;
 	padding: 60px 30px;
 }
 
 .calendar-header {
   margin-bottom: 5vw;
+  margin: 0 10vw 5vw 10vw
 }
 
+.page-titile {
+  font-size: 5vw;
+  color: #d67d8f;
+  font-family: 'Playfair Display', serif;
+  margin-bottom: 2vw;
+  text-align: center;
+}
 .calendar-title {
   font-size: 5vw;
   color: #d67d8f;
@@ -316,6 +323,7 @@ body {
 .days-left {
   font-size: 4vw;
   color: #666;
+  text-align: center;
 }
 
 .calendar-table th:first-child, 
@@ -390,7 +398,7 @@ body {
 .gallery-container {
   width: 100%;
   height: 100dvh;
-  padding: 60px 30px;
+  padding: 60px 0;
 }
 
 .header {
@@ -402,12 +410,12 @@ body {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 10px;
+  gap: 4px;
 }
 
 .gallery-item {
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 1px;
   object-fit: cover; /* 사진이 영역을 넘지 않도록 */
   transition: transform 0.2s;
 }
