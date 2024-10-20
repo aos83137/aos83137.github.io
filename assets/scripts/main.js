@@ -16,6 +16,8 @@ pages.forEach((page, index) => {
 // 스크롤 및 터치 이벤트 처리
 let touchStartX = 0;
 let touchEndX = 0;
+let touchStartY = 0;
+let touchEndY = 0;
 window.addEventListener('wheel', (event) => {
   if (isAnimating) return; // 애니메이션 중일 때 스크롤 방지
 
@@ -25,27 +27,48 @@ window.addEventListener('wheel', (event) => {
     changePage(currentPageIndex - 1);
   }
 });
+// 스와이프 임계값 (예: 최소 30px 이상 이동해야 스와이프로 인식)
+const SWIPE_THRESHOLD = 30;
 
-// 터치 이벤트 추가
-window.addEventListener('touchmove', (event) => {
-  debugtouch = event.changedTouches[0].screenX;
-	console.log('Touch is moving', debugtouch);
-}, false);
-
-// 터치 이벤트 추가
+// 터치 시작 이벤트
 window.addEventListener('touchstart', (event) => {
   touchStartX = event.changedTouches[0].screenX;
+  touchStartY = event.changedTouches[0].screenY;
 }, false);
 
+// 터치 종료 이벤트
 window.addEventListener('touchend', (event) => {
   if (isAnimating) return; // 애니메이션 중일 때 스크롤 방지
 
   touchEndX = event.changedTouches[0].screenX;
+  touchEndY = event.changedTouches[0].screenY;
+
   handleGesture();
-	touchStartX = 0;
-	touchEndX = 0;
+  
+  // 초기화
+  touchStartX = 0;
+  touchEndX = 0;
+  touchStartY = 0;
+  touchEndY = 0;
 }, false);
 
+function handleGesture() {
+  const deltaX = touchEndX - touchStartX;
+  const deltaY = touchEndY - touchStartY;
+
+  // 가로보다 세로의 변화가 클 경우에만 상하 스와이프 처리
+  if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > SWIPE_THRESHOLD) {
+    if (deltaY > 0) {
+      // 아래로 스와이프
+      console.log('Swipe down');
+      changePage(currentPageIndex - 1);
+    } else {
+      // 위로 스와이프
+      console.log('Swipe up');
+      changePage(currentPageIndex + 1);
+    }
+  }
+}
 function handleGesture() {
   if (touchEndX < touchStartX) {
     changePage(currentPageIndex - 1);

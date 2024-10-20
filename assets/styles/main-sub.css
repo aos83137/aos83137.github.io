@@ -218,11 +218,10 @@ body {
 }
 
 .invitation-content {
-  font-size: 4vw; /* 초대문 내용 크기 */
+  font-size: 3.8vw; /* 초대문 내용 크기 */
   line-height: 1.8;
   color: #333;
   font-family: 'Noto Sans KR', sans-serif;
-  margin-bottom: 6vw;
 }
 
 @media (min-width: 600px) {
@@ -270,7 +269,7 @@ body {
 }
 
 .calendar-table th, .calendar-table td {
-  padding: 3vw;
+  padding: 2vw;
   font-size: 4vw;
   color: #333;
 }
@@ -279,7 +278,6 @@ body {
   background-color: #d67d8f;
   color: white;
   border-radius: 50%;
-  padding: 1vw 2vw;
 }
 
 .countdown-wrapper {
@@ -294,7 +292,7 @@ body {
 
 .countdown-box {
   text-align: center;
-  padding: 4vw;
+  padding: 1vw 1.5vw;
   border: 0.3vw solid #e8dcd6; /* 테두리 색상 */
   border-radius: 2vw; /* 모서리 둥글게 */
   background-color: #f9f6f5; /* 배경색 */
@@ -357,10 +355,6 @@ body {
 		gap: 15px;
 		margin-bottom: 30px;
 	}
-
-  .highlight {
-    padding: 5px 10px;
-  }
 
   .countdown-box {
     padding: 20px;
