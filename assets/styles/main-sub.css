@@ -99,15 +99,15 @@
 /* 목차 */
 #menu {
 display: none;
-position: absolute;
-top: 0;
-right: 0;
-background-color: rgba(0, 0, 0, 0.8);
-width: 200px;
-height: 100dvh;
-color: white;
-padding: 20px;
-box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  width: 200px;
+  height: 100dvh;
+  color: white;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 #menu ul {
@@ -294,7 +294,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 5vw;
+  margin: 5vw 0;
   gap: 3vw; /* 각 카드 사이의 간격 */
 	max-width: 480px;
 	margin: 10 auto; /* 자식 요소를 중앙에 배치 */
@@ -592,17 +592,34 @@ body {
   color: white;
 }
 
+.schedule-content {
+  margin: 2vw 4vw;
+  padding: 2vw 4vw;
+  border-top: 1px solid gainsboro;  /* 상단에 두께 2px의 검정색 실선 */
+  border-bottom: 1px solid gainsboro; /* 하단에 두께 2px의 검정색 실선 */
+}
+
+.icon-text {
+  width: 5vw; height: 5vw; vertical-align: text-top;
+}
+
 @media (min-width: 600px) {
   .page-titile {
     font-size: 30px;
     margin-bottom: 12px;
   }
-
+  .schedule-content {
+    margin-bottom: 30px;
+    margin: 12px 48px;
+  }
   .invitation-content-center {
     font-size: 18px;
   }
   .invitation-content-left {
     font-size: 18px;
+  }
+  .icon-text {
+    width: 24px; height: 24px; vertical-align: middle;
   }
 	.invitation-content {
 		font-size: 24px;
