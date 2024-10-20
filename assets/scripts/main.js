@@ -67,13 +67,9 @@ function handleGesture() {
       console.log('Swipe up');
       changePage(currentPageIndex + 1);
     }
-  }
-}
-function handleGesture() {
-  if (touchEndX < touchStartX) {
-    changePage(currentPageIndex - 1);
-  } else if (touchEndX > touchStartX) {
-    changePage(currentPageIndex + 1);
+  } else {
+    const scrollInstruction = document.querySelector('.scroll-instruction');
+    scrollInstruction.style.display = 'block'; // 요소를 비표시로 설정
   }
 }
 
