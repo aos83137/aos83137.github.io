@@ -29,6 +29,7 @@ let touchEndX = 0;
 let touchStartY = 0;
 let touchEndY = 0;
 let touchCount = 0; // 터치 손가락 수 체크
+let initialDistance = 0; // 초기 두 손가락 간 거리
 const SWIPE_THRESHOLD = 30;
 
 // 터치 시작 이벤트
@@ -36,8 +37,9 @@ window.addEventListener('touchstart', (event) => {
   touchCount = event.touches.length; // 현재 터치 수 저장
   if (touchCount === 2) {
     // 두 손가락으로 터치 시작
-    console.log('Two-finger pinch detected, preventing page change.');
-    return; // 두 손가락으로 터치하는 경우 함수 종료
+    initialDistance = calculateDistance(event.touches); // 초기 거리 계산
+    console.log('Two-finger gesture detected.');
+    return; // 두 손가락으로 터치하는 경우 계속 진행
   }
 
   touchStartX = event.changedTouches[0].screenX;
@@ -52,7 +54,7 @@ window.addEventListener('touchend', (event) => {
   touchEndY = event.changedTouches[0].screenY;
 
   if (touchCount === 2) {
-    // 두 손가락으로 터치한 경우, 페이지 변경 방지
+    // 두 손가락으로 터치한 경우 확대/축소 제스처 처리
     touchCount = 0; // 초기화
     return;
   }
@@ -65,6 +67,29 @@ window.addEventListener('touchend', (event) => {
   touchStartY = 0;
   touchEndY = 0;
   touchCount = 0; // 초기화
+}, false);
+
+// 두 손가락 간 거리 계산
+function calculateDistance(touches) {
+  const dx = touches[0].screenX - touches[1].screenX;
+  const dy = touches[0].screenY - touches[1].screenY;
+  return Math.sqrt(dx * dx + dy * dy); // 피타고라스 정리를 이용해 거리 계산
+}
+
+// 확대/축소 제스처 처리
+window.addEventListener('touchmove', (event) => {
+  if (touchCount === 2) {
+    const currentDistance = calculateDistance(event.touches);
+    if (currentDistance > initialDistance) {
+      // 확대 제스처
+      console.log('Zoom in');
+      // 확대 관련 작업 수행
+    } else {
+      // 축소 제스처
+      console.log('Zoom out');
+      // 축소 관련 작업 수행
+    }
+  }
 }, false);
 
 function handleGesture() {
