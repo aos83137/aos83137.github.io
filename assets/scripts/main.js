@@ -13,11 +13,6 @@ pages.forEach((page, index) => {
   menuList.appendChild(li);
 });
 
-// 스크롤 및 터치 이벤트 처리
-let touchStartX = 0;
-let touchEndX = 0;
-let touchStartY = 0;
-let touchEndY = 0;
 window.addEventListener('wheel', (event) => {
   if (isAnimating) return; // 애니메이션 중일 때 스크롤 방지
 
@@ -27,11 +22,24 @@ window.addEventListener('wheel', (event) => {
     changePage(currentPageIndex - 1);
   }
 });
-// 스와이프 임계값 (예: 최소 30px 이상 이동해야 스와이프로 인식)
+
+// 스크롤 및 터치 이벤트 처리
+let touchStartX = 0;
+let touchEndX = 0;
+let touchStartY = 0;
+let touchEndY = 0;
+let touchCount = 0; // 터치 손가락 수 체크
 const SWIPE_THRESHOLD = 30;
 
 // 터치 시작 이벤트
 window.addEventListener('touchstart', (event) => {
+  touchCount = event.touches.length; // 현재 터치 수 저장
+  if (touchCount === 2) {
+    // 두 손가락으로 터치 시작
+    console.log('Two-finger pinch detected, preventing page change.');
+    return; // 두 손가락으로 터치하는 경우 함수 종료
+  }
+
   touchStartX = event.changedTouches[0].screenX;
   touchStartY = event.changedTouches[0].screenY;
 }, false);
@@ -43,6 +51,12 @@ window.addEventListener('touchend', (event) => {
   touchEndX = event.changedTouches[0].screenX;
   touchEndY = event.changedTouches[0].screenY;
 
+  if (touchCount === 2) {
+    // 두 손가락으로 터치한 경우, 페이지 변경 방지
+    touchCount = 0; // 초기화
+    return;
+  }
+
   handleGesture();
   
   // 초기화
@@ -50,6 +64,7 @@ window.addEventListener('touchend', (event) => {
   touchEndX = 0;
   touchStartY = 0;
   touchEndY = 0;
+  touchCount = 0; // 초기화
 }, false);
 
 function handleGesture() {
