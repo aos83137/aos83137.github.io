@@ -59,6 +59,7 @@ window.addEventListener('touchend', (event) => {
     // 두 손가락으로 터치한 경우 확대/축소 제스처 처리
     isPinching = false; // 초기화
     touchCount = 0; // 초기화
+    initialDistance = 0; // 초기화
     return; // 페이지 변경 방지
   }
 
