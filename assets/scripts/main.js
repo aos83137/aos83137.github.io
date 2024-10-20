@@ -30,6 +30,7 @@ let touchStartY = 0;
 let touchEndY = 0;
 let touchCount = 0; // 터치 손가락 수 체크
 let initialDistance = 0; // 초기 두 손가락 간 거리
+let isPinching = false; // 확대/축소 여부
 const SWIPE_THRESHOLD = 30;
 
 // 터치 시작 이벤트
@@ -38,6 +39,7 @@ window.addEventListener('touchstart', (event) => {
   if (touchCount === 2) {
     // 두 손가락으로 터치 시작
     initialDistance = calculateDistance(event.touches); // 초기 거리 계산
+    isPinching = true; // 확대/축소 제스처 감지 시작
     console.log('Two-finger gesture detected.');
     return; // 두 손가락으로 터치하는 경우 계속 진행
   }
@@ -53,10 +55,11 @@ window.addEventListener('touchend', (event) => {
   touchEndX = event.changedTouches[0].screenX;
   touchEndY = event.changedTouches[0].screenY;
 
-  if (touchCount === 2) {
+  if (isPinching) {
     // 두 손가락으로 터치한 경우 확대/축소 제스처 처리
+    isPinching = false; // 초기화
     touchCount = 0; // 초기화
-    return;
+    return; // 페이지 변경 방지
   }
 
   handleGesture();
@@ -78,7 +81,7 @@ function calculateDistance(touches) {
 
 // 확대/축소 제스처 처리
 window.addEventListener('touchmove', (event) => {
-  if (touchCount === 2) {
+  if (isPinching) {
     const currentDistance = calculateDistance(event.touches);
     if (currentDistance > initialDistance) {
       // 확대 제스처
@@ -112,6 +115,7 @@ function handleGesture() {
     scrollInstruction.style.display = 'block'; // 요소를 비표시로 설정
   }
 }
+
 
 // 키보드 이벤트 처리
 window.addEventListener('keydown', (event) => {
