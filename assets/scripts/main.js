@@ -242,3 +242,17 @@ lightbox.addEventListener('click', (e) => {
 
 
 // page7 참석유무
+
+// AUDIO
+const audio = document.getElementById('audio');
+const audioIcon = document.getElementById('audio-icon');
+
+audioIcon.addEventListener('click', () => {
+    if (audio.paused) {
+        audio.play();
+        audioIcon.src = '../assets/images2/gif/start-pause2.gif'; // 재생 중일 때 아이콘 변경
+    } else {
+        audio.pause();
+        audioIcon.src = '../assets/images2/gif/start-pause2.gif'; // 일시 정지 중일 때 아이콘 변경
+    }
+});

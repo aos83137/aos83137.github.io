@@ -10057,11 +10057,14 @@ body {
     margin: 0px 15px 15px 15px;
 }
 
-.bottom_left {
-    overflow: hidden;
-    position: fixed;
-    text-align: right;
-    bottom: 0;
-    left: 0;
-    margin: 0px 15px 15px 15px;
+#audio-control {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    cursor: pointer;
+}
+
+#audio-icon {
+    width: 40px; /* 아이콘 크기 조절 */
+    height: 40px;
 }
