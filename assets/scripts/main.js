@@ -109,6 +109,10 @@ window.onload = function() {
 
 // 페이지 변경 함수
 function changePage(nextIndex) {
+  const scrollInstruction = document.querySelector('.scroll-instruction');
+  if (scrollInstruction) {
+      scrollInstruction.style.display = 'none'; // 요소를 비표시로 설정
+  }
   if (nextIndex < 0 || nextIndex >= pages.length) return;
 
   isAnimating = true;
