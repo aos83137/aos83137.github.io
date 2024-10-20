@@ -58,16 +58,19 @@
   background-color: #f8f8f8;
 }
 .page5 {
-	background-color: #d65076;
+  background-color: #f8f8f8;
 }
 .page6  {
-	background-color: #d65076;
+  background-color: #f8f8f8;
 }
 .page7 {
-	background-color: #d65076;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f8f8f8;
 }
 .page8 {
-	background-color: #d65076;
+  background-color: #f8f8f8;
 }
 /* 애니메이션: 첫 페이지가 천천히 보이도록 */
 @keyframes fadeInSlide {
@@ -185,7 +188,7 @@ body {
   font-weight: 200;
 }
 
-.ww-invitation-letter-wrapper {
+.content-wrapper {
   background-color: white;
   padding: 10vw 5vw; /* 텍스트 여백 */
   text-align: center;
@@ -204,7 +207,7 @@ body {
 }
 
 @media (min-width: 600px) {
-	.ww-invitation-letter-wrapper {
+	.content-wrapper {
 		padding: 30px 60px;
 	}
 
@@ -390,6 +393,18 @@ body {
 }
 
 /* page4 gallery */
+.gallery-container {
+  width: 100%;
+  height: 100dvh;
+  margin: 20px auto;
+  padding: 20px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
 .gallery {
   display: flex;
   flex-wrap: wrap;
@@ -398,14 +413,33 @@ body {
 }
 
 .gallery-item {
-  width: calc(33.33% - 10px); /* 3개씩 표시 */
   cursor: pointer;
-  border-radius: 5px; /* 모서리 둥글게 */
-  transition: transform 0.2s; /* 확대 효과 */
+  border-radius: 5px;
+  object-fit: cover; /* 사진이 영역을 넘지 않도록 */
+  transition: transform 0.2s;
 }
 
 .gallery-item:hover {
-  transform: scale(1.05); /* 마우스 오버 시 확대 */
+  transform: scale(1.05);
+}
+
+/* 첫 번째 줄: 2개 */
+.gallery-item:nth-child(1),
+.gallery-item:nth-child(2) {
+  width: calc(50% - 10px); /* 2개씩 표시 */
+}
+
+/* 두 번째 줄: 3개 */
+.gallery-item:nth-child(3),
+.gallery-item:nth-child(4),
+.gallery-item:nth-child(5) {
+  width: calc(33.33% - 10px); /* 3개씩 표시 */
+}
+
+/* 세 번째 줄: 2개 */
+.gallery-item:nth-child(6),
+.gallery-item:nth-child(7) {
+  width: calc(50% - 10px); /* 2개씩 표시 */
 }
 
 .lightbox {
@@ -435,3 +469,20 @@ body {
   cursor: pointer;
 }
 /* page4 gallery */
+
+/* page7 */
+
+
+.page7 .rsvp-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #f28b82;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.page7 .rsvp-button:hover {
+  background-color: #e57373;
+}

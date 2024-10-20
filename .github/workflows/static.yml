@@ -20,8 +20,6 @@ permissions:
 concurrency:
   group: "pages"
   cancel-in-progress: false
-env:
-  NOTION_API_KEY : ${{ secrets.NOTION_API_KEY }}
 jobs:
   # Single deploy job since we're just deploying
   deploy:
@@ -39,8 +37,6 @@ jobs:
         with:
           # Upload entire repository
           path: '.'
-      - run: |
-          echo "ths is env=${{ env.NOTION_API_KEY }}"
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
