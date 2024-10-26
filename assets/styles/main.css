@@ -10059,8 +10059,8 @@ body {
 
 #audio-control {
     position: absolute;
-    top: 10px;
-    left: 10px;
+    top: 20px;
+    left: 20px;
     cursor: pointer;
 }
 

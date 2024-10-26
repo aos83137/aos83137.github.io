@@ -218,6 +218,13 @@ body {
 }
 
 .page-titile {
+  font-size: min(7vw, 42px);
+  color: #d67d8f;
+  font-family: 'Playfair Display', serif;
+  margin-bottom: min(2vw, 18px);
+  text-align: center;
+}
+.page-titile-small {
   font-size: min(5vw, 30px);
   color: #d67d8f;
   font-family: 'Playfair Display', serif;
