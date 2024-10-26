@@ -1,3 +1,9 @@
+// JavaScript 로딩 완료 후 스피너 제거
+window.addEventListener("load", function () {
+  document.getElementById("loader").style.display = "none";
+  document.getElementById("content").style.display = "block";
+});
+
 let currentPageIndex = 0;
 let isAnimating = false;
 const pages = document.querySelectorAll('.page');
@@ -112,8 +118,8 @@ function handleGesture() {
       changePage(currentPageIndex + 1);
     }
   } else {
-    const scrollInstruction = document.querySelector('.scroll-instruction');
-    scrollInstruction.style.display = 'block'; // 요소를 비표시로 설정
+    // const scrollInstruction = document.querySelector('.scroll-instruction');
+    // scrollInstruction.style.display = 'block'; // 요소를 비표시로 설정
   }
 }
 

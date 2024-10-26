@@ -1,10 +1,22 @@
+/* CSS 로딩 스피너 스타일 */
+.loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
 
 #pages {
     position: relative;
     height: 100dvh;
     width: 100%;
     overflow: hidden; /* 넘치는 내용 숨기기 */
-
 }
 
 /* 신규추가 */
@@ -19,7 +31,7 @@
   align-items: center;
   font-size: 2rem;
   opacity: 0; /* 처음엔 보이지 않게 */
-  transition: opacity 2s ease, transform 1.5s ease; /* opacity와 transform에 애니메이션 추가 */
+  transition: opacity 3s ease, transform 1.5s ease; /* opacity와 transform에 애니메이션 추가 */
   min-height: 100dvh; /* 최소 높이를 설정해 화면에 꽉 차도록 */
   flex-direction: column;
   max-width: 600px; /* PC 화면에서 최대 너비를 고정 (예: 600px) */
@@ -75,17 +87,6 @@
 .page8 {
   background-color: #f8f8f8;
 }
-/* 애니메이션: 첫 페이지가 천천히 보이도록 */
-@keyframes fadeInSlide {
-	0% {
-			opacity: 0;
-			transform: translateY(0px); /* 아래에서 슬라이드 인 */
-	}
-	100% {
-			opacity: 1;
-			transform: translateY(0); /* 정상 위치 */
-	}
-}
 
 /* 메뉴 버튼 */
 #menuButton {
@@ -133,36 +134,10 @@ display: block;
 /* 텍스트 그라데이션과 패딩 */
 .ww-text-wrapper {
   background: linear-gradient(to top, rgba(255, 255, 255, 1) 70%, rgba(255, 255, 255, 0) 100%);
-  padding: 20vw 0 10vw; /* 윗쪽 패딩 20vw, 아래쪽 패딩 10vw */
+  padding: min(20vw, 120px) 0 min(10vw, 60px); /* 윗쪽 패딩 20vw, 아래쪽 패딩 10vw */
   text-align: center; /* 텍스트 중앙 정렬 */
   width: 100%; /* 모바일 화면을 고려한 너비 */
   color: black; /* 글자 색 검정 */
-}
-
-@media (min-width: 600px) {
-	.ww-text-wrapper {
-		padding-top: 120px;
-		padding-bottom: 60px;
-		width: 600px;
-	}
-
-	.ww-text-wrapper > .title {
-		font-size: 42px;
-		line-height: 63px;
-		margin-bottom: 18px;
-		margin-top: 30px;
-	}
-
-	.ww-text-wrapper > .date {
-		font-size: 21px;
-		line-height: 31.5px;
-		margin-bottom: 6px;
-	}
-
-	.ww-text-wrapper > .location {
-		font-size: 21px;
-		line-height: 31.5px;
-	}
 }
 
 body {
@@ -175,56 +150,48 @@ body {
 
 /* 각 텍스트 크기와 스타일 */
 .title {
-  font-size: 7vw; /* 가장 큰 텍스트 */
+  font-size: min(7vw, 42px); /* 가장 큰 텍스트 */
   font-weight: 200; /* 굵게 */
-  margin-top: 5vw;
-	margin-bottom: 3vw;
+  margin-top: min(5vw, 30px);
+	margin-bottom: min(3vw, 18px);
 }
 
 .date {
-  font-size: 3.5vw; /* 날짜 */
+  font-size: min(3.5vw, 21px);
   font-weight: 20;
-  margin-bottom: 1vw;
+  margin-bottom: min(1vw, 6px);
 }
 
 .location {
-  font-size: 3.5vw; /* 위치 */
+  font-size: min(3.5vw, 21px);
   font-weight: 200;
 }
 
 .content-wrapper {
   background-color: white;
-  padding: 10vw 5vw; /* 텍스트 여백 */
-  box-shadow: 0 2vw 5vw rgba(0, 0, 0, 0.1); /* 그림자 효과 */
-  border-radius: 2vw; /* 모서리 둥글게 */
-  width: 90vw;
-	max-width: 480px;
+  padding: min(10vw, 60px) min(5vw, 30px); /* 텍스트 여백 */
+  box-shadow: 0 min(2vw, 12px) min(5vw, 30px) rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+  border-radius: min(2vw, 12px); /* 모서리 둥글게 */
+  width: min(90vw, 540px);
   margin: 0 auto; /* 자식 요소를 중앙에 배치 */
 }
 
 .invitation-header {
-  font-size: 5vw; /* 초대문 제목 크기 */
+  font-size: min(5vw, 30px); /* 초대문 제목 크기 */
   color: #d67d8f; /* 핑크 색상 */
   font-family: 'Playfair Display', serif;
-  margin-bottom: 4vw;
-}
-
-@media (min-width: 600px) {
-  .invitation-header {
-    font-size: 30px;
-    margin-bottom: 24px; /* 여백도 고정 */
-  }
+  margin-bottom: min(4vw, 24px);
 }
 
 .invitation-content-left {
-  font-size: 3.2vw; /* 초대문 내용 크기 */
+  font-size: min(3.2vw, 19.2px); /* 초대문 내용 크기 */
   line-height: 1.8;
   color: #333;
   font-family: 'Noto Sans KR', sans-serif;
 }
 
 .invitation-content-center {
-  font-size: 3.2vw; /* 초대문 내용 크기 */
+  font-size: min(3.2vw, 19.2px);
   line-height: 1.8;
   color: #333;
   font-family: 'Noto Sans KR', sans-serif;
@@ -238,7 +205,7 @@ body {
   justify-content: center;
   align-items: center;
   background-color: #f9f9f9;
-  padding: 0 5vw;
+  padding: 0 min(5vw, 30px);
 }
 
 .calendar-wrapper {
@@ -246,42 +213,26 @@ body {
 }
 
 .calendar-header {
-  margin-bottom: 5vw;
-  margin: 2vw 8vw;
+  margin-bottom: min(5vw, 30px);
+  margin: min(2vw, 18px) 8vw;
 }
 
 .page-titile {
-  font-size: 5vw;
+  font-size: min(5vw, 30px);
   color: #d67d8f;
   font-family: 'Playfair Display', serif;
-  margin-bottom: 2vw;
+  margin-bottom: min(2vw, 18px);
   text-align: center;
 }
 .calendar-title {
-  font-size: 5vw;
+  font-size: min(5vw, 30px);
   color: #d67d8f;
   font-family: 'Playfair Display', serif;
-  margin-bottom: 2vw;
+  margin-bottom: min(2vw, 18px);
 }
 
 .event-date {
-  font-size: 4vw;
-  color: #333;
-}
-
-.calendar-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 4vw 0;
-  padding: 4vw 1vw;
-  border-top: 1px solid gainsboro;  /* 상단에 두께 2px의 검정색 실선 */
-  border-bottom: 1px solid gainsboro; /* 하단에 두께 2px의 검정색 실선 */
-  text-align: center;
-}
-
-.calendar-table th, .calendar-table td {
-  padding: 2vw 1vw;
-  font-size: 3.7vw;
+  font-size: min(4vw, 24px);
   color: #333;
 }
 
@@ -295,19 +246,19 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 5vw 0;
-  gap: 3vw; /* 각 카드 사이의 간격 */
+  margin: min(5vw, 30px) 0;
+  gap: min(3vw, 18px); /* 각 카드 사이의 간격 */
 	max-width: 480px;
-	margin: 10 auto; /* 자식 요소를 중앙에 배치 */
+	margin: min(1.5vw, 9px) auto; /* 자식 요소를 중앙에 배치 */
 }
 
 .countdown-box {
   text-align: center;
-  padding: 1vw 1.5vw;
-  border: 0.3vw solid #e8dcd6; /* 테두리 색상 */
-  border-radius: 2vw; /* 모서리 둥글게 */
+  padding: min(1vw, 6px) min(1.5vw, 9px);
+  border: min(0.3vw, 1.8px) solid #e8dcd6; /* 테두리 색상 */
+  border-radius: min(2vw, 18px); /* 모서리 둥글게 */
   background-color: #f9f6f5; /* 배경색 */
-  width: 13vw; /* 각 박스의 너비 설정 */
+  width: min(13vw, 78px); /* 각 박스의 너비 설정 */
 }
 
 .red-bold {
@@ -321,21 +272,21 @@ body {
 }
 
 .countdown-box span {
-  font-size: 5vw;
+  font-size: min(5vw, 30px);
   color: #b08a86;
   display: block;
-  margin-bottom: 0.5vw; /* 숫자와 글자 사이의 간격을 줄임 */
+  margin-bottom: min(0.5vw, 3px); /* 숫자와 글자 사이의 간격을 줄임 */
 }
 
 .countdown-box span + span {
-  font-size: 3vw;
-  font-weight: 400;
-  margin-top: -1vw; /* 텍스트 위쪽의 여백을 줄여서 간격을 좁힘 */
-  line-height: 1.2; /* 줄 간격을 줄여서 숫자와 글자가 가까워지게 함 */
+  font-size: min(3vw, 18px);
+  font-weight: 400px;
+  margin-top: min(-1vw, -6px); /* 텍스트 위쪽의 여백을 줄여서 간격을 좁힘 */
+  line-height: 1.2 /* 줄 간격을 줄여서 숫자와 글자가 가까워지게 함 */
 }
 
 .days-left {
-  font-size: 4vw;
+  font-size: min(4vw, 24px);
   color: #666;
   text-align: center;
 }
@@ -343,60 +294,6 @@ body {
 .calendar-table th:first-child, 
 .calendar-table td:first-child {
   color: red; /* 일요일을 빨간색으로 설정 */
-}
-
-/* 화면 크기가 600px 이상일 때 px로 고정 */
-@media (min-width: 600px) {
-	.calendar-header {
-		margin-bottom: 30px;
-    margin: 12px 48px;
-  }
-  .calendar-title {
-    font-size: 30px;
-    margin-bottom: 10px;
-  }
-
-  .event-date {
-    font-size: 24px;
-  }
-
-	.calendar-wrapper {
-		max-width: 480px;
-	}
-
-	.calendar-table {
-		margin-bottom: 30px;
-	}
-
-  .calendar-table th, .calendar-table td {
-    padding: 15px;
-    font-size: 18px;
-  }
-  .countdown-wrapper {
-		gap: 15px;
-		margin-bottom: 30px;
-	}
-
-  .countdown-box {
-    padding: 6px 9px;
-    width: 120px;
-    border: 0.3vw solid #e8dcd6; /* 테두리 색상 */
-    border-radius: 2vw; /* 모서리 둥글게 */
-  }
-
-  .countdown-box span {
-    font-size: 30px;
-		margin: 5px;
-  }
-
-  .countdown-box span + span {
-    font-size: 18px;
-    margin-top: -5px;
-  }
-
-  .days-left {
-    font-size: 20px;
-  }
 }
 
 .base-wrapper {
@@ -494,13 +391,13 @@ body {
 
 
 .page7 .rsvp-button {
-  margin: 20px 0;
-  padding: 10px 20px;
+  margin: min(6vw, 36px) 0;
+  padding: min(1.5vw, 9px) min(2vw, 12px);
   background-color: #f28b82;
   color: white;
   text-decoration: none;
-  border-radius: 5px;
-  font-size: 16px;
+  border-radius: min(0.8vw, 4.8px);
+  font-size: min(3vw, 18px);
 }
 
 .page7 .rsvp-button:hover {
@@ -509,11 +406,11 @@ body {
 
 /* scroll image */
 .scroll-instruction {
-  position: fixed;
+  position: absolute;
   bottom: 20px; /* 화면 아래에서 20px */
   right: 20px; /* 화면 오른쪽에서 20px */
   z-index: 1000; /* 다른 요소 위에 표시되도록 설정 */
-  background-color: rgba(211, 211, 211, 0.7); /* 투명한 회색 배경 */
+  background-color: rgba(243, 235, 235, 0.7); /* 투명한 회색 배경 */
   border-radius: 8px; /* 모서리를 둥글게 */
   padding: 10px; /* 여백 추가 */
   text-align: center; /* 중앙 정렬 */
@@ -522,7 +419,7 @@ body {
 }
 
 .scroll-instruction img {
-  width: 15vw; /* 이미지 너비 설정 */
+  width: min(15vw, 90px); /* 이미지 너비 설정 */
   height: auto; /* 비율 유지 */
 }
 
@@ -534,7 +431,7 @@ body {
 /* 애니메이션 정의 */
 @keyframes fadeIn {
   to {
-      opacity: 1; /* 최종 투명도 설정 */
+      opacity: 0.7; /* 최종 투명도 설정 */
   }
 }
 
@@ -543,7 +440,7 @@ body {
   display: flex; /* Flexbox를 사용하여 정렬 */
   justify-content: center; /* 가로 방향 중앙 정렬 */
   align-items: center; /* 세로 방향 중앙 정렬 */
-  width: 100vw; /* 전체 너비를 가득 채움 */
+  width: min(100vw, 600px); /* 전체 너비를 가득 채움 */
   height: 100vh; /* 전체 높이를 가득 채움 */
   overflow: hidden; /* 넘치는 부분 숨김 */
   padding: 0; /* 여백 초기화 */
@@ -556,11 +453,6 @@ body {
   width: auto; /* 비율 유지 */
   display: block; /* 이미지 아래 공백 제거 */
   margin: auto; /* 이미지 중앙 정렬 */
-}
-
-/* place */
-.place-text {
-  font-size: 4vw;
 }
 
 /* end */
@@ -594,45 +486,12 @@ body {
 }
 
 .schedule-content {
-  margin: 2vw 4vw;
-  padding: 2vw 4vw;
-  border-top: 1px solid gainsboro;  /* 상단에 두께 2px의 검정색 실선 */
-  border-bottom: 1px solid gainsboro; /* 하단에 두께 2px의 검정색 실선 */
+  margin: min(2vw, 18px) min(4vw, 24px);
+  padding: min(2vw, 18px) min(4vw, 24px);
+  border-top: 1px solid gainsboro;
+  border-bottom: 1px solid gainsboro;
 }
 
 .icon-text {
-  width: 5vw; height: 5vw; vertical-align: text-top;
-}
-
-@media (min-width: 600px) {
-  .page-titile {
-    font-size: 30px;
-    margin-bottom: 12px;
-  }
-  .schedule-content {
-    margin-bottom: 30px;
-    margin: 12px 48px;
-  }
-  .invitation-content-center {
-    font-size: 18px;
-  }
-  .invitation-content-left {
-    font-size: 18px;
-  }
-  .icon-text {
-    width: 24px; height: 24px; vertical-align: middle;
-  }
-	.invitation-content {
-		font-size: 24px;
-		margin-bottom: 36px; /* 여백도 고정 */
-	}
-  .content-wrapper {
-    padding: 60px 30px; /* 텍스트 여백 */
-    width: 90vw;
-    margin: 0 auto; /* 자식 요소를 중앙에 배치 */
-  }
-  .scroll-instruction img {
-    width: 90px; /* 이미지 너비 설정 */
-    height: auto; /* 비율 유지 */
-  }
+  width: min(5vw, 30px); height: min(5vw, 30px); vertical-align: text-top;
 }
