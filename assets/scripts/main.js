@@ -1,7 +1,19 @@
+const TIMEOUT_VAL=2000;
+
 // JavaScript 로딩 완료 후 스피너 제거
 window.addEventListener("load", function () {
-  document.getElementById("loader").style.display = "none";
-  document.getElementById("content").style.display = "block";
+  this.setTimeout(() => {
+    document.getElementById("loader").style.display = "none";
+    document.getElementById("content").style.display = "block";
+
+    // 스크롤 활성화
+    document.body.style.overflow = "auto";
+    document.documentElement.style.overflow = "auto";
+
+    // 스크롤 안내 표시 보이기
+    const scrollInstruction = document.querySelector('.scroll-instruction');
+    scrollInstruction.style.opacity = '0.7';
+  }, TIMEOUT_VAL);
 });
 
 let currentPageIndex = 0;
@@ -42,7 +54,7 @@ const SWIPE_THRESHOLD = 30;
 // 터치 시작 이벤트
 window.addEventListener('touchstart', (event) => {
   touchCount = event.touches.length; // 현재 터치 수 저장
-  if (touchCount === 2) {
+  if (touchCount >= 2) {
     // 두 손가락으로 터치 시작
     initialDistance = calculateDistance(event.touches); // 초기 거리 계산
     isPinching = true; // 확대/축소 제스처 감지 시작
@@ -151,7 +163,10 @@ document.addEventListener('click', (event) => {
 
 // 페이지 로드할때 첫페이지에  current-page달기
 window.onload = function() {
-  pages[0].classList.add('current-page');
+  setTimeout(()=>{
+    pages[0].classList.add('current-page');
+  }, TIMEOUT_VAL)
+  
 };
 
 // 페이지 변경 함수
@@ -262,3 +277,4 @@ audioIcon.addEventListener('click', () => {
         audioIcon.src = '../assets/images2/gif/start-pause2.gif'; // 일시 정지 중일 때 아이콘 변경
     }
 });
+

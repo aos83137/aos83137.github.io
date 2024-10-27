@@ -1,15 +1,11 @@
 /* CSS 로딩 스피너 스타일 */
 .loader {
-  position: fixed;
-  top: 0;
-  left: 0;
+  height: 100dvh;
   width: 100%;
-  height: 100%;
-  background-color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
+  position: absolute;
+  max-width: 600px; /* PC 화면에서 최대 너비를 고정 (예: 600px) */
+  background-color: #b82727;
+  opacity: 0.6;
 }
 
 #pages {
@@ -140,8 +136,12 @@ display: block;
   color: black; /* 글자 색 검정 */
 }
 
+html, body {
+  overflow: hidden; /* 스크롤 비활성화 */
+}
+
 body {
-  font-family: 'Noto Sans KR', sans-serif; /* 전체 폰트 설정 */
+  font-family: 'Gowun Dodum', sans-serif; /* 전체 폰트 설정 */
   caret-color: transparent; /* 커서 색상을 투명하게 설정 */
   /* 중앙 정렬 및 고정 너비 */
   max-width: 600px; /* PC 화면에서 최대 너비를 고정 (예: 600px) */
@@ -150,7 +150,7 @@ body {
 
 /* 각 텍스트 크기와 스타일 */
 .title {
-  font-size: min(7vw, 42px); /* 가장 큰 텍스트 */
+  font-size: min(6vw, 36px); /* 가장 큰 텍스트 */
   font-weight: 200; /* 굵게 */
   margin-top: min(5vw, 30px);
 	margin-bottom: min(3vw, 18px);
@@ -179,7 +179,6 @@ body {
 .invitation-header {
   font-size: min(5vw, 30px); /* 초대문 제목 크기 */
   color: #d67d8f; /* 핑크 색상 */
-  font-family: 'Playfair Display', serif;
   margin-bottom: min(4vw, 24px);
 }
 
@@ -187,15 +186,21 @@ body {
   font-size: min(3.2vw, 19.2px); /* 초대문 내용 크기 */
   line-height: 1.8;
   color: #333;
-  font-family: 'Noto Sans KR', sans-serif;
 }
 
 .invitation-content-center {
   font-size: min(3.2vw, 19.2px);
   line-height: 1.8;
   color: #333;
-  font-family: 'Noto Sans KR', sans-serif;
   text-align: center;
+}
+
+.padding18 {
+  padding: min(3vw, 18px) min(4vw, 24px);
+}
+
+.padding35-fix {
+  padding: min(5vw, 30px) min(5.5vw, 33px) min(2vw, 12px) min(5.5vw, 33px);
 }
 
 .page3 {
@@ -220,21 +225,18 @@ body {
 .page-titile {
   font-size: min(7vw, 42px);
   color: #d67d8f;
-  font-family: 'Playfair Display', serif;
   margin-bottom: min(2vw, 18px);
   text-align: center;
 }
 .page-titile-small {
   font-size: min(5vw, 30px);
   color: #d67d8f;
-  font-family: 'Playfair Display', serif;
   margin-bottom: min(2vw, 18px);
   text-align: center;
 }
 .calendar-title {
   font-size: min(5vw, 30px);
   color: #d67d8f;
-  font-family: 'Playfair Display', serif;
   margin-bottom: min(2vw, 18px);
 }
 
@@ -254,18 +256,18 @@ body {
   justify-content: center;
   align-items: center;
   margin: min(5vw, 30px) 0;
-  gap: min(3vw, 18px); /* 각 카드 사이의 간격 */
+  /* gap: max(-2w, -12px); */
 	max-width: 480px;
 	margin: min(1.5vw, 9px) auto; /* 자식 요소를 중앙에 배치 */
 }
 
 .countdown-box {
   text-align: center;
-  padding: min(1vw, 6px) min(1.5vw, 9px);
-  border: min(0.3vw, 1.8px) solid #e8dcd6; /* 테두리 색상 */
-  border-radius: min(2vw, 18px); /* 모서리 둥글게 */
-  background-color: #f9f6f5; /* 배경색 */
-  width: min(13vw, 78px); /* 각 박스의 너비 설정 */
+  /* padding: min(1vw, 6px) min(1.5vw, 9px); */
+  /* border: min(0.3vw, 1.8px) solid #e8dcd6; 테두리 색상 */
+  /* border-radius: min(2vw, 18px); 모서리 둥글게 */
+  /* background-color: #f9f6f5; 배경색 */
+  width: min(10vw, 60px); /* 각 박스의 너비 설정 */
 }
 
 .red-bold {
@@ -288,7 +290,7 @@ body {
 .countdown-box span + span {
   font-size: min(3vw, 18px);
   font-weight: 400px;
-  margin-top: min(-1vw, -6px); /* 텍스트 위쪽의 여백을 줄여서 간격을 좁힘 */
+  margin-top: max(-1vw, -6px); /* 텍스트 위쪽의 여백을 줄여서 간격을 좁힘 */
   line-height: 1.2 /* 줄 간격을 줄여서 숫자와 글자가 가까워지게 함 */
 }
 
@@ -333,7 +335,8 @@ body {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 4px;
+  gap: 7px;
+  margin: min(2vw, 12px) 0;
 }
 
 .gallery-item {
@@ -423,6 +426,7 @@ body {
   text-align: center; /* 중앙 정렬 */
   opacity: 0; /* 초기 투명도 설정 */
   animation: fadeIn 3s forwards; /* 애니메이션 추가 */
+  animation-delay: 2s;
 }
 
 .scroll-instruction img {
@@ -501,4 +505,26 @@ body {
 
 .icon-text {
   width: min(5vw, 30px); height: min(5vw, 30px); vertical-align: text-top;
+}
+
+.sectionHead {
+  text-align: center;
+}
+.sectionHead .name {
+  display: block;
+  font-size: min(4vw, 24px);
+  color: rgb(247, 158, 158);
+  /*letter-spacing: -1px;*/
+  letter-spacing: min(0.084vw, 0.5px);
+  line-height: 2;
+}
+.sectionHead .enstr {
+  font-size: min(3.2vw, 19.2px);
+  font-family: Crimson Pro,serif;
+  letter-spacing: min(0.5vw, 3px);
+  line-height: min(3.34vw, 20px);
+  color: rgb(247, 158, 158);
+  opacity: 1;
+  /* display: none; */
+  -webkit-text-stroke: 0 !important;
 }
