@@ -1,39 +1,3 @@
-const TIMEOUT_VAL=5000;
-
-// JavaScript 로딩 완료 후 스피너 제거
-// window.addEventListener("load", function () 
-// {
-
-// });
-const video = document.getElementById('introVideo');
-// 재생 시간 확인 변수
-let isOneSecondLeftEventTriggered = false;
-video.addEventListener('timeupdate', () => {
-  if (video.duration - video.currentTime <= 0.6 && !isOneSecondLeftEventTriggered) {
-     // 이벤트 실행
-     document.getElementById("loader").classList.add("fade-out");
-     isOneSecondLeftEventTriggered = true;
-  }
-  
-  // 만약 동영상이 끝났다면 플래그 초기화
-  if (video.currentTime === 0) {
-     isOneSecondLeftEventTriggered = false;
-  }
-});
-
-video.addEventListener('ended', () => {
-  document.getElementById("loader").style.display = "none";
-  document.getElementById("content").style.display = "block";
-
-  // 스크롤 활성화
-  document.body.style.overflow = "auto";
-  document.documentElement.style.overflow = "auto";
-
-  // 스크롤 안내 표시 보이기
-  const scrollInstruction = document.querySelector('.scroll-instruction');
-  scrollInstruction.style.opacity = '0.7';
-});
-
 let currentPageIndex = 0;
 let isAnimating = false;
 const pages = document.querySelectorAll('.page');
@@ -180,12 +144,43 @@ document.addEventListener('click', (event) => {
 });
 
 // 페이지 로드할때 첫페이지에  current-page달기
-window.onload = function() {
-  setTimeout(()=>{
-    pages[0].classList.add('current-page');
-  }, TIMEOUT_VAL)
+// window.onload = function() {
+//   setTimeout(()=>{
+//     pages[0].classList.add('current-page');
+//   }, 5000)
   
-};
+// };
+
+const video = document.getElementById('introVideo');
+// 재생 시간 확인 변수
+let isOneSecondLeftEventTriggered = false;
+video.addEventListener('timeupdate', () => {
+  if (video.duration - video.currentTime <= 0.6 && !isOneSecondLeftEventTriggered) {
+     // 이벤트 실행
+     document.getElementById("loader").classList.add("fade-out");
+     pages[0].classList.add('current-page');
+     isOneSecondLeftEventTriggered = true;
+  }
+  
+
+  // 만약 동영상이 끝났다면 플래그 초기화
+  if (video.currentTime === 0) {
+     isOneSecondLeftEventTriggered = false;
+  }
+});
+
+video.addEventListener('ended', () => {
+  document.getElementById("loader").style.display = "none";
+  document.getElementById("content").style.display = "block";
+
+  // 스크롤 활성화
+  document.body.style.overflow = "auto";
+  document.documentElement.style.overflow = "auto";
+
+  // 스크롤 안내 표시 보이기
+  const scrollInstruction = document.querySelector('.scroll-instruction');
+  scrollInstruction.style.opacity = '0.7';
+});
 
 // 페이지 변경 함수
 function changePage(nextIndex) {
