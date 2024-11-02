@@ -1,7 +1,11 @@
-const TIMEOUT_VAL=2000;
+const TIMEOUT_VAL=2500;
 
 // JavaScript 로딩 완료 후 스피너 제거
-window.addEventListener("load", function () {
+window.addEventListener("load", function () 
+{
+  this.setTimeout(() => {
+    document.getElementById("loader").classList.add("fade-out");
+  },2300)
   this.setTimeout(() => {
     document.getElementById("loader").style.display = "none";
     document.getElementById("content").style.display = "block";
@@ -13,6 +17,11 @@ window.addEventListener("load", function () {
     // 스크롤 안내 표시 보이기
     const scrollInstruction = document.querySelector('.scroll-instruction');
     scrollInstruction.style.opacity = '0.7';
+
+    const audio = document.getElementById("audio-element"); // <audio> 요소의 id를 "audio-element"로 설정했다고 가정
+    audio.play().catch(error => {
+      console.log("Autoplay blocked. Waiting for user interaction.");
+    });
   }, TIMEOUT_VAL);
 });
 
@@ -271,10 +280,10 @@ const audioIcon = document.getElementById('audio-icon');
 audioIcon.addEventListener('click', () => {
     if (audio.paused) {
         audio.play();
-        audioIcon.src = '../assets/images2/gif/start-pause2.gif'; // 재생 중일 때 아이콘 변경
+        audioIcon.src = '../assets/images2/on.png'; // 재생 중일 때 아이콘 변경
     } else {
         audio.pause();
-        audioIcon.src = '../assets/images2/gif/start-pause2.gif'; // 일시 정지 중일 때 아이콘 변경
+        audioIcon.src = '../assets/images2/off.png'; // 일시 정지 중일 때 아이콘 변경
     }
 });
 
