@@ -1,11 +1,11 @@
-const TIMEOUT_VAL=2500;
+const TIMEOUT_VAL=5000;
 
 // JavaScript 로딩 완료 후 스피너 제거
 window.addEventListener("load", function () 
 {
   this.setTimeout(() => {
     document.getElementById("loader").classList.add("fade-out");
-  },2300)
+  },TIMEOUT_VAL-600)
   this.setTimeout(() => {
     document.getElementById("loader").style.display = "none";
     document.getElementById("content").style.display = "block";

@@ -59,7 +59,7 @@
 .page1 {
   /* page1 꾸미기용 css */
   width: 100%;
-  background-image: url('../images2/selphotoco-68.jpg'); /* 배경 이미지 */
+  background-image: url('../images2/topview.jpg'); /* 배경 이미지 */
   background-size: cover; /* 이미지 커버 */
   background-position: center; /* 이미지 중앙 정렬 */
   display: flex;
