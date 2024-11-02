@@ -1,23 +1,37 @@
 const TIMEOUT_VAL=5000;
 
 // JavaScript 로딩 완료 후 스피너 제거
-window.addEventListener("load", function () 
-{
-  this.setTimeout(() => {
-    document.getElementById("loader").classList.add("fade-out");
-  },TIMEOUT_VAL-600)
-  this.setTimeout(() => {
-    document.getElementById("loader").style.display = "none";
-    document.getElementById("content").style.display = "block";
+// window.addEventListener("load", function () 
+// {
 
-    // 스크롤 활성화
-    document.body.style.overflow = "auto";
-    document.documentElement.style.overflow = "auto";
+// });
+const video = document.getElementById('introVideo');
+// 재생 시간 확인 변수
+let isOneSecondLeftEventTriggered = false;
+video.addEventListener('timeupdate', () => {
+  if (video.duration - video.currentTime <= 0.6 && !isOneSecondLeftEventTriggered) {
+     // 이벤트 실행
+     document.getElementById("loader").classList.add("fade-out");
+     isOneSecondLeftEventTriggered = true;
+  }
+  
+  // 만약 동영상이 끝났다면 플래그 초기화
+  if (video.currentTime === 0) {
+     isOneSecondLeftEventTriggered = false;
+  }
+});
 
-    // 스크롤 안내 표시 보이기
-    const scrollInstruction = document.querySelector('.scroll-instruction');
-    scrollInstruction.style.opacity = '0.7';
-  }, TIMEOUT_VAL);
+video.addEventListener('ended', () => {
+  document.getElementById("loader").style.display = "none";
+  document.getElementById("content").style.display = "block";
+
+  // 스크롤 활성화
+  document.body.style.overflow = "auto";
+  document.documentElement.style.overflow = "auto";
+
+  // 스크롤 안내 표시 보이기
+  const scrollInstruction = document.querySelector('.scroll-instruction');
+  scrollInstruction.style.opacity = '0.7';
 });
 
 let currentPageIndex = 0;
