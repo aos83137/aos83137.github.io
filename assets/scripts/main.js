@@ -17,11 +17,6 @@ window.addEventListener("load", function ()
     // 스크롤 안내 표시 보이기
     const scrollInstruction = document.querySelector('.scroll-instruction');
     scrollInstruction.style.opacity = '0.7';
-
-    const audio = document.getElementById("audio-element"); // <audio> 요소의 id를 "audio-element"로 설정했다고 가정
-    audio.play().catch(error => {
-      console.log("Autoplay blocked. Waiting for user interaction.");
-    });
   }, TIMEOUT_VAL);
 });
 

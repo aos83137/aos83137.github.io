@@ -10059,12 +10059,12 @@ body {
 
 #audio-control {
     position: absolute;
-    top: 20px;
-    left: 20px;
+    top: 30px;
+    left: 30px;
     cursor: pointer;
 }
 
 #audio-icon {
-    width: 40px; /* 아이콘 크기 조절 */
-    height: 40px;
+    width: 30px; /* 아이콘 크기 조절 */
+    height: 30px;
 }
