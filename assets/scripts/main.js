@@ -155,7 +155,7 @@ const video = document.getElementById('introVideo');
 // 재생 시간 확인 변수
 let isOneSecondLeftEventTriggered = false;
 video.addEventListener('timeupdate', () => {
-  if (video.duration - video.currentTime <= 0.6 && !isOneSecondLeftEventTriggered) {
+  if (video.duration - video.currentTime <= 2 && !isOneSecondLeftEventTriggered) {
      // 이벤트 실행
      document.getElementById("loader").classList.add("fade-out");
      pages[0].classList.add('current-page');

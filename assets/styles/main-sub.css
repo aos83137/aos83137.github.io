@@ -97,7 +97,20 @@
   background-color: #f8f8f8;
 }
 .page8 {
-  background-color: #f8f8f8;
+  /* page1 꾸미기용 css */
+  width: 100%;
+  height: 100%;
+  background-image: url('../images2/ending_ko.png'); /* 배경 이미지 */
+  background-size: cover; /* 이미지 커버 */
+  background-position: center; /* 이미지 중앙 정렬 */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* 하단에 정렬 */
+  align-items: center;
+  color: white;
+  text-align: center;
+
+  max-width: 600px; /* PC 화면에서 최대 너비를 고정 (예: 600px) */
 }
 
 /* 메뉴 버튼 */
@@ -517,6 +530,10 @@ body {
   padding: min(2vw, 18px) min(4vw, 24px);
   border-top: 1px solid gainsboro;
   border-bottom: 1px solid gainsboro;
+}
+
+.icon-text-touch {
+  width: min(3vw, 20px); height: min(3vw, 20px); vertical-align: middle ;
 }
 
 .icon-text {
