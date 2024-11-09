@@ -156,23 +156,26 @@ document.addEventListener('click', (event) => {
 const video = document.getElementById('introVideo');
 // 재생 시간 확인 변수
 let isOneSecondLeftEventTriggered = false;
-video.addEventListener('timeupdate', () => {
-  if (video.duration - video.currentTime <= 0.1 && !isOneSecondLeftEventTriggered) {
-     // 이벤트 실행
-     document.getElementById("loader").classList.add("fade-out");
-     pages[0].classList.add('current-page');
-     isAnimating = false;
-     isOneSecondLeftEventTriggered = true;
-  }
+// video.addEventListener('timeupdate', () => {
+  // if (video.duration - video.currentTime <= 0.1 && !isOneSecondLeftEventTriggered) {
+  //    // 이벤트 실행
+  //    document.getElementById("loader").classList.add("fade-out");
+  //    pages[0].classList.add('current-page');
+  //    isAnimating = false;
+  //    isOneSecondLeftEventTriggered = true;
+  // }
   
 
-  // 만약 동영상이 끝났다면 플래그 초기화
-  if (video.currentTime === 0) {
-     isOneSecondLeftEventTriggered = false;
-  }
-});
+  // // 만약 동영상이 끝났다면 플래그 초기화
+  // if (video.currentTime === 0) {
+  //    isOneSecondLeftEventTriggered = false;
+  // }
+// });
 
 video.addEventListener('ended', () => {
+  document.getElementById("loader").classList.add("fade-out");
+  pages[0].classList.add('current-page');
+  isAnimating = false;
   document.getElementById("loader").style.display = "none";
 
   // 스크롤 활성화
