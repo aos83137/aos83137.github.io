@@ -1,5 +1,5 @@
 let currentPageIndex = 0;
-let isAnimating = false;
+let isAnimating = true;
 const pages = document.querySelectorAll('.page');
 const menuButton = document.getElementById('menuButton');
 const menu = document.getElementById('menu');
@@ -50,7 +50,7 @@ window.addEventListener('touchstart', (event) => {
 
 // 터치 종료 이벤트
 window.addEventListener('touchend', (event) => {
-  if (isAnimating) return; // 애니메이션 중일 때 스크롤 방지
+  if (isAnimating) return; // 애니메이션 중일 때 터치 방지
 
   touchEndX = event.changedTouches[0].screenX;
   touchEndY = event.changedTouches[0].screenY;
@@ -94,7 +94,11 @@ window.addEventListener('touchmove', (event) => {
       // 축소 관련 작업 수행
     }
   }
-}, false);
+
+  if (window.scrollY === 0 && touchEndY > touchStartY) {
+    event.preventDefault(); // 기본 동작 막기
+  }
+}, { passive: false }); // passive: false로 설정하여 preventDefault 사용 허용
 
 function handleGesture() {
   const deltaX = touchEndX - touchStartX;
@@ -102,7 +106,6 @@ function handleGesture() {
 
   // 가로보다 세로의 변화가 클 경우에만 상하 스와이프 처리
   if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > SWIPE_THRESHOLD) {
-    event.preventDefault();
     if (deltaY > 0) {
       // 아래로 스와이프
       console.log('Swipe down');
