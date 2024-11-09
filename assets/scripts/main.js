@@ -102,6 +102,7 @@ function handleGesture() {
 
   // 가로보다 세로의 변화가 클 경우에만 상하 스와이프 처리
   if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > SWIPE_THRESHOLD) {
+    event.preventDefault();
     if (deltaY > 0) {
       // 아래로 스와이프
       console.log('Swipe down');
