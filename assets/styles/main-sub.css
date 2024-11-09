@@ -68,7 +68,6 @@
   align-items: center;
   color: white;
   text-align: center;
-
 	max-width: 600px; /* PC 화면에서 최대 너비를 고정 (예: 600px) */
 }
 
@@ -77,24 +76,33 @@
   justify-content: center;
   align-items: center;
   background-color: #f9f9f9; /* 밝은 배경 */
+  background-image: url('../images2/background.png'); /* 배경 이미지 */
 }
 .page3 {
 	background-color: #6b5b95;
+  background-image: url('../images2/background.png'); /* 배경 이미지 */
 }
 .page4 { 
   background-color: #f8f8f8;
+  background-image: url('../images2/background.png'); /* 배경 이미지 */
 }
 .page5 {
   background-color: #f8f8f8;
+  background-image: url('../images2/background.png'); /* 배경 이미지 */
 }
 .page6  {
   background-color: #f8f8f8;
+  width: 100%;
+  background-size: cover; /* 이미지 커버 */
+  background-position: center; /* 이미지 중앙 정렬 */
+  background-image: url('../images2/timeline_ko.png'); /* 배경 이미지 */
 }
 .page7 {
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #f8f8f8;
+  background-image: url('../images2/background.png'); /* 배경 이미지 */
 }
 .page8 {
   /* page1 꾸미기용 css */
@@ -116,8 +124,8 @@
 /* 메뉴 버튼 */
 #menuButton {
   position: absolute; /* fixed에서 absolute로 변경 */
-  top: 20px;
-  right: 20px;
+  top: 14px;
+  right: 30px;
   font-size: 2rem;
   cursor: pointer;
 }
@@ -324,7 +332,7 @@ body {
 }
 
 .days-left {
-  font-size: min(4vw, 24px);
+  font-size: min(3.2vw, 19.2px); /* 초대문 내용 크기 */
   color: #666;
   text-align: center;
 }
@@ -526,8 +534,8 @@ body {
 }
 
 .schedule-content {
-  margin: min(2vw, 18px) min(4vw, 24px);
-  padding: min(2vw, 18px) min(4vw, 24px);
+  margin: min(2vw, 12px) 0;
+  padding: min(4vw, 24px) min(4vw, 24px);
   border-top: 1px solid gainsboro;
   border-bottom: 1px solid gainsboro;
 }

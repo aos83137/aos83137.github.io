@@ -1,5 +1,5 @@
 let currentPageIndex = 0;
-let isAnimating = false;
+let isAnimating = true;
 const pages = document.querySelectorAll('.page');
 const menuButton = document.getElementById('menuButton');
 const menu = document.getElementById('menu');
@@ -159,6 +159,7 @@ video.addEventListener('timeupdate', () => {
      // 이벤트 실행
      document.getElementById("loader").classList.add("fade-out");
      pages[0].classList.add('current-page');
+     isAnimating = false;
      isOneSecondLeftEventTriggered = true;
   }
   
@@ -171,7 +172,6 @@ video.addEventListener('timeupdate', () => {
 
 video.addEventListener('ended', () => {
   document.getElementById("loader").style.display = "none";
-  document.getElementById("content").style.display = "block";
 
   // 스크롤 활성화
   document.body.style.overflow = "auto";
