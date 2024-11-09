@@ -1,5 +1,5 @@
 let currentPageIndex = 0;
-let isAnimating = true;
+let isAnimating = false;
 const pages = document.querySelectorAll('.page');
 const menuButton = document.getElementById('menuButton');
 const menu = document.getElementById('menu');
