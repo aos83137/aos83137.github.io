@@ -222,13 +222,13 @@ body {
 .invitation-content-left {
   font-size: min(3.2vw, 19.2px); /* 초대문 내용 크기 */
   line-height: 1.8;
-  color: #333;
+  color: #563714;
 }
 
 .invitation-content-center {
   font-size: min(3.2vw, 19.2px);
   line-height: 1.8;
-  color: #333;
+  color: #563714;
   text-align: center;
 }
 
@@ -279,7 +279,7 @@ body {
 
 .event-date {
   font-size: min(4vw, 24px);
-  color: #333;
+  color: #563714;
 }
 
 .highlight {
@@ -313,7 +313,7 @@ body {
 }
 
 .highlight-bold {
-  color:#333;
+  color:#563714;
   font-weight:800;
 }
 
