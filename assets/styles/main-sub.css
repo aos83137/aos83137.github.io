@@ -77,20 +77,34 @@
   align-items: center;
   background-color: #f9f9f9; /* 밝은 배경 */
   background-image: url('../images2/background.png'); /* 배경 이미지 */
+  background-size: cover; /* 이미지 커버 */
+  background-position: center; /* 이미지 중앙 정렬 */
+  width: 100%;
 }
 .page3 {
+  background-size: cover; /* 이미지 커버 */
+  background-position: center; /* 이미지 중앙 정렬 */
 	background-color: #6b5b95;
   background-image: url('../images2/background.png'); /* 배경 이미지 */
+  width: 100%;
 }
 .page4 { 
+  background-size: cover; /* 이미지 커버 */
+  background-position: center; /* 이미지 중앙 정렬 */
   background-color: #f8f8f8;
   background-image: url('../images2/background.png'); /* 배경 이미지 */
+  width: 100%;
 }
 .page5 {
+  background-size: cover; /* 이미지 커버 */
+  background-position: center; /* 이미지 중앙 정렬 */
   background-color: #f8f8f8;
   background-image: url('../images2/background.png'); /* 배경 이미지 */
+  width: 100%;
 }
 .page6  {
+  background-size: cover; /* 이미지 커버 */
+  background-position: center; /* 이미지 중앙 정렬 */
   background-color: #f8f8f8;
   width: 100%;
   background-size: cover; /* 이미지 커버 */
@@ -103,6 +117,9 @@
   align-items: center;
   background-color: #f8f8f8;
   background-image: url('../images2/background.png'); /* 배경 이미지 */
+  background-size: cover; /* 이미지 커버 */
+  background-position: center; /* 이미지 중앙 정렬 */
+  width: 100%;
 }
 .page8 {
   /* page1 꾸미기용 css */
