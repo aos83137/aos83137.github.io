@@ -95,9 +95,7 @@ window.addEventListener('touchmove', (event) => {
     }
   }
 
-  if (window.scrollY === 0 && touchEndY > touchStartY) {
-    event.preventDefault(); // 기본 동작 막기
-  }
+  event.preventDefault(); // 기본 동작 막기
 }, { passive: false }); // passive: false로 설정하여 preventDefault 사용 허용
 
 function handleGesture() {
