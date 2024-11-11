@@ -1,448 +1,209 @@
 <!DOCTYPE html>
-<html lang="en-US">
+<html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta content="IE=edge" http-equiv="X-UA-Compatible">
-    <meta content="width=device-width, initial-scale=1" name="viewport">
-    <title>전용석과 코지마 유메노의 결혼식</title>
-    <meta content="전용석과 코지마 유메노의 결혼식에 와서 축하해주세요~!" name="description"/>
-    <meta property="og:image" content="../assets/images/pic2.jpeg">
-    <meta property="fb:app_id" content="781066922265598" />
-    <meta property="fb:admins" content="Choi.Anderson"/>
-    <link href="../assets/images/favicon/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180">
-    <link href="../assets/images/favicon/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png">
-    <link href="../assets/images/favicon/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png">
-    <link href="https://fonts.googleapis.com/css?family=Dosis:400,500" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Great+Vibes" rel="stylesheet">
-    <link href="../assets/css/ekko-lightbox.css" rel="stylesheet">
-    <link href="../assets/styles/main.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Gamja+Flower|Gugi|Noto+Serif+KR|Stylish|Sunflower:300"
-          rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-2.2.1.js"></script>
-
-
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <script src="https://cdn.emailjs.com/sdk/2.3.2/email.min.js" type="text/javascript"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/remarkable/1.7.1/remarkable.js" type="text/javascript"></script>
-    <script type="text/javascript">
-        function sendMail() {
-
-            (function () {
-                emailjs.init("user_yjLL5xG0A3kkOCH5BGIDh");
-                emailjs.send("wedding-mail", "gift_send", {
-                    name: $("#sender-name").value,
-                    gift: $("#gift-name").text(),
-                    message: $("#sender-message").value
-                }).then(function (response) {
-                    console.log("SUCCESS. status=%d, text=%s", response.status, response.text);
-                }, function (err) {
-                    console.log("FAILED. error=", err);
-                });
-            })();
-        }
-
-        function findGetParameter(parameterName) {
-            var result = null,
-                tmp = [];
-            location.search
-                .substr(1)
-                .split("&")
-                .forEach(function (item) {
-                  tmp = item.split("=");
-                  if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
-                });
-            return result;
-        }
-
-        $(document).ready(function () {
-
-            function getText(){
-                var result = null;
-                $.ajax( { url: "https://raw.githubusercontent.com/AndersonChoi/wedding-card/master/README.md",
-                        type: 'get',
-                        dataType: 'html',
-                        async: false,
-                        success: function(data) { result = data; }
-                    }
-                );
-                FileReady = true;
-                return result;
-            }
-            var markdown_source = getText();
-            var comment_contents = markdown_source.split("축하의 말")[1];
-
-            var md = new Remarkable();
-            $("#comments").append(md.render(comment_contents));
-
-            
-            if(findGetParameter('gift')=='false'){
-                $('#gifts').hide();
-            }
-        });
-
-
-
-
-    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>용석, 유메노의 결혼식</title>
+  <meta content="용석과 유메노의 결혼식에 와서 축하해주세요~!" name="description"/>
+  <meta property="og:image" content="../assets/images2/IMG_7745.JPG">
+  <meta property="fb:app_id" content="781066922265598" />
+  <meta property="fb:admins" content="Choi.Anderson"/>
+  <link href="../assets/images/favicon/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180">
+  <link href="../assets/images/favicon/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png">
+  <link href="../assets/images/favicon/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png">
+  <link href="https://fonts.googleapis.com/css?family=Dosis:400,500" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Great+Vibes" rel="stylesheet">
+  <link href="../assets/css/ekko-lightbox.css" rel="stylesheet">
+  <link href="../assets/styles/main.css" rel="stylesheet">
+  <link href="../assets/styles/main-sub.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Gamja+Flower|Gugi|Noto+Serif+KR|Stylish|Sunflower:300" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-2.2.1.js"></script>
+  <!-- <script src="https://unpkg.com/flickity@2.3.0/dist/flickity.pkgd.min.js"></script> -->
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+  <!-- <link href="https://unpkg.com/flickity@2.3.0/dist/flickity.css" /> -->
+  <style>
+    @font-face {
+      font-family: 'Crimson Pro';
+      font-style: normal;
+      font-weight: 400;
+      src: url(https://fonts.gstatic.com/s/crimsonpro/v23/q5uUsoa5M_tv7IihmnkabC5XiXCAlXGks1WZzm1MMJs-ZNU.woff2) format('woff2');
+      unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+    }
+    @font-face {
+      font-family: 'Crimson Pro';
+      font-style: normal;
+      font-weight: 400;
+      src: url(https://fonts.gstatic.com/s/crimsonpro/v23/q5uUsoa5M_tv7IihmnkabC5XiXCAlXGks1WZzm1MMZs-ZNU.woff2) format('woff2');
+      unicode-range: U+0100-02AF, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+    }
+    @font-face {
+      font-family: 'Crimson Pro';
+      font-style: normal;
+      font-weight: 400;
+      src: url(https://fonts.gstatic.com/s/crimsonpro/v23/q5uUsoa5M_tv7IihmnkabC5XiXCAlXGks1WZzm1MP5s-.woff2) format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+  </style>
 </head>
-
 <body id="top">
-<header></header>
-<div id="fb-root"></div>
-<script async defer crossorigin="anonymous" src="https://connect.facebook.net/ko_KR/sdk.js#xfbml=1&version=v3.2"></script>
-<div class="page-content">
-    <div class="div">
-        <div class="ww-home-page" id="home">
-            <div class="ww-wedding-announcement d-flex align-items-center justify-content-start">
-                <div class="container ww-announcement-container">
-                    <p class="ww-couple-name ww-title" style="font-size:4.0em">Wonyoung & Somin</p>
-                    <p class="h2 mt-5 ww-title" style="font-family: 'Gugi', cursive; font-size:1.0em">
-                        | WE ARE GETTING MARRIED |
-                    </p>
-                    <p class="h2 mt-5 ww-title"
-                       style="font-family: 'Noto Serif KR', serif; font-size:1.0em; letter-spacing:-1px">
-                        <b style="font-size:1.4em;">2019. 05. 18. SAT PM 02:30</b>
-                        <br>부산 해운대 센텀시티 센텀사이언스파크 23층
-                    </p>
-                </div>
-            </div>
+  <div id="loader" class="loader">
+    <video id="introVideo" autoplay muted playsinline>
+      <source src="../assets/images2/mp4/firstView.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+  <div id="pages">
+    <div class="page page1" data-title="Top Page">
+      <div class="ww-text-wrapper">
+        <div class="title g-wrap" style="color: ">
+          <span class="g">전용석</span>
+          <span class="g dot" style="font-family: Crimson Pro;">·</span>
+          <span class="g">코지마 유메노</span>
         </div>
-        <div class="ww-nav-bar sticky-top bg-light">
-            <nav class="navbar navbar-expand-lg navbar-light">
-                <div class="container">
-                    <button aria-controls="ww-navbarNav" aria-expanded="false" aria-label="Toggle navigation"
-                            class="navbar-toggler"
-                            data-target="#ww-navbarNav" data-toggle="collapse" type="button">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse text-uppercase" id="ww-navbarNav">
-                        <ul class="navbar-nav ml-auto">
-                            <li class="nav-item"><a class="nav-link smooth-scroll" href="#home">Home</a></li>
-                            <li class="nav-item"><a class="nav-link smooth-scroll" href="#couple">Couple</a></li>
-                            <li class="nav-item"><a class="nav-link smooth-scroll" href="#events">Events</a></li>
-                            <li class="nav-item"><a class="nav-link smooth-scroll" href="#gallery">Gallery</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </nav>
-        </div>
-        <div class="ww-section" id="couple">
-            <div class="container">
-                <h2 class="h1 text-center pb-3 ww-title" style="font-family: 'Noto Serif KR', serif;">신랑 & 신부</h2>
-                <div class="row text-center">
-                    <div class="col-md-6">
-                        <div class="mt-3">
-                            <h3 class="h2 ww-title" style="font-family: 'Sunflower', sans-serif; font-size:1.5em">
-                                코지마 유메노</h3>
-                            <img alt="Groom" class="img-fluid" src="../assets/images/pic8.jpeg"/>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mt-3">
-                            <h3 class="h2 ww-title" style="font-family: 'Sunflower', sans-serif; font-size:1.5em">
-                                전용석</h3>
-                            <img alt="Bride" class="img-fluid" src="../assets/images/pic9.jpeg"/>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="ww-section bg-light" id="events">
-            <div class="container ww-wedding-event">
-                <h2 class="h1 text-center pb-3 ww-title" style="font-family: 'Noto Serif KR', serif;">초대합니다</h2>
-                    <div class="col text-center mb-5">
-                        <h6 style="font-family: 'Noto Serif KR', serif;">
-                            1463<br>
-                            (만난지 4년+1일 되는날 결혼 = 1463일)
-                        </h6>
-                    </div>
-                <div class="row">
-                    <div class="col-md-7 col-sm-12">
-                        <div class="my-3">
-                            <div class="h4">웨딩 본식</div>
-                            <ul>
-                                <li>
-                                    <i class="text-muted fas fa-map-marker-alt"></i>
-                                    <span class="pl-2 text-muted">부산 해운대 우동 센텀사이언스 파크 23층</span>
-                                </li>
-                                <li class="pt-2">
-                                    <i class="text-muted far fa-calendar-alt"></i>
-                                    <span class="pl-2 text-muted">2019년 5월 18일, 2:30PM</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-md-5 col-sm-12">
-                        <div class="my-3">
-                            <img alt="Wedding Party" class="img-fluid" src="../assets/images/wedding-party.jpg"/>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-7 col-sm-12">
-                        <div class="my-3">
-                            <div class="h4">식사</div>
-                            <ul>
-                                <li>
-                                    <i class="text-muted fas fa-map-marker-alt "></i>
-                                    <span class="pl-2 text-muted">부산 해운대 우동 센텀사이언스 파크 지하 1층 더파티 센텀점</span>
-                                </li>
-                                <li class="pt-2">
-                                    <i class="text-muted far fa-calendar-alt "></i>
-                                    <span class="pl-2 text-muted">2019년 5월 18일, 2:30PM - 4:30PM</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-md-5 col-sm-12">
-                        <div class="my-3"><img alt="Reception" class="img-fluid" src="../assets/images/reception.jpg"/></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="ww-section" id="gallery">
-            <div class="ww-photo-gallery">
-                <div class="container">
-                    <h2 class="h1 text-center pb-3 ww-title" style="font-family: 'Noto Serif KR', serif;">포토 갤러리</h2>
-                    <div class="ww-gallery">
-                        <div class="card-columns">
-                            <div class="card" data-groups="[&quot;party&quot;,&quot;wedding&quot;]">
-                                <a data-gallery="ww-gallery" data-toggle="lightbox">
-                                    <img alt="Gallery Pic 2" class="img-fluid" src="../assets/images/pic2.jpeg"/>
-                                </a>
-                            </div>
-                            <div class="card" data-groups="[&quot;vacation&quot;]">
-                                <a data-gallery="ww-gallery" data-toggle="lightbox">
-                                    <img alt="Gallery Pic 3" class="img-fluid" src="../assets/images/pic3.jpeg"/>
-                                </a>
-                            </div>
-                            <div class="card" data-groups="[&quot;party&quot;,&quot;vacation&quot;]">
-                                <a data-gallery="ww-gallery" data-toggle="lightbox">
-                                    <img alt="Gallery Pic 4" class="img-fluid" src="../assets/images/pic4.jpeg"/>
-                                </a>
-                            </div>
-                            <div class="card" data-groups="[&quot;vacation&quot;]">
-                                <a data-gallery="ww-gallery" data-toggle="lightbox">
-                                    <img alt="Gallery Pic 5" class="img-fluid" src="../assets/images/pic6.jpeg"/>
-                                </a>
-                            </div>
-                            <div class="card"
-                                 data-groups="[&quot;wedding&quot;,&quot;ceremony&quot;,&quot;party&quot;]">
-                                <a data-gallery="ww-gallery" data-toggle="lightbox">
-                                    <img alt="Gallery Pic 6" class="img-fluid" src="../assets/images/pic7.jpeg"/>
-                                </a>
-                            </div>
-                            <div class="card" data-groups="[&quot;vacation&quot;]">
-                                <a data-gallery="ww-gallery" data-toggle="lightbox">
-                                    <img alt="Gallery Pic 7" class="img-fluid" src="../assets/images/pic5.jpeg"/>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-       <div class="ww-section parallax-window  text-white" data-parallax="scroll" data-image-src="../assets/images/gift/gift-background.jpg" id="gifts">
-            <div class="ww-gift-section">
-                <div class="container">
-                    <h2 class="h1 text-center pb-3 ww-title" style="font-family: 'Noto Serif KR', serif;">Gift for our
-                        wedding</h2>
-                    <div class="col text-center mb-5">
-                        <h6 style="font-family: 'Noto Serif KR', serif;">
-                            저희 부부가 앞으로 살아나갈 일상에<br>
-                            오래도록 특별한 기억을 선물하고 싶으신가요?<br>
-                            그렇다면 고민하는 대신 아래 목록을 참고해 주세요.<br>
-                            저희가 필요로 하는 물건들을 정리해 두었습니다.<br>
-                            애정어린 마음으로 보내주신 선물은<br>
-                            가까이 두어 오래도록 아껴 쓰고,<br>
-                            소중하게 간직하겠습니다.
-                            <br><br>
-                            (아래 선물버튼을 눌러 신랑, 신부에게 예약메시지를 보내세요!)
-                        </h6>
-                    </div>
-                    <div class="ww-gift">
-                        <div class="gift-columns">
-                            <div class="gift">
-                                <img alt="와인셀러" class="img-fluid gift-img gift-selected" src="../assets/images/gift/wineceller.png"/>
-                                <div class="btn-group gift-btn-group" role="group">
-                                    <button class="btn btn-default gift-btn"
-                                            onclick="window.open('https://smartstore.naver.com/dhk00840/products/4311205513')">
-                                        <i class="fa fa-search"></i></button>
-                                    <button class="btn btn-default gift-btn gift-send" data-name="와인셀러"
-                                            onclick="alert('다른분에게 예약된 선물입니다.');"><i
-                                            class="fa fa-gift"></i></button>
-                                </div>
-                            </div>
-                            <div class="gift">
-                                <img alt="전동클렌저" class="img-fluid gift-img gift-selected"
-                                     src="../assets/images/gift/philips_clenser.png"/>
-                                <div class="btn-group gift-btn-group" role="group">
-                                    <button class="btn btn-default gift-btn"
-                                            onclick="window.open('https://www.philips.co.kr/c-p/BSC111_06/visapure-mini-facial-cleanser')">
-                                        <i class="fa fa-search"></i></button>
-                                    <button class="btn btn-default gift-btn gift-send" data-name="전동클렌저"
-                                            onclick="alert('다른분에게 예약된 선물입니다.');"><i
-                                            class="fa fa-gift"></i></button>
-                                </div>
-                            </div>
-                            <div class="gift">
-                                <img alt="드라이기" class="img-fluid gift-img gift-selected" src="../assets/images/gift/dyson.png"/>
-                                <div class="btn-group gift-btn-group" role="group">
-                                    <button class="btn btn-default gift-btn"
-                                            onclick="window.open('https://www.kr.dyson.com/products/hair-care/dyson-supersonic-hair-dryer')">
-                                        <i class="fa fa-search"></i></button>
-                                    <button  class="btn btn-default gift-btn gift-send" data-name="드라이기"
-                                             onclick="alert('다른분에게 예약된 선물입니다.');"><i
-                                            class="fa fa-gift"></i></button>
-                                </div>
-                            </div>
-                            <div class="gift">
-                                <img alt="믹서기" class="img-fluid gift-img gift-selected" src="../assets/images/gift/blender.png"/>
-                                <div class="btn-group gift-btn-group" role="group">
-                                    <button class="btn btn-default gift-btn"
-                                            onclick="window.open('http://jenniferoom.co.kr/product/detail.html?product_no=85&cate_no=24&display_group=1')">
-                                        <i class="fa fa-search"></i></button>
-                                    <button  class="btn btn-default gift-btn gift-send" data-name="믹서기"
-                                             onclick="alert('다른분에게 예약된 선물입니다.');"><i
-                                            class="fa fa-gift"></i></button>
-                                </div>
-                            </div>
-                            <div class="gift">
-                                <img alt="레고" class="img-fluid gift-img gift-selected" src="../assets/images/gift/lego.png"/>
-                                <div class="btn-group gift-btn-group" role="group">
-                                    <button class="btn btn-default gift-btn"
-                                            onclick="window.open('https://shop.lego.com/ko-KR/product/10232')"><i
-                                            class="fa fa-search"></i></button>
-                                    <button class="btn btn-default gift-btn gift-send" data-name="레고"
-                                            
-                                             onclick="alert('다른분에게 예약된 선물입니다.');"><i
-                                            class="fa fa-gift"></i></button>
-                                </div>
-                            </div>
-                            <div class="gift">
-                                <img alt="전기레인지" class="img-fluid gift-img gift-selected" src="../assets/images/gift/range.png"/>
-                                <div class="btn-group gift-btn-group" role="group">
-                                    <button class="btn btn-default gift-btn"
-                                            onclick="window.open('https://www.lge.co.kr/lgekor/product/kitchen/electricRange/productDetail.do?cateId=4410&prdId=EPRD.333447')">
-                                        <i class="fa fa-search"></i></button>
-                                    <button class="btn btn-default gift-btn gift-send" data-name="전기레인지"
-                                            
-                                             onclick="alert('다른분에게 예약된 선물입니다.');"><i
-                                            class="fa fa-gift"></i></button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="ww-section ww-rsvp-detail" id="map">
-            <div class="container">
-                <div class="col text-center">
-                    <h2 class="h1 text-center pb-3 ww-title" style="font-family: 'Noto Serif KR', serif;">오시는 길</h2>
-                    <div>
-                        <h5 style="font-family: 'Noto Serif KR', serif;">센텀사이언스파크웨딩홀 23층 스카이홀</h5>
-                        <h6 style="font-family: 'Noto Serif KR', serif;">(부산 해운대구 센텀중앙로 79)</h6>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="col-md-12">
-                        <div class="my-3 text-center">
-                            <a href="http://naver.me/5pTy3HCa">
-                                <img alt="naver-map" class="map-icon" id="naver-map"
-                                     src="../assets/images/map/naver-map.png"/>
-                            </a>
-                            <a href="http://dmaps.kr/2bms8">
-                                <img alt="kakao-map" class="map-icon" id="kakao-map"
-                                     src="../assets/images/map/kakao-map.png"/>
-                            </a>
-                            <a href="https://maps.app.goo.gl/jfDxw">
-                                <img alt="google-map" class="map-icon" id="google-map"
-                                     src="../assets/images/map/google-map.png"/>
-                            </a>
-                        </div>
-                        <div class="col text-center">
-                            <label style="font-family: 'Noto Serif KR', serif; font-size: 15px;">
-                                셔틀버스 - 센텀시티역 4번출구앞에서 15분 간격으로 운행
-                            </label>
-                        </div>
-                        <div class="my-3">
-                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3261.297439052569!2d129.1238775160104!3d35.1741384652207!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x356892c2513ecf5d%3A0x7d362ece2091e2f8!2z7IS87YWA7IKs7J207Ja47Iqk7YyM7YGsIOy7qOuypOyFmO2ZgA!5e0!3m2!1sko!2skr!4v1554092125630!5m2!1sko!2skr" width="100%" height="400" frameborder="0" style="border:0" allowfullscreen></iframe>
-                        </div>
-                    </div>
-                </div>
-
-
-            </div>
-        </div>
-
-        <div class="ww-section bg-light" id="comment">
-            <div class="ww-photo-gallery">
-                <div class="container">
-                    <div class="col text-center">
-                        <h2 class="h1 text-center pb-3 ww-title" style="font-family: 'Noto Serif KR', serif;">축하메시지</h2><br>
-                        <div id="comments"></div>
-                        <br>
-                        <div class="row">
-                            <div class="col text-center"><form action="https://github.com/AndersonChoi/wedding-card/blob/master/README.md">
-                                <button class="btn btn-primary btn-submit" type="submit">메시지 남기러 가기</button></form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+        <!-- <div class="title ww-couple-name ww-title">YongSeok | Yumeno</div> -->
+        <div class="date">2025년 2월 8일 토요일 오후 3시</div>
+        <div class="location">힐튼 도쿄 베이 1층 PrimaLuce</div>
+      </div>
     </div>
-</div>
-</div>
-<div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="giftMailModal" role="dialog"
-     tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">선물하기 - <span id="gift-name"></span></h5>
-                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">보내는 분 성함</span>
-                    </div>
-                    <input aria-describedby="basic-addon3" class="form-control" id="sender-name" type="text">
-                </div>
-                <div class="input-group">
-                    <textarea aria-label="With textarea" class="form-control" id="sender-message"
-                              placeholder="신랑, 신부에게 선물 예약과 함께 보낼 메시지를 입력해주세요. 이 메시지는 신랑, 신부에게 발송됩니다." rows=4></textarea>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary" id="reserveGiftButton" type="button">예약</button>
-            </div>
+    <div class="page page2" data-title="초대의 글">
+      
+      <div class="content-wrapper">
+        <div class="sectionHead">
+          <div class="enstr">INVITATION</div>
+          <span class="name">
+              소중한 분들을 초대합니다
+          </span>
         </div>
+        <div class="invitation-content-center padding35-fix">
+          여러분 모두<br>건강하시길 기원하며 인사드립니다.<br>
+          새로운 계절의 방문과 함께 저희 두 사람도<br>
+          새로운 인생의 출발을 맞이하게 되었습니다.<br>
+          이에 저희는 여러분 앞에서<br>
+          결혼식과 함께 소박한 피로연을 열고자 합니다.<br>
+          바쁘신 와중에 정말 죄송하지만,<br>
+          꼭 참석해 주시길 부탁드립니다.<br><br>
+          2024년 12월<br>
+          전 용 석<br>
+          코지마 유메노<br>
+        </div>
+      </div>
     </div>
-</div>
-<footer></footer>
-<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-<script src="../assets/js/aos.js"></script>
-<script src="../assets/js/parallax.min.js"></script>
-<script src="../assets/js/ekko-lightbox.min.js"></script>
-<script src="scripts/main.js"></script>
+    <div class="page page3" data-title="일정">
+      <div class="content-wrapper">
 
-<div class="bottom_right"><i class="fa fa-arrow-up fa-2x" id="go-to-top"></i>
-</div>
+        <div class="sectionHead">
+          <div class="enstr">SCHEDULE</div>
+          <span class="name">
+              일 정
+          </span>
+        </div>
 
-<div class="bottom_left">
-    <audio id="player" src="mus.mp3"></audio>
-    <div>
-        <i class="fa fa-music fa-2x" onclick="document.getElementById('player').play()"></i>
+        <div class="schedule-content">
+          <div class="invitation-content-left">
+            일　시　　　2025년2월8일(토)<br>
+            거　식　　　15시00분 / 1층 PrimaLuce<br>
+            피로연　　　16시00분 / 1층 Sala<br>
+            장　소　　　힐튼 도쿄 베이(<a href="https://www.hiltonwedding.jp/tokyobay/access/" target="_blank">오시는 길 <img src="../assets/images2/touching.png" alt="touching icon" class="icon-text-touch"></a>)<br>
+            주　소　　　치바현 우라야스시 마이하마 1-8<a href="https://maps.app.goo.gl/55uoVHkYEiSDAhfeA" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/b/bd/Google_Maps_Logo_2020.svg" alt="Google Maps" class="icon-text"></a><br>
+            전　화　　　047-355-5000
+          </div>
+        </div>
+
+        <div class="countdown-wrapper">
+          <div class="countdown-box">
+            <span id="days">00</span>
+            <span>Days</span>
+          </div>
+          <span style="color: #b08a86;">:</span>
+          <div class="countdown-box">
+            <span id="hours">00</span>
+            <span>Hour</span>
+          </div>
+          <span style="color: #b08a86;">:</span>
+          <div class="countdown-box">
+            <span id="minutes">00</span>
+            <span>Min</span>
+          </div>
+          <span style="color: #b08a86;">:</span>
+          <div class="countdown-box">
+            <span id="seconds">00</span>
+            <span>Sec</span>
+          </div>
+        </div>
+    
+        <div class="days-left">
+          용석 <span class="red-bold">・</span> 유메노의 결혼식이
+          <br>
+          <span id="total-days-left" class="red-bold">00</span>일 남았습니다.
+        </div>
+      </div>
     </div>
-</div>
+
+    <div class="page page6" data-title="타임라인">
+      <!-- <div class="route-content">
+      </div> -->
+    </div>
+    <div class="page page4" data-title="갤러리">
+      <div class="gallery-container">
+        <div class="sectionHead">
+          <div class="enstr">GALLERY</div>
+          <span class="name">
+            우리의 순간
+          </span>
+        </div>
+        <div class="gallery">
+            <img src="../assets/images2/IMG_7745.JPG" alt="Photo 1" class="gallery-item" loading="lazy"/>
+            <img src="../assets/images2/IMG_7746.JPG" alt="Photo 2" class="gallery-item" loading="lazy"/>
+            <img src="../assets/images2/IMG_7754.JPG" alt="Photo 3" class="gallery-item" loading="lazy"/>
+            <img src="../assets/images2/IMG_7756.JPG" alt="Photo 4" class="gallery-item" loading="lazy"/>
+            <img src="../assets/images2/IMG_7763.JPG" alt="Photo 5" class="gallery-item" loading="lazy"/>
+            <img src="../assets/images2/IMG_7750.JPG" alt="Photo 6" class="gallery-item" loading="lazy"/>
+            <img src="../assets/images2/IMG_7767.JPG" alt="Photo 7" class="gallery-item" loading="lazy"/>
+        </div>
+      </div>
+
+      <div class="lightbox" id="lightbox">
+          <span class="close" id="lightboxClose">&times;</span>
+          <img class="lightbox-content" id="lightboxImage" />
+      </div>
+    </div>
+    <div class="page page7" data-title="참석유무">
+      <div class="content-wrapper">
+        <div class="page-titile-small">결혼식 참석 여부를 알려주세요</div>
+        <div class="invitation-content-center">
+          <P>번거로우시겠지만 <span class="highlight-bold">1월 8일까지</span> 회신을<br>주시면 감사하겠습니다.</P>
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLSdzM0Xd9yO38689zq1R38PBQ1DhMRTbVU3pMfma2L9HG0hR6Q/viewform?usp=sf_link" target="_blank" class="rsvp-button">참석 여부 입력하기</a>
+        </div>
+      </div>
+    </div>
+    <div class="page page8" data-title="감사인사">
+    </div>
+
+    <!-- 메뉴 버튼 -->
+    <div id="menuButton">☰</div>
+
+    <!-- 목차 -->
+    <div id="menu">
+      <ul id="menuList">
+        <!-- 목차 내용은 JS로 생성 -->
+      </ul>
+    </div>
+    <div class="scroll-instruction">
+      <img src="../assets/images2/gif/1729417815897.gif" alt="스크롤하라는 화살표">
+    </div>
+    <div class="bottom_left">
+      <audio id="audio" src="mus.mp3" loop></audio>
+      <div id="audio-control">
+          <img id="audio-icon" src="../assets/images2/off.png" alt="Play/Pause" />
+      </div>
+    </div>
+
+  </div>
+
+  <script src="../assets/scripts/main.js"></script>
 
 </body>
 </html>
