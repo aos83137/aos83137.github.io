@@ -252,7 +252,7 @@ body {
 }
 
 .invitation-content-left {
-  font-size: min(3.2vw, 19.2px); /* 초대문 내용 크기 */
+  font-size: min(2.6vw, 15.6px); /* 초대문 내용 크기 */
   line-height: 1.8;
   color: #563714;
 }
