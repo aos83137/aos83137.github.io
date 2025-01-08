@@ -601,3 +601,15 @@ body {
   /* display: none; */
   -webkit-text-stroke: 0 !important;
 }
+
+#account-info {
+  text-decoration: underline; /* 밑줄 추가 */
+  cursor: pointer;           /* 클릭 가능하게 커서 추가 */
+  color: rgb(237, 127, 127);               /* 텍스트 색상 강조 */
+  font-weight: bold;         /* 글자 두께로 강조 */
+  transition: transform 0.2s ease; /* 클릭 시 반응 효과 준비 */
+}
+
+#account-info:active {
+  transform: scale(0.95);    /* 클릭 시 살짝 작아지는 효과 */
+}

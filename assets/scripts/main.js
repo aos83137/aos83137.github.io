@@ -296,3 +296,14 @@ audioIcon.addEventListener('click', () => {
     }
 });
 
+document.getElementById('account-info').addEventListener('click', function () {
+  const accountNumber = '46150204172988'; // 복사할 계좌번호
+  // 클립보드에 복사
+  navigator.clipboard.writeText(accountNumber)
+    .then(() => {
+      alert('계좌번호 (' + accountNumber + ')가 복사되었습니다.\n필요한 곳에 붙여넣기 하세요.');
+    })
+    .catch(err => {
+      console.error('복사 실패:', err);
+    });
+});
