@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>이미지 이어 붙이기</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .image-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow-y: scroll;
+    }
+
+    .image-container img {
+      width: 600px;
+      height: auto;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="image-container">
+    <img src="image1.jpg" alt="이미지 1">
+    <img src="image2.jpg" alt="이미지 2">
+    <img src="image3.jpg" alt="이미지 3">
+    <img src="image4.jpg" alt="이미지 4">
+    <img src="image5.jpg" alt="이미지 5">
+    <img src="image6.jpg" alt="이미지 6">
+    <img src="image7.jpg" alt="이미지 7">
+    <img src="image8.jpg" alt="이미지 8">
+  </div>
+
+</body>
+</html>
