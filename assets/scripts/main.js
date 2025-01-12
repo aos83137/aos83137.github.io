@@ -36,15 +36,20 @@ const SWIPE_THRESHOLD = 30;
 // 터치 시작 이벤트
 window.addEventListener('touchstart', (event) => {
   touchCount = event.touches.length; // 현재 터치 수 저장
-  if (touchCount >= 2) return; // 두 손가락으로 터치하는 경우 계속 진행
+  if (touchCount >= 2) {
+    // 두 손가락으로 터치 시작
+    initialDistance = calculateDistance(event.touches); // 초기 거리 계산
+    isPinching = true; // 확대/축소 제스처 감지 시작
+    console.log('Two-finger gesture detected.');
+    return; // 두 손가락으로 터치하는 경우 계속 진행
+  }
+
   touchStartX = event.changedTouches[0].screenX;
   touchStartY = event.changedTouches[0].screenY;
-});
+}, false);
 
 // 터치 종료 이벤트
 window.addEventListener('touchend', (event) => {
-  touchCount = event.touches.length; // 현재 터치 수 저장
-  if (touchCount >= 2) return; // 두 손가락으로 터치하는 경우 계속 진행
   if (isAnimating) return; // 애니메이션 중일 때 터치 방지
 
   touchEndX = event.changedTouches[0].screenX;
@@ -58,6 +63,7 @@ window.addEventListener('touchend', (event) => {
     return; // 페이지 변경 방지
   }
 
+  handleGesture();
   
   // 초기화
   touchStartX = 0;
@@ -65,7 +71,7 @@ window.addEventListener('touchend', (event) => {
   touchStartY = 0;
   touchEndY = 0;
   touchCount = 0; // 초기화
-});
+}, false);
 
 // 두 손가락 간 거리 계산
 function calculateDistance(touches) {
@@ -88,7 +94,9 @@ window.addEventListener('touchmove', (event) => {
       // 축소 관련 작업 수행
     }
   }
-});
+
+  event.preventDefault(); // 기본 동작 막기
+}, { passive: false }); // passive: false로 설정하여 preventDefault 사용 허용
 
 function handleGesture() {
   const deltaX = touchEndX - touchStartX;
@@ -110,6 +118,7 @@ function handleGesture() {
     // scrollInstruction.style.display = 'block'; // 요소를 비표시로 설정
   }
 }
+
 
 // 키보드 이벤트 처리
 window.addEventListener('keydown', (event) => {
