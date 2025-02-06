@@ -232,7 +232,7 @@ function calculateCountdown() {
   document.getElementById('hours').innerText = String(hours).padStart(2, '0');
   document.getElementById('minutes').innerText = String(minutes).padStart(2, '0');
   document.getElementById('seconds').innerText = String(seconds).padStart(2, '0');
-  document.getElementById('total-days-left').innerText = days;
+  document.getElementById('total-days-left').innerText = days+1;
 
   // 결혼식이 지나면 카운트다운 멈추기
   if (distance < 0) {
