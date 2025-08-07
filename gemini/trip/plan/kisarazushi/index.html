@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>키사라즈 8월 당일 여행 플래너</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony -->
+    <!-- Application Structure Plan: A tab-based single-page application (SPA) design was chosen to provide a non-linear, user-driven experience. Instead of forcing users to scroll through a long report, they can immediately navigate to the sections that interest them most: '나만의 일정' (Itinerary Planner), '미식 탐방' (Food Exploration), '명소 탐방' (Sightseeing), and '여행 정보' (Travel Info). The core of the app is the 'Itinerary Planner', which transforms passive information consumption into an active planning tool. This structure enhances usability by breaking down complex information into manageable, interactive components like filterable cards and dynamic charts, allowing users to easily synthesize information and build a personalized travel plan. Language switching functionality was added by externalizing all text content into a JS object and updating the DOM dynamically. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Recommended Itinerary -> Goal: Personalization -> Viz/Method: Interactive Timeline (HTML/JS) -> Interaction: Users check/uncheck activities to dynamically add/remove them from a visual schedule. Justification: More engaging and practical than a static text list.
+        - Report Info: Food & Sightseeing Spots -> Goal: Easy Discovery & Comparison -> Viz/Method: Filterable Card Grid (HTML/Tailwind/JS) -> Interaction: Users click filter buttons (e.g., '해산물', '쇼핑') to instantly see relevant options. Clicking a card reveals details. Justification: Allows quick scanning and deep-diving without information overload.
+        - Report Info: Transportation Costs/Times -> Goal: Clear Comparison -> Viz/Method: Bar Chart (Chart.js) -> Interaction: The chart visually contrasts cost and time for different transport options. Justification: More intuitive and faster to understand than a text table.
+        - Report Info: Prices of activities/food -> Goal: Budget Planning -> Viz/Method: Donut Chart (Chart.js) -> Interaction: The chart dynamically updates as users add items to their itinerary. Justification: Provides immediate visual feedback on the user's budget allocation.
+        Library/Method: Chart.js for all charts, Vanilla JS for all interactions. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #F8F5F2;
+            color: #333333;
+        }
+        .lang-ja body {
+            font-family: 'Noto Sans JP', sans-serif;
+        }
+        .nav-active {
+            background-color: #C89F9C;
+            color: white;
+            font-weight: 700;
+        }
+        .nav-inactive {
+            background-color: #FFFFFF;
+            color: #588B8B;
+        }
+        .nav-inactive:hover {
+            background-color: #E0EBEB;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .card-enter {
+            animation: card-enter 0.5s ease-out;
+        }
+        @keyframes card-enter {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold text-[#588B8B]" data-i18n="appTitle">키사라즈 8월 당일 여행 플래너 🏖️</h1>
+                <p class="text-sm text-gray-600" data-i18n="appSubtitle">나만의 완벽한 미식 & 관광 플랜을 만들어보세요!</p>
+            </div>
+            <div class="flex space-x-2">
+                <button id="lang-ko" class="px-3 py-1 text-sm font-medium rounded-full bg-[#588B8B] text-white">한국어</button>
+                <button id="lang-ja" class="px-3 py-1 text-sm font-medium rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300">日本語</button>
+            </div>
+        </div>
+    </header>
+
+    <nav class="bg-white border-b border-gray-200">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-wrap justify-center -mb-px">
+                <button class="nav-button nav-active w-1/2 md:w-auto text-center py-3 px-4 text-sm font-medium border-b-2 border-transparent transition-colors duration-300" data-target="home" data-i18n="navHome">🏠 시작하기</button>
+                <button class="nav-button nav-inactive w-1/2 md:w-auto text-center py-3 px-4 text-sm font-medium border-b-2 border-transparent transition-colors duration-300" data-target="planner" data-i18n="navPlanner">📅 나만의 일정</button>
+                <button class="nav-button nav-inactive w-1/2 md:w-auto text-center py-3 px-4 text-sm font-medium border-b-2 border-transparent transition-colors duration-300" data-target="food" data-i18n="navFood">🍜 미식 탐방</button>
+                <button class="nav-button nav-inactive w-1/2 md:w-auto text-center py-3 px-4 text-sm font-medium border-b-2 border-transparent transition-colors duration-300" data-target="sights" data-i18n="navSights">🗼 명소 탐방</button>
+                <button class="nav-button nav-inactive w-1/2 md:w-auto text-center py-3 px-4 text-sm font-medium border-b-2 border-transparent transition-colors duration-300" data-target="info" data-i18n="navInfo">ℹ️ 여행 정보</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto p-4 md:p-8">
+        
+        <section id="home" class="content-section active">
+            <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                <h2 class="text-2xl font-bold text-[#588B8B] mb-4" data-i18n="homeTitle">도쿄 근교의 숨겨진 보석, 키사라즈에 오신 것을 환영합니다!</h2>
+                <p class="text-gray-700 leading-relaxed mb-6" data-i18n="homeIntro">
+                    도쿄만 건너편에 자리한 키사라즈는 신선한 해산물, 풍부한 자연, 그리고 다채로운 즐길 거리가 가득한 매력적인 여행지입니다. 특히 8월은 활기찬 여름 축제와 제철 과일이 더해져 당일치기 여행으로 최고의 시기입니다. <br>이 플래너는 여러분이 미식과 관광, 두 마리 토끼를 모두 잡는 완벽한 하루를 계획할 수 있도록 도와드립니다. 상단의 메뉴를 클릭하여 나만의 키사라즈 여행을 지금 바로 시작해보세요!
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
+                    <div class="bg-[#E0EBEB] p-4 rounded-lg">
+                        <h3 class="font-bold text-lg text-[#588B8B] mb-2" data-i18n="homeCard1Title">📅 나만의 일정 만들기</h3>
+                        <p class="text-sm text-gray-800" data-i18n="homeCard1Text">관심 있는 활동을 선택하여 실시간으로 업데이트되는 일정표와 예상 비용을 확인하세요.</p>
+                    </div>
+                    <div class="bg-[#E0EBEB] p-4 rounded-lg">
+                        <h3 class="font-bold text-lg text-[#588B8B] mb-2" data-i18n="homeCard2Title">🍜 미식 & 🗼 명소 탐방</h3>
+                        <p class="text-sm text-gray-800" data-i18n="homeCard2Text">카테고리별 필터 기능으로 원하는 음식점과 관광 명소 정보를 빠르게 찾아보세요.</p>
+                    </div>
+                    <div class="bg-[#E0EBEB] p-4 rounded-lg">
+                        <h3 class="font-bold text-lg text-[#588B8B] mb-2" data-i18n="homeCard3Title">ℹ️ 핵심 여행 정보</h3>
+                        <p class="text-sm text-gray-800" data-i18n="homeCard3Text">교통편 비교 차트와 여행 전 체크리스트로 더욱 스마트하게 여행을 준비할 수 있습니다.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="planner" class="content-section">
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold text-[#588B8B] mb-4 text-center" data-i18n="plannerTitle">나만의 당일치기 일정 만들기</h2>
+                <p class="text-center text-gray-600 mb-6" data-i18n="plannerIntro">아래 목록에서 원하는 활동을 체크하면, 실시간으로 일정표와 예상 비용 차트가 업데이트됩니다.</p>
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+                    <div class="md:col-span-4">
+                        <h3 class="font-semibold text-lg mb-3 border-b-2 border-[#C89F9C] pb-2" data-i18n="plannerActivitiesTitle">활동 선택하기</h3>
+                        <div id="activity-checklist" class="space-y-2 max-h-96 overflow-y-auto pr-2"></div>
+                    </div>
+                    <div class="md:col-span-4">
+                        <h3 class="font-semibold text-lg mb-3 border-b-2 border-[#C89F9C] pb-2" data-i18n="plannerTimelineTitle">나의 일정표</h3>
+                        <div id="timeline" class="space-y-4"></div>
+                    </div>
+                    <div class="md:col-span-4">
+                        <h3 class="font-semibold text-lg mb-3 border-b-2 border-[#C89F9C] pb-2" data-i18n="plannerBudgetTitle">예상 비용 분석</h3>
+                        <div class="chart-container h-64 md:h-80">
+                            <canvas id="budgetChart"></canvas>
+                        </div>
+                        <p id="total-budget" class="text-center font-bold text-xl mt-4"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="food" class="content-section">
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold text-[#588B8B] mb-4 text-center" data-i18n="foodTitle">오감을 만족시키는 미식 탐방</h2>
+                <p class="text-center text-gray-600 mb-6" data-i18n="foodIntro">키사라즈의 신선한 해산물과 특산품을 만나보세요. 아래 필터로 원하는 종류의 음식을 찾아볼 수 있습니다.</p>
+                <div id="food-filters" class="flex flex-wrap justify-center gap-2 mb-6"></div>
+                <div id="food-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </div>
+        </section>
+
+        <section id="sights" class="content-section">
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold text-[#588B8B] mb-4 text-center" data-i18n="sightsTitle">잊지 못할 추억, 명소 탐방</h2>
+                <p class="text-center text-gray-600 mb-6" data-i18n="sightsIntro">아름다운 경관부터 쇼핑, 축제까지! 키사라즈의 다채로운 명소를 둘러보세요.</p>
+                <div id="sights-filters" class="flex flex-wrap justify-center gap-2 mb-6"></div>
+                <div id="sights-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </div>
+        </section>
+
+        <section id="info" class="content-section">
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold text-[#588B8B] mb-6 text-center" data-i18n="infoTitle">완벽한 하루를 위한 여행 정보</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="font-semibold text-lg mb-3 border-b-2 border-[#C89F9C] pb-2" data-i18n="infoTransportTitle">교통편 비교 (도쿄 출발 기준)</h3>
+                        <p class="text-sm text-gray-600 mb-4" data-i18n="infoTransportIntro">이동 수단별 예상 비용과 소요 시간을 비교해보고 나에게 맞는 방법을 선택하세요. 렌터카 이용 시 ETC 카드 할인이 매우 중요합니다.</p>
+                        <div class="chart-container h-64 md:h-80">
+                            <canvas id="transportChart"></canvas>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-lg mb-3 border-b-2 border-[#C89F9C] pb-2" data-i18n="infoChecklistTitle">여행 전 체크리스트</h3>
+                        <p class="text-sm text-gray-600 mb-4" data-i18n="infoChecklistIntro">잊은 것은 없나요? 아래 목록을 확인하며 꼼꼼하게 여행을 준비하세요.</p>
+                        <div id="checklist" class="space-y-3">
+                            <label class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                                <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-[#C89F9C] focus:ring-[#C89F9C]">
+                                <span class="ml-3 text-gray-800" data-i18n="checklist1">ETC 카드 준비 (렌터카 이용 시)</span>
+                            </label>
+                            <label class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                                <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-[#C89F9C] focus:ring-[#C89F9C]">
+                                <span class="ml-3 text-gray-800" data-i18n="checklist2">방문할 장소 영업시간/휴무일 확인</span>
+                            </label>
+                            <label class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                                <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-[#C89F9C] focus:ring-[#C89F9C]">
+                                <span class="ml-3 text-gray-800" data-i18n="checklist3">키사라즈 항 축제 일정 확인 (8/14, 8/15)</span>
+                            </label>
+                            <label class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                                <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-[#C89F9C] focus:ring-[#C89F9C]">
+                                <span class="ml-3 text-gray-800" data-i18n="checklist4">과일 따기 등 체험 활동 사전 예약</span>
+                            </label>
+                             <label class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                                <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-[#C89F9C] focus:ring-[#C89F9C]">
+                                <span class="ml-3 text-gray-800" data-i18n="checklist5">편안한 신발과 복장 준비</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="text-center py-6 mt-8 border-t border-gray-200">
+        <p class="text-sm text-gray-500" data-i18n="footerText">이 플래너는 제공된 보고서를 기반으로 제작되었습니다.</p>
+    </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    const translations = {
+        ko: {
+            appTitle: '키사라즈 8월 당일 여행 플래너 🏖️',
+            appSubtitle: '나만의 완벽한 미식 & 관광 플랜을 만들어보세요!',
+            navHome: '🏠 시작하기',
+            navPlanner: '📅 나만의 일정',
+            navFood: '🍜 미식 탐방',
+            navSights: '🗼 명소 탐방',
+            navInfo: 'ℹ️ 여행 정보',
+            homeTitle: '도쿄 근교의 숨겨진 보석, 키사라즈에 오신 것을 환영합니다!',
+            homeIntro: '도쿄만 건너편에 자리한 키사라즈는 신선한 해산물, 풍부한 자연, 그리고 다채로운 즐길 거리가 가득한 매력적인 여행지입니다. 특히 8월은 활기찬 여름 축제와 제철 과일이 더해져 당일치기 여행으로 최고의 시기입니다. <br>이 플래너는 여러분이 미식과 관광, 두 마리 토끼를 모두 잡는 완벽한 하루를 계획할 수 있도록 도와드립니다. 상단의 메뉴를 클릭하여 나만의 키사라즈 여행을 지금 바로 시작해보세요!',
+            homeCard1Title: '📅 나만의 일정 만들기',
+            homeCard1Text: '관심 있는 활동을 선택하여 실시간으로 업데이트되는 일정표와 예상 비용을 확인하세요.',
+            homeCard2Title: '🍜 미식 & 🗼 명소 탐방',
+            homeCard2Text: '카테고리별 필터 기능으로 원하는 음식점과 관광 명소 정보를 빠르게 찾아보세요.',
+            homeCard3Title: 'ℹ️ 핵심 여행 정보',
+            homeCard3Text: '교통편 비교 차트와 여행 전 체크리스트로 더욱 스마트하게 여행을 준비할 수 있습니다.',
+            plannerTitle: '나만의 당일치기 일정 만들기',
+            plannerIntro: '아래 목록에서 원하는 활동을 체크하면, 실시간으로 일정표와 예상 비용 차트가 업데이트됩니다.',
+            plannerActivitiesTitle: '활동 선택하기',
+            plannerTimelineTitle: '나의 일정표',
+            plannerTimelineEmpty: '선택한 활동이 없습니다. 좌측 목록에서 활동을 추가해보세요.',
+            plannerBudgetTitle: '예상 비용 분석',
+            plannerBudgetTotal: (total) => `총 예상 비용: ¥${total.toLocaleString()}`,
+            foodTitle: '오감을 만족시키는 미식 탐방',
+            foodIntro: '키사라즈의 신선한 해산물과 특산품을 만나보세요. 아래 필터로 원하는 종류의 음식을 찾아볼 수 있습니다.',
+            sightsTitle: '잊지 못할 추억, 명소 탐방',
+            sightsIntro: '아름다운 경관부터 쇼핑, 축제까지! 키사라즈의 다채로운 명소를 둘러보세요.',
+            infoTitle: '완벽한 하루를 위한 여행 정보',
+            infoTransportTitle: '교통편 비교 (도쿄 출발 기준)',
+            infoTransportIntro: '이동 수단별 예상 비용과 소요 시간을 비교해보고 나에게 맞는 방법을 선택하세요. 렌터카 이용 시 ETC 카드 할인이 매우 중요합니다.',
+            infoChecklistTitle: '여행 전 체크리스트',
+            infoChecklistIntro: '잊은 것은 없나요? 아래 목록을 확인하며 꼼꼼하게 여행을 준비하세요.',
+            checklist1: 'ETC 카드 준비 (렌터카 이용 시)',
+            checklist2: '방문할 장소 영업시간/휴무일 확인',
+            checklist3: '키사라즈 항 축제 일정 확인 (8/14, 8/15)',
+            checklist4: '과일 따기 등 체험 활동 사전 예약',
+            checklist5: '편안한 신발과 복장 준비',
+            foodCategories: { all: '전체', '해산물': '해산물', '특산품': '특산품', '디저트': '디저트' },
+            sightsCategories: { all: '전체', '경관': '경관', '액티비티': '액티비티', '쇼핑': '쇼핑', '체험': '체험', '축제': '축제' },
+            transportLabels: { costs: '비용 (엔)', time: '소요시간 (분)', car: '렌터카', bus: '직행버스', train: '전철' },
+            footerText: '이 플래너는 제공된 보고서를 기반으로 제작되었습니다.'
+        },
+        ja: {
+            appTitle: '木更津8月日帰り旅行プランナー 🏖️',
+            appSubtitle: '自分だけの完璧なグルメ＆観光プランを作ろう！',
+            navHome: '🏠 はじめに',
+            navPlanner: '📅 マイプラン',
+            navFood: '🍜 グルメ探訪',
+            navSights: '🗼 スポット探訪',
+            navInfo: 'ℹ️ 旅行情報',
+            homeTitle: '東京近郊の隠れた宝石、木更津へようこそ！',
+            homeIntro: '東京湾を挟んで位置する木更津は、新鮮な海産物、豊かな自然、そして様々なアクティビティが楽しめる魅力的な旅行先です。特に8月は、活気あふれる夏祭りや旬のフルーツが加わり、日帰り旅行に最適な時期です。<br>このプランナーは、グルメと観光の両方を満喫できる完璧な一日を計画するお手伝いをします。上部メニューをクリックして、自分だけの木更津旅行を今すぐ始めましょう！',
+            homeCard1Title: '📅 マイプランを作成',
+            homeCard1Text: '気になるアクティビティを選択すると、リアルタイムで更新される旅程表と予算を確認できます。',
+            homeCard2Title: '🍜 グルメ & 🗼 スポット探訪',
+            homeCard2Text: 'カテゴリー別フィルター機能で、行きたいレストランや観光スポットの情報を素早く見つけられます。',
+            homeCard3Title: 'ℹ️ 旅行の基本情報',
+            homeCard3Text: '交通手段の比較チャートや旅行前のチェックリストで、よりスマートに旅行の準備ができます。',
+            plannerTitle: '自分だけの日帰り旅行プラン',
+            plannerIntro: '以下のリストから希望のアクティビティをチェックすると、リアルタイムで旅程表と予想費用チャートが更新されます。',
+            plannerActivitiesTitle: 'アクティビティを選択',
+            plannerTimelineTitle: '私の旅程表',
+            plannerTimelineEmpty: '選択されたアクティビティはありません。左のリストから追加してください。',
+            plannerBudgetTitle: '予想費用分析',
+            plannerBudgetTotal: (total) => `合計予想費用: ¥${total.toLocaleString()}`,
+            foodTitle: '五感を満たすグルメ探訪',
+            foodIntro: '木更津の新鮮な海産物や特産品を味わいましょう。下のフィルターで希望のジャンルを探せます。',
+            sightsTitle: '忘れられない思い出、スポット探訪',
+            sightsIntro: '美しい景色からショッピング、祭りまで！木更津の多彩なスポットを巡りましょう。',
+            infoTitle: '完璧な一日を過ごすための旅行情報',
+            infoTransportTitle: '交通手段の比較 (東京発)',
+            infoTransportIntro: '移動手段ごとの予想費用と所要時間を比較して、自分に合った方法を選びましょう。レンタカー利用時はETCカード割引が非常に重要です。',
+            infoChecklistTitle: '出発前チェックリスト',
+            infoChecklistIntro: '忘れ物はありませんか？以下のリストを確認して、入念に旅行を準備しましょう。',
+            checklist1: 'ETCカードの準備 (レンタカー利用時)',
+            checklist2: '訪問先の営業時間・定休日確認',
+            checklist3: '木更津港まつりの日程確認 (8/14, 8/15)',
+            checklist4: '梨狩りなどの体験アクティビティ事前予約',
+            checklist5: '歩きやすい靴と服装の準備',
+            foodCategories: { all: 'すべて', '해산물': '海鮮', '특산품': '特産品', '디저트': 'デザート' },
+            sightsCategories: { all: 'すべて', '경관': '景色', '액티비티': 'アクティビティ', '쇼핑': 'ショッピング', '체험': '体験', '축제': '祭り' },
+            transportLabels: { costs: '費用 (円)', time: '所要時間 (分)', car: 'レンタカー', bus: '高速バス', train: '電車' },
+            footerText: 'このプランナーは提供されたレポートを基に作成されました。'
+        }
+    };
+
+    let currentLang = 'ko';
+
+    const updateUI = () => {
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            const translation = translations[currentLang][key];
+            if (typeof translation === 'string') {
+                el.innerHTML = translation;
+            }
+        });
+        document.body.className = currentLang === 'ja' ? 'lang-ja' : '';
+        renderChecklist();
+        renderTimeline();
+        renderGrid('food', 'food-grid', 'food-filters');
+        renderGrid('sights', 'sights-grid', 'sights-filters');
+        updateBudgetChart();
+        createTransportChart();
+    };
+
+    const switchLanguage = (lang) => {
+        currentLang = lang;
+        document.getElementById('lang-ko').classList.remove('bg-[#588B8B]', 'text-white');
+        document.getElementById('lang-ko').classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+        document.getElementById('lang-ja').classList.remove('bg-[#588B8B]', 'text-white');
+        document.getElementById('lang-ja').classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+
+        document.getElementById(`lang-${lang}`).classList.add('bg-[#588B8B]', 'text-white');
+        document.getElementById(`lang-${lang}`).classList.remove('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+        
+        updateUI();
+    };
+
+    document.getElementById('lang-ko').addEventListener('click', () => switchLanguage('ko'));
+    document.getElementById('lang-ja').addEventListener('click', () => switchLanguage('ja'));
+
+
+    const data = {
+        food: [
+            { id: 'f1', name_ko: '이키이키테 조개구이', name_ja: '活き活き亭 浜焼き', category_ko: '해산물', category_ja: '海鮮', price: 1500, description_ko: '수산회사 직영으로 신선하고 저렴! 대합, 소라, 제철 바위굴 등 다양한 해산물을 직접 구워먹는 재미.', description_ja: '水産会社直営で新鮮・格安！ハマグリ、サザエ、旬の岩牡蠣など、さまざまな海鮮を自分で焼く楽しさ。', details_ko: '단품 540엔부터. 미쓰이 아울렛 근처.', details_ja: '単品540円～。三井アウトレット近く。', image: '🦞' },
+            { id: 'f2', name_ko: '이키이키테 카이센동', name_ja: '活き活き亭 海鮮丼', category_ko: '해산물', category_ja: '海鮮', price: 2000, description_ko: '보슈 타테야마에서 잡은 신선한 해산물이 듬뿍 올라간 수량 한정 해산물 덮밥.', description_ja: '房総館山で獲れた新鮮な魚介がたっぷり乗った数量限定海鮮丼。', details_ko: '점심 메뉴로 인기. 회 모둠, 아나고텐동도 추천.', details_ja: 'ランチメニューで人気。お刺身盛り合わせ、穴子天丼もおすすめ。', image: '🍚' },
+            { id: 'f3', name_ko: '조개 버터구이', name_ja: 'アサリのバター焼き', category_ko: '해산물', category_ja: '海鮮', price: 1200, description_ko: '키사라즈의 명물. 남은 국물까지 마시고 싶을 정도로 깊은 풍미를 자랑하는 일품 요리.', description_ja: '木更津名物。残ったスープまで飲み干したくなるほど深い風味を誇る逸品。', details_ko: '키사라즈역 주변 식당에서 맛볼 수 있음.', details_ja: '木更津駅周辺の飲食店で味わえる。', image: '🧈' },
+            { id: 'f4', name_ko: '소라 솥밥 (기념품)', name_ja: 'サザエめし (お土産)', category_ko: '특산품', category_ja: '特産品', price: 700, description_ko: '바다의 풍미가 가득한 솥밥을 집에서도! 휴게소에서 꼭 사야 할 기념품.', description_ja: '海の幸が詰まった釜飯を家でも！SA・PAで買うべきお土産。', details_ko: '3홉용, 700엔. 휴게소 우마쿠타노사토에서 판매.', details_ja: '3合用、700円。道の駅「うまくたの里」で販売。', image: '🛍️' },
+            { id: 'f5', name_ko: '순무 소프트 아이스크림', name_ja: 'かぶソフトクリーム', category_ko: '디저트', category_ja: 'デザート', price: 380, description_ko: '전국 탑클래스 생산량을 자랑하는 순무로 만든 이색 아이스크림. 의외의 조합이 절묘하다.', description_ja: '全国トップクラスの生産量を誇るカブを使った珍しいソフトクリーム。意外な組み合わせが絶妙。', details_ko: '휴게소 우마쿠타노사토 명물.', details_ja: '道の駅「うまくたの里」名物。', image: '🍦' },
+            { id: 'f6', name_ko: '크레이지 피넛 (기념품)', name_ja: 'クレイジーピーナッツ (お土産)', category_ko: '특산품', category_ja: '特産品', price: 500, description_ko: '치바 특산품 땅콩을 16가지 맛으로 코팅! 선물용으로도, 간식으로도 최고.', description_ja: '千葉の特産品ピーナッツを16種類の味でコーティング！お土産にもおやつにも最適。', details_ko: '휴게소 우마쿠타노사토에서 판매. 땅콩 페이스트 만들기 체험도 가능.', details_ja: '道の駅「うまくたの里」で販売。ピーナッツペースト作り体験も可能。', image: '🥜' },
+            { id: 'f7', name_ko: '무화과 만주 (기념품)', name_ja: 'いちじく饅頭 (お土産)', category_ko: '디저트', category_ja: 'デザート', price: 456, description_ko: '지역 명산품인 무화과를 넣어 만든 달콤한 만주. 부드러운 맛이 일품.', description_ja: '地元名産のイチジクを練り込んだ甘い饅頭。優しい味わいが絶品。', details_ko: '3개입, 456엔. 휴게소 우마쿠타노사토에서 판매.', details_ja: '3個入り、456円。道の駅「うまくたの里」で販売。', image: '🥮' }
+        ],
+        sights: [
+            { id: 's1', name_ko: '우미호타루 PA', name_ja: '海ほたるPA', category_ko: '경관', category_ja: '景色', price: 800, description_ko: '바다 위 휴게소! 360도 파노라마 뷰와 함께 후지산, 스카이트리를 조망할 수 있는 최고의 명소.', description_ja: '海上パーキングエリア！360度のパノラマビューで富士山やスカイツリーを眺められる最高のスポット。', details_ko: '아쿠아라인 통행료(ETC) 800엔. 일몰과 야경이 특히 아름다움.', details_ja: 'アクアライン通行料(ETC)800円。夕日と夜景が特に美しい。', image: '🌉' },
+            { id: 's2', name_ko: '키사라피아 놀이공원', name_ja: '木更津かんらんしゃパーク', category_ko: '액티비티', category_ja: 'アクティビティ', price: 1500, description_ko: '도쿄만이 보이는 해변의 놀이공원. 60m 대관람차에서 바라보는 경치가 환상적이다.', description_ja: '東京湾が見える海岸沿いの遊園地。60mの大観覧車から眺める景色は幻想的。', details_ko: '입장 무료, 기구별 유료. VR 코스터 체험 가능.', details_ja: '入場無料、アトラクションごとに有料。VRコースター体験も可能。', image: '🎡' },
+            { id: 's3', name_ko: '미쓰이 아울렛 파크', name_ja: '三井アウトレットパーク', category_ko: '쇼핑', category_ja: 'ショッピング', price: 0, description_ko: '일본 최대급 브랜드 수를 자랑하는 대형 아울렛. 쇼핑을 좋아한다면 필수 코스!', description_ja: '日本最大級のブランド数を誇る大型アウトレット。ショッピング好きには外せない！', details_ko: '입장 무료. 약 4시간 쇼핑 추천. 도쿄역 직행버스 운행.', details_ja: '入場無料。約4時間のショッピングがおすすめ。東京駅直行バス運行。', image: '🛍️' },
+            { id: 's4', name_ko: 'KURKKU FIELDS', name_ja: 'KURKKU FIELDS', category_ko: '체험', category_ja: '体験', price: 800, description_ko: '자연, 음식, 예술의 순환을 체험하는 지속가능한 팜&파크. 동물 교감, BBQ 등 즐길거리 풍부.', description_ja: '自然、食、アートの循環を体験するサステナブルファーム＆パーク。動物との触れ合いやBBQなど、楽しみ方いろいろ。', details_ko: '입장료 800엔. 야요이 쿠사마 작품 등 예술품 감상도 가능.', details_ja: '入場料800円。草間彌生作品などのアート鑑賞も可能。', image: '🌿' },
+            { id: 's5', name_ko: '키사라즈 항 축제', name_ja: '木更津港まつり', category_ko: '축제', category_ja: '祭り', price: 0, description_ko: '8월 14일 댄스, 15일 불꽃놀이! 키사라즈의 여름밤을 뜨겁게 달구는 최대의 이벤트.', description_ja: '8月14日ダンス、15日花火！木更津の夏を熱くする最大イベント。', details_ko: '8월 15일 저녁 방문 추천. 포장마차에서 길거리 음식 즐기기.', details_ja: '8月15日夜の訪問がおすすめ。屋台で食べ歩きも楽しい。', image: '🎆' },
+            { id: 's6', name_ko: '에가와 해안', name_ja: '江川海岸', category_ko: '경관', category_ja: '景色', price: 0, description_ko: '‘일본의 우유니 소금호수’라 불리는 환상적인 풍경의 명소. 인생샷을 남기기에 완벽한 곳.', description_ja: '「日本のウユニ塩湖」と呼ばれる幻想的な景色のスポット。絶景写真を撮るのに最適。', details_ko: '조개잡이 시즌은 아니지만 경관 감상만으로도 충분.', details_ja: '潮干狩りシーズンではないが、景色だけでも楽しめる。', image: '🌊' },
+            { id: 's7', name_ko: '배 따기 체험', name_ja: '梨狩り体験', category_ko: '체험', category_ja: '体験', price: 2000, description_ko: '8월 제철을 맞은 달콤한 배를 직접 따서 맛보는 특별한 경험. 가족, 연인에게 추천.', description_ja: '8月が旬の甘い梨を自分で採って味わう特別な体験。家族やカップルにおすすめ。', details_ko: '인근 과수원에서 가능. 사전 예약 필요.', details_ja: '近隣の果樹園で可能。事前予約が必要。', image: '🍐' }
+        ],
+        itinerary: [
+            { time_ko: '오전 (10:00 - 13:00)', time_ja: '午前 (10:00 - 13:00)', activities: ['s1', 's2'] },
+            { time_ko: '점심 (13:00 - 14:30)', time_ja: 'ランチ (13:00 - 14:30)', activities: ['f1', 'f2'] },
+            { time_ko: '오후 (14:30 - 18:00)', time_ja: '午後 (14:30 - 18:00)', activities: ['s3', 's4', 's7'] },
+            { time_ko: '저녁 (18:00 - 20:00)', time_ja: '夜 (18:00 - 20:00)', activities: ['f4', 'f5', 'f6', 'f7', 's5'] }
+        ]
+    };
+
+    const allActivities = [...data.food, ...data.sights];
+    let selectedActivities = new Set(['s1', 'f1', 's3', 'f5']);
+    let budgetChart;
+    let transportChart;
+    let currentActiveNav = 'home';
+    let currentActiveFoodFilter = 'all';
+    let currentActiveSightsFilter = 'all';
+
+    const navButtons = document.querySelectorAll('.nav-button');
+    const contentSections = document.querySelectorAll('.content-section');
+
+    const renderChecklist = () => {
+        const checklistContainer = document.getElementById('activity-checklist');
+        checklistContainer.innerHTML = '';
+        allActivities.forEach(activity => {
+            const isChecked = selectedActivities.has(activity.id);
+            const label = document.createElement('label');
+            label.className = 'flex items-center p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition cursor-pointer';
+            label.innerHTML = `
+                <input type="checkbox" class="activity-checkbox h-5 w-5 rounded border-gray-300 text-[#C89F9C] focus:ring-[#C89F9C]" data-id="${activity.id}" ${isChecked ? 'checked' : ''}>
+                <span class="ml-3 text-sm text-gray-800">${activity.image} ${activity[`name_${currentLang}`]}</span>
+            `;
+            checklistContainer.appendChild(label);
+        });
+
+        document.querySelectorAll('.activity-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', (e) => {
+                const id = e.target.dataset.id;
+                if (e.target.checked) {
+                    selectedActivities.add(id);
+                } else {
+                    selectedActivities.delete(id);
+                }
+                updatePlanner();
+            });
+        });
+    };
+
+    const updatePlanner = () => {
+        renderTimeline();
+        updateBudgetChart();
+    };
+
+    const renderTimeline = () => {
+        const timelineContainer = document.getElementById('timeline');
+        timelineContainer.innerHTML = '';
+        data.itinerary.forEach(slot => {
+            const activitiesInSlot = slot.activities.filter(id => selectedActivities.has(id));
+            if (activitiesInSlot.length > 0) {
+                const slotDiv = document.createElement('div');
+                slotDiv.className = 'p-3 bg-blue-50 rounded-lg';
+                let activitiesHtml = activitiesInSlot.map(id => {
+                    const activity = allActivities.find(a => a.id === id);
+                    return `<li class="text-sm flex items-center">${activity.image} <span class="ml-2">${activity[`name_${currentLang}`]}</span></li>`;
+                }).join('');
+                
+                slotDiv.innerHTML = `
+                    <h4 class="font-bold text-[#588B8B]">${slot[`time_${currentLang}`]}</h4>
+                    <ul class="mt-2 space-y-1 list-none pl-0">${activitiesHtml}</ul>
+                `;
+                timelineContainer.appendChild(slotDiv);
+            }
+        });
+        if (timelineContainer.innerHTML === '') {
+            timelineContainer.innerHTML = `<p class="text-gray-500 text-center p-4">${translations[currentLang].plannerTimelineEmpty}</p>`;
+        }
+    };
+    
+    const updateBudgetChart = () => {
+        const budgetData = {
+            labels: [],
+            datasets: [{
+                data: [],
+                backgroundColor: ['#588B8B', '#C89F9C', '#F7D6A0', '#B2A3B4', '#84A98C', '#E5A4CB', '#A4C8F5'],
+            }]
+        };
+        let total = 0;
+
+        selectedActivities.forEach(id => {
+            const activity = allActivities.find(a => a.id === id);
+            if (activity && activity.price > 0) {
+                budgetData.labels.push(activity[`name_${currentLang}`]);
+                budgetData.datasets[0].data.push(activity.price);
+                total += activity.price;
+            }
+        });
+        
+        document.getElementById('total-budget').textContent = translations[currentLang].plannerBudgetTotal(total);
+
+        if (budgetChart) {
+            budgetChart.data = budgetData;
+            budgetChart.update();
+        } else {
+            const ctx = document.getElementById('budgetChart').getContext('2d');
+            budgetChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: budgetData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: { size: 10 }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        label += new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(context.parsed);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    };
+
+    const createCard = (item) => {
+        const card = document.createElement('div');
+        card.className = 'bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-xl transition-shadow duration-300 p-4 flex flex-col items-center text-center card-enter';
+        card.dataset.category = item[`category_${currentLang}`];
+        card.innerHTML = `
+            <div class="text-5xl mb-3">${item.image}</div>
+            <h3 class="font-bold text-lg text-[#588B8B]">${item[`name_${currentLang}`]}</h3>
+            <p class="text-sm text-gray-500 mb-2">${item[`category_${currentLang}`]}</p>
+            <p class="text-sm text-gray-700 flex-grow">${item[`description_${currentLang}`]}</p>
+            <p class="text-xs text-gray-500 mt-3">${item[`details_${currentLang}`]}</p>
+        `;
+        return card;
+    };
+
+    const renderGrid = (type, containerId, filterContainerId) => {
+        const container = document.getElementById(containerId);
+        const filterContainer = document.getElementById(filterContainerId);
+        container.innerHTML = '';
+        const items = data[type];
+        const categories = ['all', ...new Set(items.map(item => item[`category_${currentLang}`]))];
+
+        filterContainer.innerHTML = categories.map(cat => 
+            `<button class="filter-btn px-4 py-1.5 text-sm rounded-full transition-colors duration-300 ${cat === (type === 'food' ? currentActiveFoodFilter : currentActiveSightsFilter) ? 'bg-[#588B8B] text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}" data-category="${cat}">${translations[currentLang][`${type}Categories`][cat] || cat}</button>`
+        ).join('');
+
+        const filteredItems = items.filter(item => {
+            const activeFilter = type === 'food' ? currentActiveFoodFilter : currentActiveSightsFilter;
+            return activeFilter === 'all' || item[`category_${currentLang}`] === activeFilter;
+        });
+
+        filteredItems.forEach(item => container.appendChild(createCard(item)));
+
+        filterContainer.querySelectorAll('.filter-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const selectedCategory = e.target.dataset.category;
+                if (type === 'food') {
+                    currentActiveFoodFilter = selectedCategory;
+                } else {
+                    currentActiveSightsFilter = selectedCategory;
+                }
+                
+                filterContainer.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.classList.remove('bg-[#588B8B]', 'text-white');
+                    btn.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+                });
+                e.target.classList.add('bg-[#588B8B]', 'text-white');
+                e.target.classList.remove('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+
+                container.innerHTML = '';
+                const itemsToRender = items.filter(item => {
+                    return selectedCategory === 'all' || item[`category_${currentLang}`] === selectedCategory;
+                });
+                itemsToRender.forEach(item => container.appendChild(createCard(item)));
+            });
+        });
+    };
+
+    const createTransportChart = () => {
+        if (transportChart) {
+            transportChart.destroy();
+        }
+        const ctx = document.getElementById('transportChart').getContext('2d');
+        transportChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [translations[currentLang].transportLabels.car, translations[currentLang].transportLabels.bus, translations[currentLang].transportLabels.train],
+                datasets: [
+                    {
+                        label: translations[currentLang].transportLabels.costs,
+                        data: [800, 1400, 1200],
+                        backgroundColor: '#C89F9C',
+                        yAxisID: 'y-axis-cost',
+                    },
+                    {
+                        label: translations[currentLang].transportLabels.time,
+                        data: [15, 60, 84],
+                        backgroundColor: '#588B8B',
+                        yAxisID: 'y-axis-time',
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    'y-axis-cost': {
+                        type: 'linear',
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: translations[currentLang].transportLabels.costs
+                        }
+                    },
+                    'y-axis-time': {
+                        type: 'linear',
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: translations[currentLang].transportLabels.time
+                        },
+                        grid: {
+                            drawOnChartArea: false, 
+                        }
+                    }
+                }
+            }
+        });
+    };
+
+    navButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const targetId = button.dataset.target;
+            currentActiveNav = targetId;
+
+            navButtons.forEach(btn => {
+                btn.classList.remove('nav-active');
+                btn.classList.add('nav-inactive');
+            });
+            button.classList.add('nav-active');
+            button.classList.remove('nav-inactive');
+
+            contentSections.forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(targetId).classList.add('active');
+        });
+    });
+
+    updateUI();
+});
+</script>
+</body>
+</html>
