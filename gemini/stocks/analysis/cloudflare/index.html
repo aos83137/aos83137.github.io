@@ -3,250 +3,252 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cloudflare (NET) 대화형 가치 분석</title>
+    <title>Cloudflare (NET) 대화형 기업가치 분석</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Calm Neutral & Tech Blue -->
-    <!-- Application Structure Plan: The application is designed as a thematic, single-page dashboard. Instead of following the report's linear structure, it's organized around key investment questions: "What is the business?", "How are the financials?", "What is the market context?", and "How is it valued?". This task-oriented flow allows users to explore interconnected data points intuitively. For example, they can see revenue growth and cash flow on the same chart, immediately grasping the core financial story. Interactive elements like toggles for different financial views and sliders for DCF assumptions are used to engage the user and simplify complex concepts, making the analysis accessible to an individual investor. -->
+    <!-- Chosen Palette: Calm Harmony -->
+    <!-- Application Structure Plan: A thematic, dashboard-first single-page application. The structure begins with a high-level summary dashboard, allowing users to grasp the core story instantly. It then progresses into deeper, tabbed sections for Financial Analysis, Investment Ratios, and Valuation Methodologies. This non-linear structure prioritizes user-driven exploration over passive, linear reading of the original report. Navigation is facilitated by a sticky header, enabling quick jumps between thematic sections. This design choice transforms the static report into an intuitive, interactive tool for understanding Cloudflare's complex valuation. -->
     <!-- Visualization & Content Choices: 
-        - Revenue & CFO: Goal is to show growth vs. cash generation. A combo bar/line chart (Chart.js) is used for direct comparison. Interaction: Tooltips. Justification: Most effectively tells the core financial story.
-        - GAAP vs. Non-GAAP: Goal is to clarify profitability. A grouped bar chart (Chart.js) with a toggle is used. Interaction: Button toggle. Justification: Visually resolves a common point of confusion for tech investors.
-        - Market Growth: Goal is to quickly convey market potential. Simple stat cards (HTML/CSS) are used. Interaction: Hover effects. Justification: High-impact, easily digestible information.
-        - DCF Valuation: Goal is to demystify a complex method. An interactive diagram with sliders (HTML/JS) is used. Interaction: Sliders update a value in real-time. Justification: Turns theory into a tangible, educational tool.
-        - Competitive Landscape: Goal is to show market positioning. A 2x2 matrix (HTML/CSS) is used. Interaction: Hover details. Justification: More intuitive than a text list.
+        1.  **Core Story (Dashboard):** Report Info: Revenue growth vs. Net Loss vs. strong CFO. Goal: Tell the main story upfront. Viz: Combined Bar/Line Chart (Chart.js). Interaction: Hover tooltips. Justification: This visual immediately communicates the central conflict/story of a high-growth, cash-generating but unprofitable company.
+        2.  **Financial Statements:** Report Info: Key items from Income Statement, Balance Sheet, Cash Flow. Goal: Allow detailed exploration of each statement. Viz: Bar charts for each statement (Chart.js). Interaction: Tabs to switch between statements, buttons to switch years. Justification: Tabs organize complex data cleanly. Bar charts are ideal for comparing component magnitudes.
+        3.  **Investment Ratios:** Report Info: High PSR/PBR vs. industry, N/A PER. Goal: Highlight valuation premium. Viz: Horizontal Bar Chart (Chart.js) for comparison, interactive cards for definitions. Interaction: Clickable cards revealing detailed explanations. Justification: Direct visual comparison emphasizes the valuation gap. Interactive cards provide layered information without cluttering the UI.
+        4.  **Valuation Methods:** Report Info: Definitions of Asset, Income (DCF), Relative valuation. Goal: Educate users on valuation theory. Viz: HTML/CSS flexbox layout for a clean, infographic-style diagram. Interaction: None. Justification: A simple, semantic HTML structure is more accessible, responsive, and lightweight than a static image or complex script.
     -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
             font-family: 'Noto Sans KR', sans-serif;
-            background-color: #F7F9FC;
-            color: #2D3748;
+            background-color: #f8f9fa;
+            color: #343a40;
         }
         .chart-container {
             position: relative;
             width: 100%;
-            max-width: 700px;
+            max-width: 800px;
             margin-left: auto;
             margin-right: auto;
-            height: 320px;
-            max-height: 400px;
+            height: 300px;
+            max-height: 450px;
         }
         @media (min-width: 768px) {
             .chart-container {
                 height: 400px;
             }
         }
-        .nav-link {
-            transition: color 0.3s, border-bottom-color 0.3s;
+        .kpi-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1);
+        }
+        .nav-button {
+            transition: color 0.3s ease, border-bottom-color 0.3s ease;
             border-bottom: 2px solid transparent;
         }
-        .nav-link:hover, .nav-link.active {
-            color: #3B82F6;
-            border-bottom-color: #3B82F6;
+        .nav-button:hover, .nav-button.active {
+            color: #f97316;
+            border-bottom-color: #f97316;
         }
         .tab-button {
-            transition: background-color 0.3s, color 0.3s;
+            transition: all 0.3s ease;
         }
         .tab-button.active {
-            background-color: #3B82F6;
+            background-color: #f97316;
             color: white;
         }
-        .stat-card {
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        .dcf-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            background: #3B82F6;
-            cursor: pointer;
-            border-radius: 50%;
-        }
-        .dcf-slider::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
-            background: #3B82F6;
-            cursor: pointer;
-            border-radius: 50%;
+        .content-section {
+            padding-top: 80px;
+            margin-top: -80px;
         }
     </style>
 </head>
-<body class="antialiased">
+<body class="bg-gray-50 text-gray-800">
 
-    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+    <header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50">
         <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center">
-                    <span class="text-2xl font-bold text-blue-600">Cloudflare</span>
-                    <span class="ml-2 text-xl font-semibold text-gray-700">가치 분석</span>
+                    <span class="text-2xl font-bold text-orange-500">☁️</span>
+                    <span class="ml-3 text-xl font-bold text-gray-700">Cloudflare (NET) 가치 분석</span>
                 </div>
                 <div class="hidden md:block">
                     <div class="ml-10 flex items-baseline space-x-4">
-                        <a href="#overview" class="nav-link px-3 py-2 text-sm font-medium text-gray-600">기업 개요</a>
-                        <a href="#financials" class="nav-link px-3 py-2 text-sm font-medium text-gray-600">재무 분석</a>
-                        <a href="#market" class="nav-link px-3 py-2 text-sm font-medium text-gray-600">시장 환경</a>
-                        <a href="#valuation" class="nav-link px-3 py-2 text-sm font-medium text-gray-600">가치 평가</a>
+                        <a href="#dashboard" class="nav-button px-3 py-2 rounded-md text-sm font-medium text-gray-600">종합 대시보드</a>
+                        <a href="#financials" class="nav-button px-3 py-2 rounded-md text-sm font-medium text-gray-600">심층 재무 분석</a>
+                        <a href="#ratios" class="nav-button px-3 py-2 rounded-md text-sm font-medium text-gray-600">주요 투자 지표</a>
+                        <a href="#valuation" class="nav-button px-3 py-2 rounded-md text-sm font-medium text-gray-600">가치 평가 방법론</a>
                     </div>
                 </div>
             </div>
         </nav>
     </header>
 
-    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-        <section id="overview" class="mb-16 md:mb-24 scroll-mt-16">
-            <h2 class="text-3xl font-bold text-center mb-2 text-gray-800">더 나은 인터넷을 만드는 기술</h2>
-            <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl mx-auto">Cloudflare는 전 세계 웹사이트의 보안과 성능을 책임지는 핵심 인프라 기업입니다. 이 섹션에서는 Cloudflare의 비즈니스 모델과 핵심 경쟁력을 시각적으로 탐색합니다.</p>
+        <section id="dashboard" class="content-section text-center py-12">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 mb-4">Cloudflare, 성장의 기회와 위험</h1>
+            <p class="max-w-3xl mx-auto text-lg text-gray-600 mb-8">
+                이 분석은 Cloudflare의 재무 건전성, 투자 매력도, 그리고 내재 가치를 종합적으로 탐색합니다. 높은 성장성 이면에 숨겨진 재무적 특성과 시장의 높은 기대치를 데이터를 통해 직관적으로 확인해보세요.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                <div class="kpi-card text-left">
+                    <h3 class="text-gray-500 font-medium">매출액 성장률 (2024)</h3>
+                    <p class="text-3xl font-bold text-green-600 mt-2">+28.76%</p>
+                    <p class="text-sm text-gray-500 mt-1">견고한 외형 성장 지속</p>
+                </div>
+                <div class="kpi-card text-left">
+                    <h3 class="text-gray-500 font-medium">매출총이익률 (2024)</h3>
+                    <p class="text-3xl font-bold text-blue-600 mt-2">77.32%</p>
+                    <p class="text-sm text-gray-500 mt-1">핵심 사업의 높은 수익성</p>
+                </div>
+                <div class="kpi-card text-left">
+                    <h3 class="text-gray-500 font-medium">영업활동 현금흐름 (2024)</h3>
+                    <p class="text-3xl font-bold text-teal-600 mt-2">$380.4M</p>
+                    <p class="text-sm text-gray-500 mt-1">강력한 현금 창출 능력</p>
+                </div>
+                <div class="kpi-card text-left">
+                    <h3 class="text-gray-500 font-medium">잉여현금흐름 (2024)</h3>
+                    <p class="text-3xl font-bold text-purple-600 mt-2">$357.8M</p>
+                    <p class="text-sm text-gray-500 mt-1">높은 재무적 유연성</p>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">핵심 재무 스토리: 성장, 적자, 그리고 현금</h2>
+                <p class="text-gray-600 mb-6 max-w-2xl mx-auto">매출(파란색 막대)은 폭발적으로 증가하지만, 순이익(붉은색 선)은 여전히 적자입니다. 하지만 주목할 점은 영업활동 현금흐름(녹색 선)이 꾸준히 증가하며 강력한 현금 창출 능력을 보여준다는 것입니다. 이것이 Cloudflare의 핵심 재무 특성입니다.</p>
+                <div class="chart-container">
+                    <canvas id="coreFinancialsChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="financials" class="content-section py-12">
+            <h2 class="text-3xl font-bold text-center mb-2 text-gray-800">심층 재무 분석: 기업의 건강 진단서</h2>
+            <p class="text-lg text-center text-gray-600 mb-8 max-w-3xl mx-auto">손익계산서, 재무상태표, 현금흐름표는 기업의 세 가지 핵심 건강 지표입니다. 각 보고서가 Cloudflare의 수익성, 안정성, 현금 흐름에 대해 무엇을 말해주는지 알아보세요.</p>
             
-            <div class="grid md:grid-cols-2 gap-8 items-center">
-                <div class="bg-white p-6 rounded-xl shadow-md">
-                    <h3 class="text-xl font-bold mb-4 text-center">핵심 비즈니스 모델</h3>
-                    <div class="space-y-4">
-                        <div class="text-center p-4 bg-blue-50 rounded-lg">
-                            <div class="text-5xl mb-2">🌐</div>
-                            <h4 class="font-semibold">글로벌 네트워크</h4>
-                            <p class="text-sm text-gray-600">전 세계 330개 이상 도시에 분산된 엣지 네트워크를 통해 사용자 트래픽을 가장 가까운 곳에서 처리합니다.</p>
-                        </div>
-                        <div class="text-center text-2xl font-bold text-gray-400">↓</div>
-                        <div class="text-center p-4 bg-green-50 rounded-lg">
-                            <div class="text-5xl mb-2">🛡️⚡</div>
-                            <h4 class="font-semibold">보안 및 성능 최적화</h4>
-                            <p class="text-sm text-gray-600">DDoS 공격 방어, WAF 등 강력한 보안 기능과 CDN을 통한 빠른 콘텐츠 전송을 동시에 제공합니다.</p>
-                        </div>
-                         <div class="text-center text-2xl font-bold text-gray-400">↓</div>
-                        <div class="text-center p-4 bg-yellow-50 rounded-lg">
-                            <div class="text-5xl mb-2">💰</div>
-                            <h4 class="font-semibold">구독 기반 수익 모델</h4>
-                            <p class="text-sm text-gray-600">무료 플랜으로 사용자를 유치하고, 필요에 따라 Pro, Business, Enterprise 등 유료 구독으로 전환시켜 안정적인 수익을 창출합니다. (Land-and-Expand 전략)</p>
-                        </div>
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <div class="mb-6 text-center">
+                    <div id="financials-tabs" class="inline-flex rounded-md shadow-sm" role="group">
+                        <button type="button" data-target="income" class="tab-button active px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-l-lg hover:bg-gray-100">
+                            손익계산서
+                        </button>
+                        <button type="button" data-target="balance" class="tab-button px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100">
+                            재무상태표
+                        </button>
+                        <button type="button" data-target="cashflow" class="tab-button px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-r-md hover:bg-gray-100">
+                            현금흐름표
+                        </button>
                     </div>
                 </div>
-                <div class="space-y-6">
-                    <h3 class="text-xl font-bold mb-4 text-center">핵심 경쟁력</h3>
-                    <div class="stat-card bg-white p-6 rounded-xl shadow-md">
-                        <h4 class="font-bold text-lg text-blue-600">통합 플랫폼의 단순성</h4>
-                        <p class="text-gray-600 mt-2">보안, 성능, 개발자 서비스를 하나의 대시보드에서 관리하여 IT 복잡성을 획기적으로 줄여줍니다.</p>
+
+                <div id="financials-content" class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                    <div class="chart-container h-96 md:h-[450px]">
+                        <canvas id="financialsChart"></canvas>
                     </div>
-                    <div class="stat-card bg-white p-6 rounded-xl shadow-md">
-                        <h4 class="font-bold text-lg text-blue-600">네트워크 효과 기반의 보안</h4>
-                        <p class="text-gray-600 mt-2">매일 1,900억 건 이상의 사이버 위협을 분석하며 학습하는 '글로벌 면역 시스템'을 통해 경쟁사 대비 압도적인 위협 인텔리전스를 구축합니다.</p>
-                    </div>
-                     <div class="stat-card bg-white p-6 rounded-xl shadow-md">
-                        <h4 class="font-bold text-lg text-blue-600">비용 효율성 및 개발자 친화 정책</h4>
-                        <p class="text-gray-600 mt-2">무료 CDN과 저렴한 데이터 전송 비용, 그리고 Cloudflare Workers와 같은 혁신적인 개발자 플랫폼으로 강력한 생태계를 만들어가고 있습니다.</p>
+                    <div id="financials-explanation" class="text-gray-700">
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="financials" class="mb-16 md:mb-24 scroll-mt-16">
-            <h2 class="text-3xl font-bold text-center mb-2 text-gray-800">재무 건전성 대시보드</h2>
-            <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl mx-auto">Cloudflare의 재무 데이터는 '성장을 위한 투자'라는 스토리를 보여줍니다. 아래 차트와 설명을 통해 수익성, 안정성, 현금 흐름을 다각도로 분석해 보세요.</p>
+        <section id="ratios" class="content-section py-12">
+            <h2 class="text-3xl font-bold text-center mb-2 text-gray-800">주요 투자 지표: 시장의 시선</h2>
+            <p class="text-lg text-center text-gray-600 mb-8 max-w-3xl mx-auto">투자 지표는 기업의 가치를 시장의 다른 기업들과 비교하는 렌즈입니다. Cloudflare의 지표는 시장이 이 기업의 미래를 얼마나 낙관적으로 보는지 명확하게 보여줍니다.</p>
             
-            <div class="bg-white p-4 md:p-8 rounded-xl shadow-lg">
-                <div class="flex justify-center mb-6 space-x-2">
-                    <button id="btn-rev-cfo" class="tab-button px-4 py-2 text-sm font-medium rounded-md bg-gray-200 active">매출 & 현금흐름</button>
-                    <button id="btn-profit" class="tab-button px-4 py-2 text-sm font-medium rounded-md bg-gray-200">수익성 분석</button>
-                    <button id="btn-fcf" class="tab-button px-4 py-2 text-sm font-medium rounded-md bg-gray-200">잉여현금흐름</button>
-                </div>
-                <div class="grid md:grid-cols-3 gap-8">
-                    <div class="md:col-span-2">
-                        <div class="chart-container">
-                            <canvas id="financialChart"></canvas>
-                        </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-bold mb-4">매출액 대비 가치 (PSR) 비교</h3>
+                    <p class="text-gray-600 mb-4">Cloudflare의 PSR(주가매출액비율)은 37.9로, 동종 IT 산업 평균인 2.6에 비해 월등히 높습니다. 이는 시장이 Cloudflare의 미래 매출 성장 가능성에 매우 높은 프리미엄을 부여하고 있음을 의미합니다.</p>
+                    <div class="chart-container h-64">
+                        <canvas id="psrChart"></canvas>
                     </div>
-                    <div id="financial-text" class="flex flex-col justify-center bg-gray-50 p-6 rounded-lg">
-                        <h4 id="financial-title" class="text-lg font-bold mb-2 text-gray-800"></h4>
-                        <p id="financial-desc" class="text-sm text-gray-600"></p>
+                </div>
+                 <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-bold mb-4">투자 지표 해부하기</h3>
+                    <p class="text-gray-600 mb-4">각 지표를 클릭하여 의미와 Cloudflare에 대한 시사점을 확인하세요.</p>
+                    <div class="space-y-3">
+                        <div class="ratio-card border border-gray-200 p-4 rounded-lg cursor-pointer hover:bg-gray-100 transition">
+                            <h4 class="font-semibold text-lg">PER (주가수익비율)</h4>
+                            <p class="text-sm text-gray-500 ratio-detail hidden mt-2"><b>의미:</b> 주가를 주당순이익(EPS)으로 나눈 값. 이익 대비 주가 수준을 나타냅니다.<br><b>Cloudflare:</b> 현재 순이익이 적자이므로 계산할 수 없습니다. 이는 기업이 수익성보다 성장에 집중하는 초기 단계임을 보여줍니다.</p>
+                        </div>
+                        <div class="ratio-card border border-gray-200 p-4 rounded-lg cursor-pointer hover:bg-gray-100 transition">
+                            <h4 class="font-semibold text-lg">PBR (주가순자산비율)</h4>
+                            <p class="text-sm text-gray-500 ratio-detail hidden mt-2"><b>의미:</b> 주가를 주당순자산(BPS)으로 나눈 값. 장부상 자산 가치 대비 주가 수준을 나타냅니다.<br><b>Cloudflare:</b> 45.25로 매우 높습니다. 이는 시장이 기술력, 브랜드 등 무형자산과 미래 성장 잠재력을 높게 평가하고 있음을 의미합니다.</p>
+                        </div>
+                        <div class="ratio-card border border-gray-200 p-4 rounded-lg cursor-pointer hover:bg-gray-100 transition">
+                            <h4 class="font-semibold text-lg">EV/EBITDA</h4>
+                            <p class="text-sm text-gray-500 ratio-detail hidden mt-2"><b>의미:</b> 기업가치(EV)를 상각전영업이익(EBITDA)으로 나눈 값. 기업의 순수한 현금 창출 능력 대비 가치를 평가합니다.<br><b>Cloudflare:</b> EBITDA가 마이너스이므로 음수 값을 가집니다. 아직 영업활동을 통해 현금을 창출하는 단계에 이르지 못했음을 보여줍니다.</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="market" class="mb-16 md:mb-24 scroll-mt-16">
-            <h2 class="text-3xl font-bold text-center mb-2 text-gray-800">고성장 시장의 중심</h2>
-            <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl mx-auto">Cloudflare는 CDN, 사이버 보안, 엣지 컴퓨팅이라는 3개의 거대하고 빠르게 성장하는 시장의 교차점에 위치하여 강력한 성장 모멘텀을 가집니다.</p>
+        <section id="valuation" class="content-section py-12">
+            <h2 class="text-3xl font-bold text-center mb-2 text-gray-800">가치 평가 방법론: 기업의 내재 가치 찾기</h2>
+            <p class="text-lg text-center text-gray-600 mb-8 max-w-3xl mx-auto">기업의 가치를 평가하는 세 가지 주요 접근법과, Cloudflare와 같은 성장주에 가장 적합한 현금흐름할인법(DCF)에 대해 알아봅니다.</p>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-                <div class="stat-card bg-white p-6 rounded-xl shadow-md text-center">
-                    <div class="text-blue-500 text-5xl mb-3">🚀</div>
-                    <h4 class="text-lg font-semibold">CDN 시장</h4>
-                    <p class="text-3xl font-bold text-gray-800 my-2">23.3%</p>
-                    <p class="text-sm text-gray-500">연평균 성장률 (CAGR)</p>
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                    <div class="text-4xl mb-4">🏢</div>
+                    <h3 class="text-xl font-bold mb-2">자산 가치 평가</h3>
+                    <p class="text-gray-600">기업의 순자산(자산-부채) 가치를 기반으로 평가합니다. 청산 가치를 볼 때 유용하지만, 미래 성장성을 반영하지 못합니다.</p>
                 </div>
-                <div class="stat-card bg-white p-6 rounded-xl shadow-md text-center">
-                    <div class="text-green-500 text-5xl mb-3">🔒</div>
-                    <h4 class="text-lg font-semibold">사이버 보안 시장</h4>
-                    <p class="text-3xl font-bold text-gray-800 my-2">14.4%</p>
-                    <p class="text-sm text-gray-500">연평균 성장률 (CAGR)</p>
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center border-2 border-orange-400">
+                    <div class="text-4xl mb-4">💰</div>
+                    <h3 class="text-xl font-bold mb-2">수익 가치 평가 (DCF)</h3>
+                    <p class="text-gray-600">미래에 창출할 현금 흐름을 현재 가치로 할인하여 평가합니다. 기업의 본질적 가치를 측정하지만, 미래 예측의 불확실성이 큽니다.</p>
                 </div>
-                <div class="stat-card bg-white p-6 rounded-xl shadow-md text-center">
-                    <div class="text-purple-500 text-5xl mb-3">☁️</div>
-                    <h4 class="text-lg font-semibold">엣지 컴퓨팅 시장</h4>
-                    <p class="text-3xl font-bold text-gray-800 my-2">33.0%</p>
-                    <p class="text-sm text-gray-500">연평균 성장률 (CAGR)</p>
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                    <div class="text-4xl mb-4">📊</div>
+                    <h3 class="text-xl font-bold mb-2">상대 가치 평가</h3>
+                    <p class="text-gray-600">유사한 기업들의 시장 가치(PER, PSR 등)와 비교하여 평가합니다. 직관적이지만, 시장 전체가 과열되면 가치가 왜곡될 수 있습니다.</p>
                 </div>
             </div>
-            
-            <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
-                <h3 class="text-xl font-bold text-center mb-6">경쟁 환경 속 Cloudflare의 위치</h3>
-                <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">Cloudflare는 단순한 CDN 제공업체를 넘어, 개발자 중심의 통합 플랫폼을 제공함으로써 기존 강자들과 차별화된 포지션을 구축하고 있습니다.</p>
-                <div class="relative w-full max-w-2xl mx-auto h-80 bg-gray-50 rounded-lg p-4">
-                    <div class="absolute top-2 left-1/2 -translate-x-1/2 text-xs font-bold text-gray-600">플랫폼 통합성 높음</div>
-                    <div class="absolute bottom-2 left-1/2 -translate-x-1/2 text-xs font-bold text-gray-600">플랫폼 통합성 낮음</div>
-                    <div class="absolute top-1/2 -left-2 -translate-y-1/2 -rotate-90 text-xs font-bold text-gray-600">개발자 중심 낮음</div>
-                    <div class="absolute top-1/2 -right-2 -translate-y-1/2 rotate-90 text-xs font-bold text-gray-600">개발자 중심 높음</div>
-                    <div class="w-full h-full border-l border-b border-dashed border-gray-400">
-                        <div class="absolute top-[15%] left-[80%] competitor" data-name="Cloudflare" data-desc="통합 플랫폼과 개발자 생태계의 리더">🔵</div>
-                        <div class="absolute top-[25%] left-[20%] competitor" data-name="Akamai" data-desc="전통적인 CDN 강자, 엔터프라이즈 중심">🟢</div>
-                        <div class="absolute top-[60%] left-[30%] competitor" data-name="AWS CloudFront" data-desc="거대 클라우드 인프라의 일부, 복잡성 높음">🟠</div>
-                        <div class="absolute top-[75%] left-[70%] competitor" data-name="Fastly" data-desc="개발자 친화적이나 플랫폼 범위는 제한적">🟣</div>
-                        <div class="absolute top-[40%] left-[50%] competitor" data-name="Zscaler" data-desc="보안 전문, 네트워크 성능은 부가적">🔴</div>
-                    </div>
-                    <div id="competitor-tooltip" class="hidden absolute bg-black text-white text-xs rounded py-1 px-2 z-10"></div>
-                </div>
-            </div>
-        </section>
 
-        <section id="valuation" class="scroll-mt-16">
-            <h2 class="text-3xl font-bold text-center mb-2 text-gray-800">기업 가치 평가 탐색기</h2>
-            <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl mx-auto">기업 가치 평가는 하나의 정답이 아닌, 여러 관점을 종합하는 과정입니다. 이 섹션에서는 핵심 평가 방법인 현금흐름할인법(DCF)을 직접 체험해볼 수 있습니다.</p>
-            
-            <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
-                <h3 class="text-xl font-bold text-center mb-2">현금흐름할인법(DCF) 시뮬레이터</h3>
-                <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">DCF는 미래에 벌어들일 현금을 현재 가치로 환산하여 기업의 내재 가치를 구하는 방법입니다. '미래 성장률'과 '할인율'이라는 두 가지 핵심 가정이 가치 평가에 얼마나 큰 영향을 미치는지 아래 슬라이더를 움직여 확인해 보세요.</p>
-                
-                <div class="grid md:grid-cols-2 gap-8 items-center">
+            <div class="bg-white p-8 rounded-lg shadow-lg">
+                <h3 class="text-2xl font-bold text-center mb-6">DCF 심층 분석: 미래를 현재 가치로 바꾸는 마법</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
-                        <div class="mb-6">
-                            <label for="growthRate" class="block text-sm font-medium text-gray-700">미래 현금흐름 성장률 (%)</label>
-                            <div class="flex items-center space-x-4">
-                                <input type="range" id="growthRate" min="10" max="40" value="25" class="dcf-slider w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
-                                <span id="growthRateValue" class="font-bold text-blue-600 w-12 text-center">25%</span>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-1">회사의 미래 성장 잠재력에 대한 기대치입니다.</p>
-                        </div>
-                        <div>
-                            <label for="discountRate" class="block text-sm font-medium text-gray-700">할인율 (%)</label>
-                            <div class="flex items-center space-x-4">
-                                <input type="range" id="discountRate" min="5" max="15" value="9" class="dcf-slider w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
-                                <span id="discountRateValue" class="font-bold text-blue-600 w-12 text-center">9%</span>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-1">미래 현금의 불확실성(위험)을 반영하는 이자율입니다.</p>
-                        </div>
+                        <h4 class="font-semibold text-lg mb-2">핵심 개념</h4>
+                        <ul class="space-y-4">
+                            <li class="flex items-start">
+                                <span class="text-2xl mr-4">🔮</span>
+                                <div>
+                                    <h5 class="font-bold">미래 현금 흐름 예측</h5>
+                                    <p class="text-gray-600">기업이 앞으로 벌어들일 잉여 현금을 예측하는 단계. 성장률, 수익성, 투자 계획 등 수많은 가정이 필요합니다.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-2xl mr-4">⚖️</span>
+                                <div>
+                                    <h5 class="font-bold">할인율 적용</h5>
+                                    <p class="text-gray-600">미래의 돈은 현재의 돈보다 가치가 낮습니다. '할인율'은 미래 현금의 가치를 위험도를 반영하여 현재 가치로 환산하는 이자율과 같습니다.</p>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
-                    <div class="text-center bg-blue-50 p-8 rounded-lg">
-                        <h4 class="text-lg font-semibold text-gray-700">계산된 상대적 내재가치</h4>
-                        <p class="text-5xl font-bold text-blue-600 my-3" id="dcfValue">100.0</p>
-                        <p class="text-sm text-gray-600">가정이 변함에 따라 내재가치가 어떻게 변하는지 확인하세요. (기준값: 100)</p>
+                    <div>
+                        <h4 class="font-semibold text-lg mb-2">장점과 한계</h4>
+                        <div class="space-y-4">
+                            <div>
+                                <h5 class="font-bold text-green-600">👍 장점</h5>
+                                <p class="text-gray-600">기업의 본질적인 가치를 평가할 수 있고, 시장의 단기 변동에 휘둘리지 않습니다.</p>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-red-600">👎 한계</h5>
+                                <p class="text-gray-600">미래 예측과 할인율 설정에 평가자의 주관이 개입될 여지가 커, 결과의 신뢰성이 가정에 따라 크게 달라집니다.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -254,215 +256,343 @@
 
     </main>
 
-    <footer class="bg-gray-800 text-white mt-16">
-        <div class="container mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center text-sm">
-            <p>&copy; 2025 Cloudflare 가치 분석. 본 자료는 정보 제공을 목적으로 하며, 투자 권유가 아닙니다.</p>
-            <p class="text-gray-400 mt-1">데이터는 제공된 보고서를 기반으로 재구성되었습니다.</p>
+    <footer class="bg-gray-800 text-white mt-12">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 text-center text-sm">
+            <p>&copy; 2024 Cloudflare 가치 분석. 본 자료는 정보 제공을 목적으로 하며, 투자 권유를 의미하지 않습니다.</p>
         </div>
     </footer>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const financialData = {
-                revenueCfo: {
-                    labels: ['2021', '2022', '2023'],
-                    datasets: [
-                        {
-                            type: 'bar',
-                            label: '매출액 (백만 $)',
-                            data: [656.4, 975.2, 1296.7],
-                            backgroundColor: 'rgba(59, 130, 246, 0.6)',
-                            borderColor: 'rgba(59, 130, 246, 1)',
-                            borderWidth: 1,
-                            yAxisID: 'y',
-                        },
-                        {
-                            type: 'line',
-                            label: '영업 현금흐름 (백만 $)',
-                            data: [64.6, 123.6, 254.4],
-                            backgroundColor: 'rgba(16, 185, 129, 1)',
-                            borderColor: 'rgba(16, 185, 129, 1)',
-                            tension: 0.3,
-                            fill: false,
-                            yAxisID: 'y1',
-                        }
-                    ],
-                    title: '견조한 매출 성장과 현금 창출 능력',
-                    description: 'Cloudflare는 매년 30%가 넘는 높은 매출 성장을 기록하고 있습니다. 더 중요한 것은, GAAP 기준으로는 손실이지만 실제 사업 운영을 통해 벌어들이는 현금(영업 현금흐름)은 꾸준히, 그리고 가파르게 증가하고 있다는 점입니다. 이는 회사의 핵심 비즈니스가 매우 건전함을 의미합니다.'
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    const financialData = {
+        income: {
+            labels: ['2022', '2023', '2024'],
+            datasets: [
+                {
+                    label: '매출액',
+                    data: [975.24, 1296.67, 1669.63],
+                    backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    borderWidth: 1,
+                    stack: 'stack 0',
                 },
-                profitability: {
-                    labels: ['2022', '2023'],
-                    datasets: [
-                         {
-                            label: 'GAAP 영업손실 (백만 $)',
-                            data: [-201.2, -185.5],
-                            backgroundColor: 'rgba(239, 68, 68, 0.6)',
-                            borderColor: 'rgba(239, 68, 68, 1)',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'Non-GAAP 영업이익 (백만 $)',
-                            data: [-1, 122.0],
-                            backgroundColor: 'rgba(34, 197, 94, 0.6)',
-                            borderColor: 'rgba(34, 197, 94, 1)',
-                            borderWidth: 1
-                        },
-                    ],
-                    title: 'GAAP 손실 vs. Non-GAAP 이익',
-                    description: '회계상(GAAP)으로는 손실이지만, 이는 주식 보상과 같은 현금 유출이 없는 비용 때문입니다. 이를 제외한 Non-GAAP 기준으로는 2023년에 흑자 전환에 성공했습니다. 이는 R&D와 마케팅에 대한 막대한 재투자를 하면서도 운영 효율성이 개선되고 있음을 보여주는 긍정적인 신호입니다.'
+                {
+                    label: '매출총이익',
+                    data: [746.52, 994.57, 1290.92],
+                    backgroundColor: 'rgba(34, 197, 94, 0.7)',
+                    borderColor: 'rgba(34, 197, 94, 1)',
+                    borderWidth: 1,
+                    stack: 'stack 1',
                 },
-                fcf: {
-                    labels: ['2022', '2023'],
-                    datasets: [
-                        {
-                            label: '잉여 현금흐름 (백만 $)',
-                            data: [-39.8, 119.5],
-                            backgroundColor: (context) => context.raw >= 0 ? 'rgba(59, 130, 246, 0.6)' : 'rgba(239, 68, 68, 0.6)',
-                            borderColor: (context) => context.raw >= 0 ? 'rgba(59, 130, 246, 1)' : 'rgba(239, 68, 68, 1)',
-                            borderWidth: 1
+                 {
+                    label: '영업이익',
+                    data: [-204.64, -172.96, -139.06],
+                    backgroundColor: 'rgba(239, 68, 68, 0.7)',
+                    borderColor: 'rgba(239, 68, 68, 1)',
+                    borderWidth: 1,
+                    stack: 'stack 2',
+                }
+            ],
+            explanation: `
+                <h3 class="text-xl font-bold mb-3">수익성: 성장을 위한 전략적 적자</h3>
+                <ul class="space-y-2 list-disc list-inside">
+                    <li><b>매출액</b>은 매년 가파르게 성장하며 시장 지배력을 확대하고 있음을 보여줍니다.</li>
+                    <li><b>매출총이익률</b>이 77% 이상으로 매우 높아, 핵심 서비스의 원가 경쟁력이 뛰어남을 의미합니다.</li>
+                    <li><b>영업이익</b>은 연구개발(R&D) 및 마케팅 비용 등 대규모 투자로 인해 아직 적자 상태입니다. 이는 단기 수익보다 장기 성장에 집중하는 전략을 시사합니다.</li>
+                </ul>
+            `,
+            chartType: 'bar'
+        },
+        balance: {
+            labels: ['2022', '2023', '2024'],
+            datasets: [
+                {
+                    label: '총자산',
+                    data: [2890.13, 2759.72, 3301.16],
+                    backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                },
+                {
+                    label: '총부채',
+                    data: [2081.99, 1996.79, 2254.96],
+                    backgroundColor: 'rgba(239, 68, 68, 0.7)',
+                },
+                 {
+                    label: '총자본',
+                    data: [808.14, 762.93, 1046.2],
+                    backgroundColor: 'rgba(34, 197, 94, 0.7)',
+                }
+            ],
+            explanation: `
+                <h3 class="text-xl font-bold mb-3">안정성: 유동성과 부채의 공존</h3>
+                <ul class="space-y-2 list-disc list-inside">
+                    <li><b>총자산</b>이 꾸준히 증가하며 기업 규모가 커지고 있습니다.</li>
+                    <li>$18억 달러 이상의 <b>현금 및 단기 투자 자산</b>을 보유하여 단기 재무 안정성이 매우 높습니다.</li>
+                    <li>누적된 적자로 인한 <b>이월결손금</b>과 <b>장기 부채</b>가 존재하지만, 강력한 유동성이 이를 상쇄하고 있습니다.</li>
+                </ul>
+            `,
+            chartType: 'bar'
+        },
+        cashflow: {
+            labels: ['2022', '2023', '2024'],
+            datasets: [
+                {
+                    label: '영업활동 현금흐름 (CFO)',
+                    data: [123.6, 254.41, 380.43],
+                    backgroundColor: 'rgba(34, 197, 94, 0.7)',
+                },
+                {
+                    label: '투자활동 현금흐름 (CFI)',
+                    data: [-1290.3, 269.8, -330.22],
+                    backgroundColor: 'rgba(249, 115, 22, 0.7)',
+                },
+                {
+                    label: '재무활동 현금흐름 (CFF)',
+                    data: [12.01, -12.39, 12.79],
+                    backgroundColor: 'rgba(168, 85, 247, 0.7)',
+                }
+            ],
+            explanation: `
+                <h3 class="text-xl font-bold mb-3">현금 흐름: 적자 속에서 돈을 버는 능력</h3>
+                <ul class="space-y-2 list-disc list-inside">
+                    <li><b>영업활동 현금흐름(CFO)</b>이 강력하게 증가하고 있습니다. 이는 순이익이 적자임에도 불구하고, 실제 영업 활동을 통해 현금을 잘 벌어들이고 있음을 의미하는 가장 긍정적인 신호입니다.</li>
+                    <li><b>투자활동 현금흐름(CFI)</b>은 마이너스(-)를 기록하며, 미래 성장을 위한 설비 투자 및 M&A에 적극적으로 나서고 있음을 보여줍니다.</li>
+                </ul>
+            `,
+            chartType: 'bar'
+        }
+    };
+
+    let financialsChartInstance;
+
+    function renderFinancialsChart(type) {
+        const data = financialData[type];
+        const ctx = document.getElementById('financialsChart').getContext('2d');
+        
+        if (financialsChartInstance) {
+            financialsChartInstance.destroy();
+        }
+
+        financialsChartInstance = new Chart(ctx, {
+            type: data.chartType,
+            data: {
+                labels: data.labels,
+                datasets: data.datasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', notation: 'compact' }).format(context.parsed.y * 1000000);
+                                }
+                                return label;
+                            }
                         }
-                    ],
-                    title: '잉여 현금흐름(FCF)의 흑자 전환',
-                    description: '잉여 현금흐름(FCF)은 기업이 모든 비용과 투자를 집행하고 나서 자유롭게 쓸 수 있는 현금을 의미합니다. 2023년 FCF가 플러스로 전환된 것은 Cloudflare가 외부 자금 조달 없이도 성장을 위한 재투자를 감당할 수 있는 단계에 진입했음을 시사하는 매우 중요한 지표입니다.'
-                }
-            };
-
-            const financialTitle = document.getElementById('financial-title');
-            const financialDesc = document.getElementById('financial-desc');
-            const ctx = document.getElementById('financialChart').getContext('2d');
-            let financialChart;
-
-            function createChart(data, type) {
-                if (financialChart) {
-                    financialChart.destroy();
-                }
-                
-                let options;
-                if (type === 'revenueCfo') {
-                    options = {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        interaction: { mode: 'index', intersect: false },
-                        scales: {
-                            y: { type: 'linear', display: true, position: 'left', title: { display: true, text: '매출액 (백만 $)' } },
-                            y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: '현금흐름 (백만 $)' } }
-                        }
-                    };
-                } else {
-                     options = {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: { y: { beginAtZero: false } }
-                    };
-                }
-
-                financialChart = new Chart(ctx, {
-                    type: data.datasets.length > 1 && data.datasets[0].type ? 'bar' : 'bar',
-                    data: data,
-                    options: options
-                });
-
-                financialTitle.textContent = data.title;
-                financialDesc.textContent = data.description;
-            }
-
-            document.getElementById('btn-rev-cfo').addEventListener('click', (e) => {
-                createChart(financialData.revenueCfo, 'revenueCfo');
-                updateActiveTab(e.target);
-            });
-            document.getElementById('btn-profit').addEventListener('click', (e) => {
-                createChart(financialData.profitability, 'profitability');
-                updateActiveTab(e.target);
-            });
-            document.getElementById('btn-fcf').addEventListener('click', (e) => {
-                createChart(financialData.fcf, 'fcf');
-                updateActiveTab(e.target);
-            });
-            
-            function updateActiveTab(activeButton) {
-                document.querySelectorAll('.tab-button').forEach(button => button.classList.remove('active'));
-                activeButton.classList.add('active');
-            }
-
-            createChart(financialData.revenueCfo, 'revenueCfo');
-
-            const competitors = document.querySelectorAll('.competitor');
-            const tooltip = document.getElementById('competitor-tooltip');
-            competitors.forEach(c => {
-                c.addEventListener('mouseenter', (e) => {
-                    tooltip.textContent = `${e.target.dataset.name}: ${e.target.dataset.desc}`;
-                    tooltip.style.display = 'block';
-                    const rect = e.target.getBoundingClientRect();
-                    const parentRect = e.target.parentElement.getBoundingClientRect();
-                    tooltip.style.left = `${rect.left - parentRect.left + rect.width / 2 - tooltip.offsetWidth / 2}px`;
-                    tooltip.style.top = `${rect.top - parentRect.top - tooltip.offsetHeight - 5}px`;
-                });
-                c.addEventListener('mouseleave', () => {
-                    tooltip.style.display = 'none';
-                });
-            });
-            
-            const growthRateSlider = document.getElementById('growthRate');
-            const discountRateSlider = document.getElementById('discountRate');
-            const growthRateValue = document.getElementById('growthRateValue');
-            const discountRateValue = document.getElementById('discountRateValue');
-            const dcfValue = document.getElementById('dcfValue');
-
-            function calculateDcf() {
-                const growth = parseFloat(growthRateSlider.value) / 100;
-                const discount = parseFloat(discountRateSlider.value) / 100;
-                
-                const baseGrowth = 0.25;
-                const baseDiscount = 0.09;
-
-                let relativeValue = 100;
-                
-                let projectedValue = 0;
-                let baseValue = 0;
-
-                for (let i = 1; i <= 10; i++) {
-                    projectedValue += 1 / Math.pow(1 + discount, i) * Math.pow(1 + growth, i);
-                    baseValue += 1 / Math.pow(1 + baseDiscount, i) * Math.pow(1 + baseGrowth, i);
-                }
-
-                relativeValue = (projectedValue / baseValue) * 100;
-                
-                dcfValue.textContent = relativeValue.toFixed(1);
-            }
-
-            growthRateSlider.addEventListener('input', (e) => {
-                growthRateValue.textContent = `${e.target.value}%`;
-                calculateDcf();
-            });
-
-            discountRateSlider.addEventListener('input', (e) => {
-                discountRateValue.textContent = `${e.target.value}%`;
-                calculateDcf();
-            });
-            
-            calculateDcf();
-            
-            const navLinks = document.querySelectorAll('.nav-link');
-            const sections = document.querySelectorAll('main section');
-
-            window.addEventListener('scroll', () => {
-                let current = '';
-                sections.forEach(section => {
-                    const sectionTop = section.offsetTop;
-                    if (pageYOffset >= sectionTop - 80) {
-                        current = section.getAttribute('id');
                     }
-                });
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        ticks: {
+                            callback: function(value, index, values) {
+                                return new Intl.NumberFormat('en-US', { notation: 'compact' }).format(value * 1000000);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        document.getElementById('financials-explanation').innerHTML = data.explanation;
+    }
 
+    document.getElementById('financials-tabs').addEventListener('click', (e) => {
+        if (e.target.tagName === 'BUTTON') {
+            const targetType = e.target.dataset.target;
+            renderFinancialsChart(targetType);
+            
+            document.querySelectorAll('#financials-tabs button').forEach(btn => btn.classList.remove('active'));
+            e.target.classList.add('active');
+        }
+    });
+
+    renderFinancialsChart('income');
+
+    const coreFinancialsCtx = document.getElementById('coreFinancialsChart').getContext('2d');
+    new Chart(coreFinancialsCtx, {
+        type: 'bar',
+        data: {
+            labels: ['2021', '2022', '2023', '2024'],
+            datasets: [
+                {
+                    type: 'line',
+                    label: '당기순이익',
+                    data: [-535.06, -193.38, -183.99, -78.8],
+                    borderColor: 'rgba(239, 68, 68, 1)',
+                    backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                    yAxisID: 'y',
+                    tension: 0.1,
+                    fill: false
+                },
+                {
+                    type: 'line',
+                    label: '영업활동 현금흐름',
+                    data: [64.65, 123.6, 254.41, 380.43],
+                    borderColor: 'rgba(34, 197, 94, 1)',
+                    backgroundColor: 'rgba(34, 197, 94, 0.2)',
+                    yAxisID: 'y',
+                    tension: 0.1,
+                    fill: false
+                },
+                {
+                    type: 'bar',
+                    label: '매출액',
+                    data: [656.43, 975.24, 1296.67, 1669.63],
+                    backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    yAxisID: 'y1',
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                mode: 'index',
+                intersect: false,
+            },
+            scales: {
+                y: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    title: {
+                        display: true,
+                        text: '순이익/현금흐름 (백만 USD)'
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return value + 'M';
+                        }
+                    }
+                },
+                y1: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    grid: {
+                        drawOnChartArea: false,
+                    },
+                    title: {
+                        display: true,
+                        text: '매출액 (백만 USD)'
+                    },
+                     ticks: {
+                        callback: function(value) {
+                            return value + 'M';
+                        }
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed.y !== null) {
+                                label += context.parsed.y + 'M USD';
+                            }
+                            return label;
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    const psrCtx = document.getElementById('psrChart').getContext('2d');
+    new Chart(psrCtx, {
+        type: 'bar',
+        data: {
+            labels: ['주가매출액비율 (PSR)'],
+            datasets: [
+                {
+                    label: 'Cloudflare (NET)',
+                    data: [37.9],
+                    backgroundColor: 'rgba(249, 115, 22, 0.7)',
+                    borderColor: 'rgba(249, 115, 22, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'IT 산업 평균',
+                    data: [2.6],
+                    backgroundColor: 'rgba(107, 114, 128, 0.7)',
+                    borderColor: 'rgba(107, 114, 128, 1)',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: '비율 (배)'
+                    }
+                }
+            }
+        }
+    });
+    
+    document.querySelectorAll('.ratio-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const detail = card.querySelector('.ratio-detail');
+            detail.classList.toggle('hidden');
+        });
+    });
+
+    const sections = document.querySelectorAll('.content-section');
+    const navLinks = document.querySelectorAll('nav a');
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
                 navLinks.forEach(link => {
                     link.classList.remove('active');
-                    if (link.getAttribute('href').includes(current)) {
+                    if (link.getAttribute('href').substring(1) === entry.target.id) {
                         link.classList.add('active');
                     }
                 });
-            });
-
+            }
         });
-    </script>
+    }, { rootMargin: "-30% 0px -70% 0px" });
+
+    sections.forEach(section => {
+        observer.observe(section);
+    });
+
+});
+</script>
 </body>
 </html>
