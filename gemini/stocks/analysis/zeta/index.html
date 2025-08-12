@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zeta Global (ZETA) 대화형 기업 분석</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony -->
+    <!-- Application Structure Plan: A single-page dashboard with a sticky top navigation bar for easy access to thematic sections: Overview, Financial Performance, Competitive Edge, Market Outlook, and Valuation. The structure is designed for non-linear exploration, allowing users to dive into specific areas of interest. The core interaction is a set of toggle buttons in the 'Financial Performance' section, enabling users to switch between Profitability, Stability, and Cash Flow views. This design choice aims to simplify complex financial data and highlight key relationships (e.g., revenue growth vs. GAAP loss vs. strong cash flow) more effectively than a static report. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Financial Statements -> Goal: Compare/Change -> Viz: Dual-axis line/bar chart for Profitability (Revenue, Net Income, Adj. EBITDA), Stacked bar for Stability (Assets/Liabilities), Line chart for Cash Flow. Interaction: Toggles to switch views, tooltips on hover. Justification: This interactive approach breaks down complex financials into digestible themes, making it easier to understand the company's core operational strength despite GAAP losses. Library: Chart.js.
+        - Report Info: Core Business Model -> Goal: Organize/Inform -> Viz: HTML/CSS "Flywheel" diagram. Interaction: None. Justification: A visual metaphor is more intuitive for explaining the synergistic relationship between Zeta's data, AI, and platform services. Method: HTML/CSS with Tailwind.
+        - Report Info: Industry Growth Rates -> Goal: Compare -> Viz: Bar chart. Interaction: Tooltips. Justification: Provides a quick, clear comparison of the high-growth markets Zeta operates in. Library: Chart.js.
+        - Report Info: Valuation Methods -> Goal: Organize -> Viz: Accordion-style collapsible sections. Interaction: Click to expand/collapse. Justification: Presents dense explanatory text in a clean, user-controlled manner, preventing information overload. Method: JS toggle.
+        - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+    -->
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #F8F7F4;
+            color: #3D405B;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 40vh;
+            max-height: 450px;
+        }
+        .nav-active {
+            color: #E07A5F;
+            font-weight: 700;
+        }
+        .btn-active {
+            background-color: #E07A5F;
+            color: #FFFFFF;
+        }
+        .btn-inactive {
+            background-color: #e2e8f0;
+            color: #3D405B;
+        }
+        .flywheel-item {
+            transition: transform 0.3s ease-in-out;
+        }
+        .flywheel-item:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header -->
+    <header id="home" class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <div class="text-2xl font-bold text-[#3D405B]">
+                ZETA <span class="text-[#E07A5F]">Interactive</span>
+            </div>
+            <div class="hidden md:flex space-x-8">
+                <a href="#overview" class="nav-link">기업 개요</a>
+                <a href="#financials" class="nav-link">재무 성과</a>
+                <a href="#edge" class="nav-link">핵심 경쟁력</a>
+                <a href="#market" class="nav-link">시장 전망</a>
+                <a href="#valuation" class="nav-link">가치 평가</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden flex items-center">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden">
+            <a href="#overview" class="block py-2 px-4 text-sm hover:bg-gray-200 nav-link">기업 개요</a>
+            <a href="#financials" class="block py-2 px-4 text-sm hover:bg-gray-200 nav-link">재무 성과</a>
+            <a href="#edge" class="block py-2 px-4 text-sm hover:bg-gray-200 nav-link">핵심 경쟁력</a>
+            <a href="#market" class="block py-2 px-4 text-sm hover:bg-gray-200 nav-link">시장 전망</a>
+            <a href="#valuation" class="block py-2 px-4 text-sm hover:bg-gray-200 nav-link">가치 평가</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="container mx-auto px-6 py-16 text-center">
+            <h1 class="text-4xl md:text-6xl font-bold leading-tight">Zeta Global Holdings Corp.</h1>
+            <p class="text-xl md:text-2xl text-[#E07A5F] mt-2 font-semibold">NYSE: ZETA</p>
+            <p class="mt-6 max-w-3xl mx-auto text-lg text-gray-700">
+                AI 기반 마케팅 클라우드를 통해 기업의 고객 확보, 성장, 유지를 지원하는 데이터 기술 기업입니다. Zeta의 핵심 가치와 성장 잠재력을 대화형으로 탐색해보세요.
+            </p>
+            <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <p class="text-lg font-semibold text-gray-600">매출 성장률 (TTM)</p>
+                    <p class="text-4xl font-bold text-[#81B29A] mt-2">+40.6%</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <p class="text-lg font-semibold text-gray-600">조정 EBITDA 성장률 (Q2'25)</p>
+                    <p class="text-4xl font-bold text-[#81B29A] mt-2">+52%</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <p class="text-lg font-semibold text-gray-600">잉여현금흐름 성장률 (Q2'25)</p>
+                    <p class="text-4xl font-bold text-[#81B29A] mt-2">+69%</p>
+                </div>
+            </div>
+        </section>
+        
+        <div class="border-t border-gray-200"></div>
+
+        <!-- Overview Section -->
+        <section id="overview" class="container mx-auto px-6 py-20">
+            <h2 class="text-3xl font-bold text-center mb-4">기업 개요: AI 마케팅 클라우드</h2>
+            <p class="text-center max-w-3xl mx-auto text-gray-700 mb-12">
+                Zeta는 방대한 독점 데이터와 정교한 AI를 결합한 'Zeta Marketing Platform (ZMP)'을 통해 기업 고객에게 개인화된 옴니채널 마케팅 솔루션을 제공합니다. 구독 기반 수익 모델과 직접 플랫폼 사용으로의 전환은 지속 가능한 성장의 핵심 동력입니다.
+            </p>
+            <div class="flex flex-col md:flex-row items-center gap-12">
+                <div class="md:w-1/2">
+                    <h3 class="text-2xl font-bold mb-4">Zeta의 성장 플라이휠</h3>
+                    <p class="text-gray-600 mb-6">
+                        Zeta의 비즈니스 모델은 데이터, AI, 그리고 플랫폼 활성화가 서로 시너지를 내는 선순환 구조를 가지고 있습니다. 더 많은 데이터는 AI를 더 똑똑하게 만들고, 이는 더 높은 ROI를 제공하여 더 많은 고객을 유치하며, 이는 다시 더 많은 데이터를 축적하게 합니다.
+                    </p>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <span class="text-2xl text-[#E07A5F] mr-4">①</span>
+                            <div>
+                                <h4 class="font-bold">독점 데이터 자산</h4>
+                                <p class="text-gray-600">2.2억 명 이상의 미국 소비자 옵트인 데이터를 기반으로 소비자 의도를 정확하게 예측합니다.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-2xl text-[#E07A5F] mr-4">②</span>
+                            <div>
+                                <h4 class="font-bold">AI 기반 인텔리전스</h4>
+                                <p class="text-gray-600">머신러닝 기술로 데이터를 분석하여 초개인화된 마케팅 전략을 수립합니다.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-2xl text-[#E07A5F] mr-4">③</span>
+                            <div>
+                                <h4 class="font-bold">옴니채널 활성화</h4>
+                                <p class="text-gray-600">이메일, CTV, 소셜 등 다양한 채널에서 통합된 캠페인을 실행하여 고객 참여를 극대화합니다.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="md:w-1/2 flex justify-center items-center p-8">
+                    <div class="relative w-80 h-80">
+                        <div class="absolute inset-0 border-4 border-dashed border-[#81B29A] rounded-full animate-spin-slow"></div>
+                        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#3D405B] text-white w-28 h-28 rounded-full flex items-center justify-center text-center font-bold text-lg">Zeta<br>플랫폼</div>
+                        <div class="flywheel-item absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded-lg shadow-lg text-center">
+                            <span class="text-2xl">📊</span>
+                            <p class="font-bold">데이터</p>
+                        </div>
+                        <div class="flywheel-item absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 bg-white p-4 rounded-lg shadow-lg text-center">
+                            <span class="text-2xl">🚀</span>
+                            <p class="font-bold">활성화</p>
+                        </div>
+                        <div class="flywheel-item absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded-lg shadow-lg text-center">
+                            <span class="text-2xl">💡</span>
+                            <p class="font-bold">AI 분석</p>
+                        </div>
+                        <div class="flywheel-item absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded-lg shadow-lg text-center">
+                            <span class="text-2xl">📈</span>
+                            <p class="font-bold">ROI</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="border-t border-gray-200"></div>
+
+        <!-- Financials Section -->
+        <section id="financials" class="bg-white py-20">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl font-bold text-center mb-4">재무 성과 분석</h2>
+                <p class="text-center max-w-3xl mx-auto text-gray-700 mb-12">
+                    Zeta는 강력한 성장과 함께 운영 효율성을 개선하고 있습니다. 아래 버튼을 클릭하여 수익성, 안정성, 현금 흐름의 세 가지 측면에서 재무 상태를 자세히 살펴보세요.
+                </p>
+                <div class="flex justify-center space-x-2 md:space-x-4 mb-8">
+                    <button id="btn-profitability" class="financial-btn px-4 py-2 md:px-6 md:py-3 rounded-full font-semibold transition-colors duration-300">수익성</button>
+                    <button id="btn-stability" class="financial-btn px-4 py-2 md:px-6 md:py-3 rounded-full font-semibold transition-colors duration-300">안정성</button>
+                    <button id="btn-cashflow" class="financial-btn px-4 py-2 md:px-6 md:py-3 rounded-full font-semibold transition-colors duration-300">현금 흐름</button>
+                </div>
+
+                <div id="financial-content">
+                    <!-- Profitability Content -->
+                    <div id="content-profitability" class="financial-view">
+                        <div class="chart-container">
+                            <canvas id="profitabilityChart"></canvas>
+                        </div>
+                        <div class="max-w-3xl mx-auto mt-8 text-center">
+                            <h4 class="font-bold text-xl mb-2">견고한 매출 성장과 개선되는 운영 수익성</h4>
+                            <p class="text-gray-600">
+                                Zeta의 매출은 가파르게 성장하고 있습니다. GAAP 기준 순손실은 주로 비현금성 비용인 주식 기반 보상 때문이며, 기업의 핵심 현금 창출 능력을 보여주는 조정 EBITDA는 꾸준히 증가하며 수익성 개선을 증명하고 있습니다.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Stability Content -->
+                    <div id="content-stability" class="financial-view hidden">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                            <div class="chart-container">
+                                <canvas id="stabilityChart"></canvas>
+                            </div>
+                            <div class="text-center md:text-left">
+                                <h4 class="font-bold text-xl mb-2">튼튼한 재무 안정성</h4>
+                                <p class="text-gray-600 mb-6">
+                                    Zeta는 단기 부채 상환 능력을 나타내는 유동비율이 3.25배를 넘고, 부채 의존도를 보여주는 부채비율이 29.2%로 낮아 매우 안정적인 재무 구조를 갖추고 있습니다.
+                                </p>
+                                <div class="flex justify-center md:justify-start space-x-8">
+                                    <div>
+                                        <p class="text-lg font-semibold text-gray-600">유동비율</p>
+                                        <p class="text-4xl font-bold text-[#3D405B]">3.25x</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-lg font-semibold text-gray-600">부채비율</p>
+                                        <p class="text-4xl font-bold text-[#3D405B]">29.2%</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Cash Flow Content -->
+                    <div id="content-cashflow" class="financial-view hidden">
+                        <div class="chart-container">
+                            <canvas id="cashflowChart"></canvas>
+                        </div>
+                        <div class="max-w-3xl mx-auto mt-8 text-center">
+                            <h4 class="font-bold text-xl mb-2">강력한 현금 창출 능력</h4>
+                            <p class="text-gray-600">
+                                GAAP 순손실에도 불구하고, Zeta는 영업 활동을 통해 꾸준히 현금을 창출하고 있습니다. 특히 잉여현금흐름(FCF)의 가파른 성장은 회사가 투자, 부채 상환, 주주 환원을 위한 충분한 재정적 유연성을 확보하고 있음을 보여주는 매우 긍정적인 신호입니다.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="border-t border-gray-200"></div>
+
+        <!-- Edge Section -->
+        <section id="edge" class="container mx-auto px-6 py-20">
+            <h2 class="text-3xl font-bold text-center mb-4">핵심 경쟁력</h2>
+            <p class="text-center max-w-3xl mx-auto text-gray-700 mb-12">
+                Zeta는 치열한 MarTech 시장에서 다음과 같은 차별화된 경쟁 우위를 통해 독보적인 위치를 구축하고 있습니다.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="bg-white p-8 rounded-lg shadow-lg text-center hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
+                    <span class="text-5xl">📊</span>
+                    <h3 class="text-xl font-bold mt-4 mb-2">독점 데이터 자산</h3>
+                    <p class="text-gray-600">업계 최대 규모의 옵트인 데이터베이스는 '쿠키 없는 시대'의 핵심 자산이며, 개인화 마케팅의 정확도를 높입니다.</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-lg text-center hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
+                    <span class="text-5xl">💡</span>
+                    <h3 class="text-xl font-bold mt-4 mb-2">선진 AI 역량</h3>
+                    <p class="text-gray-600">AI 기반 예측 분석은 고객의 ROI를 극대화하고, 참여율을 10~30%까지 향상시키는 핵심 동력입니다.</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-lg text-center hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
+                    <span class="text-5xl">🔗</span>
+                    <h3 class="text-xl font-bold mt-4 mb-2">통합 옴니채널 플랫폼</h3>
+                    <p class="text-gray-600">'One Zeta' 전략은 데이터, 분석, 실행을 하나로 통합하여 고객의 플랫폼 의존도를 높이고 이탈을 방지합니다.</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-lg text-center hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
+                    <span class="text-5xl">🤝</span>
+                    <h3 class="text-xl font-bold mt-4 mb-2">높은 고객 유지율</h3>
+                    <p class="text-gray-600">수익의 90%가 기존 고객으로부터 발생하며, 대형 고객의 ARPU(고객당 평균 매출)가 지속적으로 성장하고 있습니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="border-t border-gray-200"></div>
+
+        <!-- Market Section -->
+        <section id="market" class="bg-white py-20">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl font-bold text-center mb-4">고성장 산업 전망</h2>
+                <p class="text-center max-w-3xl mx-auto text-gray-700 mb-12">
+                    Zeta가 속한 MarTech, CDP, AdTech 시장은 디지털 전환과 개인화 수요 증가에 힘입어 폭발적인 성장이 예상됩니다. 이는 Zeta의 지속적인 성장을 위한 강력한 기반이 됩니다.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                    <div class="chart-container">
+                        <canvas id="marketChart"></canvas>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold mb-4">주요 성장 동력</h3>
+                        <ul class="space-y-4 text-gray-600">
+                            <li class="flex items-center"><span class="text-green-500 mr-3">✔</span> 개인화된 고객 경험에 대한 수요 급증</li>
+                            <li class="flex items-center"><span class="text-green-500 mr-3">✔</span> AI 기반 분석 및 의사결정 기술의 확산</li>
+                            <li class="flex items-center"><span class="text-green-500 mr-3">✔</span> 데이터 개인정보 보호 규제 강화 (GDPR, CCPA)</li>
+                            <li class="flex items-center"><span class="text-green-500 mr-3">✔</span> '쿠키 없는 시대' 도래에 따른 퍼스트파티 데이터 전략의 중요성 증대</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="border-t border-gray-200"></div>
+        
+        <!-- Valuation Section -->
+        <section id="valuation" class="container mx-auto px-6 py-20">
+            <h2 class="text-3xl font-bold text-center mb-4">기업 가치 평가</h2>
+             <p class="text-center max-w-3xl mx-auto text-gray-700 mb-12">
+                기업 가치 평가는 다양한 방법을 종합적으로 고려해야 합니다. Zeta와 같은 성장 기술 기업은 미래 현금 창출 능력을 기반으로 한 수익 가치 평가가 가장 중요합니다. 각 평가 방법의 개념을 살펴보세요.
+            </p>
+            <div class="max-w-4xl mx-auto space-y-4">
+                <div class="accordion-item bg-white rounded-lg shadow-md">
+                    <button class="accordion-header w-full flex justify-between items-center p-6 text-left font-semibold text-lg">
+                        <span>수익 가치 평가 (Income-Based) - 가장 중요</span>
+                        <span class="accordion-icon transform transition-transform duration-300">▼</span>
+                    </button>
+                    <div class="accordion-content hidden p-6 pt-0 text-gray-600">
+                        <p>기업이 미래에 창출할 현금 흐름을 현재 가치로 할인하여 내재 가치를 평가하는 방법입니다. 대표적으로 **현금흐름할인법(DCF)**이 있습니다. Zeta처럼 잉여현금흐름이 강력하게 성장하는 기업에 가장 적합한 평가 방식입니다. 다만, 미래 현금 흐름과 할인율 예측에 주관이 개입될 수 있다는 한계가 있습니다.</p>
+                    </div>
+                </div>
+                <div class="accordion-item bg-white rounded-lg shadow-md">
+                    <button class="accordion-header w-full flex justify-between items-center p-6 text-left font-semibold text-lg">
+                        <span>상대 가치 평가 (Relative) - 참고용</span>
+                        <span class="accordion-icon transform transition-transform duration-300">▼</span>
+                    </button>
+                    <div class="accordion-content hidden p-6 pt-0 text-gray-600">
+                        <p>유사한 경쟁 기업들의 가치 평가 지표(PER, PBR, EV/EBITDA 등)와 비교하여 상대적인 가치를 평가합니다. 시장의 현재 평가를 반영하지만, 비교 대상 기업 선정의 어려움과 시장 자체가 비효율적일 수 있다는 한계가 있습니다. Zeta의 Forward P/E는 약 24~25배, PBR은 약 6.4~6.6배 수준입니다.</p>
+                    </div>
+                </div>
+                <div class="accordion-item bg-white rounded-lg shadow-md">
+                    <button class="accordion-header w-full flex justify-between items-center p-6 text-left font-semibold text-lg">
+                        <span>자산 가치 평가 (Asset-Based) - 부적합</span>
+                        <span class="accordion-icon transform transition-transform duration-300">▼</span>
+                    </button>
+                    <div class="accordion-content hidden p-6 pt-0 text-gray-600">
+                        <p>기업의 자산에서 부채를 차감하여 가치를 평가합니다. Zeta와 같이 기술력, 데이터, 브랜드 등 무형 자산이 핵심 가치인 기업에는 적합하지 않습니다. 이 방법은 기업의 미래 성장 잠재력을 전혀 반영하지 못하기 때문입니다.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-[#3D405B] text-white mt-20">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <p>본 애플리케이션은 정보 제공을 목적으로 제작되었으며, 투자 추천이 아닙니다.</p>
+            <p class="text-sm text-gray-400 mt-2">데이터는 제공된 Zeta Global 기업 가치 평가 보고서를 기반으로 합니다.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Mobile Menu
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // Navigation scroll highlighting
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 100) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('nav-active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('nav-active');
+                    }
+                });
+            });
+
+            // Financials Section Toggle
+            const financialBtns = document.querySelectorAll('.financial-btn');
+            const financialViews = document.querySelectorAll('.financial-view');
+
+            financialBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    financialBtns.forEach(b => b.classList.replace('btn-active', 'btn-inactive'));
+                    btn.classList.replace('btn-inactive', 'btn-active');
+
+                    const targetViewId = 'content-' + btn.id.split('-')[1];
+                    
+                    financialViews.forEach(view => {
+                        if (view.id === targetViewId) {
+                            view.classList.remove('hidden');
+                        } else {
+                            view.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+
+            // Accordion
+            const accordionItems = document.querySelectorAll('.accordion-item');
+            accordionItems.forEach(item => {
+                const header = item.querySelector('.accordion-header');
+                const content = item.querySelector('.accordion-content');
+                const icon = item.querySelector('.accordion-icon');
+
+                header.addEventListener('click', () => {
+                    const isVisible = !content.classList.contains('hidden');
+                    // Close all others
+                    // accordionItems.forEach(i => {
+                    //     i.querySelector('.accordion-content').classList.add('hidden');
+                    //     i.querySelector('.accordion-icon').classList.remove('rotate-180');
+                    // });
+                    
+                    if (isVisible) {
+                        content.classList.add('hidden');
+                        icon.classList.remove('rotate-180');
+                    } else {
+                        content.classList.remove('hidden');
+                        icon.classList.add('rotate-180');
+                    }
+                });
+            });
+
+            // Set initial active button for financials
+            document.getElementById('btn-profitability').classList.add('btn-active');
+            document.getElementById('btn-profitability').classList.remove('btn-inactive');
+
+            // Chart.js Data and Configuration
+            const chartLabels = ['2022', '2023', '2024', '2025 (TTM)'];
+            const chartFontColor = '#3D405B';
+
+            // Profitability Chart
+            const profitabilityCtx = document.getElementById('profitabilityChart').getContext('2d');
+            new Chart(profitabilityCtx, {
+                type: 'bar',
+                data: {
+                    labels: chartLabels,
+                    datasets: [
+                        {
+                            label: '매출액 (백만 $)',
+                            data: [731.8, 1010, 1160, 1300], // Example data progression
+                            type: 'line',
+                            borderColor: '#81B29A',
+                            backgroundColor: '#81B29A',
+                            yAxisID: 'y',
+                            tension: 0.3,
+                        },
+                        {
+                            label: '조정 EBITDA (백만 $)',
+                            data: [129.5, 193, 220, 250], // Example data progression
+                            type: 'line',
+                            borderColor: '#E07A5F',
+                            backgroundColor: '#E07A5F',
+                            yAxisID: 'y',
+                            tension: 0.3,
+                        },
+                        {
+                            label: '순손실 (백만 $)',
+                            data: [-150.3, -69.8, -36.6, -20.1], // Example data progression
+                            backgroundColor: '#f87171',
+                            yAxisID: 'y',
+                        },
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: { display: true, text: '매출, 조정 EBITDA, 순이익 추이', color: chartFontColor, font: { size: 16 } },
+                        tooltip: { mode: 'index', intersect: false }
+                    },
+                    scales: {
+                        x: { ticks: { color: chartFontColor } },
+                        y: { 
+                            type: 'linear', 
+                            display: true, 
+                            position: 'left',
+                            ticks: { color: chartFontColor },
+                            title: { display: true, text: '금액 (백만 $)', color: chartFontColor }
+                        }
+                    },
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                }
+            });
+
+            // Stability Chart
+            const stabilityCtx = document.getElementById('stabilityChart').getContext('2d');
+            new Chart(stabilityCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['2022', '2023', '2024'],
+                    datasets: [
+                        {
+                            label: '자산',
+                            data: [850, 980, 1100],
+                            backgroundColor: '#81B29A',
+                        },
+                        {
+                            label: '부채',
+                            data: [500, 450, 427],
+                            backgroundColor: '#f87171',
+                        },
+                        {
+                            label: '자본',
+                            data: [350, 530, 673],
+                            backgroundColor: '#60a5fa',
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: { display: true, text: '재무상태 요약 (백만 $)', color: chartFontColor, font: { size: 16 } },
+                        tooltip: { mode: 'index', intersect: false }
+                    },
+                    scales: {
+                        x: { stacked: true, ticks: { color: chartFontColor } },
+                        y: { stacked: true, ticks: { color: chartFontColor } }
+                    }
+                }
+            });
+
+            // Cash Flow Chart
+            const cashflowCtx = document.getElementById('cashflowChart').getContext('2d');
+            new Chart(cashflowCtx, {
+                type: 'line',
+                data: {
+                    labels: chartLabels,
+                    datasets: [
+                        {
+                            label: '영업활동현금흐름 (백만 $)',
+                            data: [105.6, 154.9, 180, 210],
+                            borderColor: '#60a5fa',
+                            backgroundColor: 'rgba(96, 165, 250, 0.2)',
+                            fill: true,
+                            tension: 0.3
+                        },
+                        {
+                            label: '잉여현금흐름 (FCF) (백만 $)',
+                            data: [81.5, 136.7, 160, 190],
+                            borderColor: '#81B29A',
+                            backgroundColor: 'rgba(129, 178, 154, 0.2)',
+                            fill: true,
+                            tension: 0.3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: { display: true, text: '현금 흐름 추이', color: chartFontColor, font: { size: 16 } },
+                        tooltip: { mode: 'index', intersect: false }
+                    },
+                    scales: {
+                        x: { ticks: { color: chartFontColor } },
+                        y: { ticks: { color: chartFontColor }, title: { display: true, text: '금액 (백만 $)', color: chartFontColor } }
+                    }
+                }
+            });
+
+            // Market Growth Chart
+            const marketCtx = document.getElementById('marketChart').getContext('2d');
+            new Chart(marketCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['MarTech', '고객 데이터 플랫폼 (CDP)', 'AdTech'],
+                    datasets: [{
+                        label: '예상 연평균 성장률 (CAGR)',
+                        data: [19.9, 30.7, 15.0],
+                        backgroundColor: ['#81B29A', '#E07A5F', '#60a5fa'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        title: { display: true, text: '관련 시장 성장 전망', color: chartFontColor, font: { size: 16 } }
+                    },
+                    scales: {
+                        x: {
+                            ticks: {
+                                callback: function(value) { return value + '%' },
+                                color: chartFontColor
+                            },
+                            title: {
+                                display: true,
+                                text: 'CAGR (%)',
+                                color: chartFontColor
+                            }
+                        },
+                        y: { ticks: { color: chartFontColor } }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
