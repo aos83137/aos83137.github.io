@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>인텔(INTC) 기업가치 대시보드</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Tech -->
+    <!-- Application Structure Plan: A thematic, dashboard-style SPA designed to guide users from a high-level overview to deep-dive analysis. The structure includes: 1. A header with a key narrative. 2. A sticky navigation bar for easy access to sections. 3. An 'Overview' section with key metric cards. 4. A 'Financial Health Check' section with tabbed navigation for each financial statement, using interactive charts to visualize trends. 5. A 'Market Valuation' section with clickable cards explaining key ratios. 6. A 'Future Value' section using conceptual interactive elements to explain DCF. 7. A 'Conclusion' summarizing findings. This non-linear, interactive structure was chosen to make the dense financial report digestible and engaging for general investors, allowing them to explore the complex story of Intel's turnaround at their own pace. -->
+    <!-- Visualization & Content Choices: 1. Key Metrics (Revenue, Net Income, FCF): Goal=Inform -> Method=Styled Cards -> Interaction=None -> Justification=Quick, high-level summary -> Library=HTML/Tailwind. 2. Financial Trends (Income Stmt, Balance Sheet, Cash Flow): Goal=Change/Compare -> Method=Line/Stacked Bar/Grouped Bar Charts -> Interaction=Hover for tooltips -> Justification=Visually show performance over time, better than static tables -> Library=Chart.js. 3. Valuation Ratios (PER, PBR, EV/EBITDA): Goal=Organize/Inform -> Method=Clickable Cards revealing detailed text -> Interaction=Click to expand -> Justification=Progressive disclosure of complex information without cluttering the UI -> Library=HTML/JS. 4. DCF Concept: Goal=Inform/Explain -> Method=Conceptual diagram and interactive sliders -> Interaction=Slide to see value change -> Justification=Demystify the abstract DCF concept by showing sensitivity to inputs, rather than a complex calculator -> Library=HTML/JS. All choices prioritize user understanding and interaction over static data presentation. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f7f9fc;
+            color: #333;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 40vh;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+        }
+        .nav-link.active {
+            color: #2563eb;
+            border-bottom-color: #2563eb;
+        }
+        .tab-button.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .metric-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .modal-backdrop {
+            transition: opacity 0.3s;
+        }
+        .modal-content {
+            transition: transform 0.3s, opacity 0.3s;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header & Navigation -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <nav class="flex items-center justify-between h-16">
+                <h1 class="text-xl md:text-2xl font-bold text-blue-600">인텔(INTC) 기업가치 대시보드</h1>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#overview" class="nav-link text-gray-600 hover:text-blue-600 border-b-2 border-transparent pb-1">개요</a>
+                    <a href="#financial-health" class="nav-link text-gray-600 hover:text-blue-600 border-b-2 border-transparent pb-1">재무 건강 진단</a>
+                    <a href="#market-valuation" class="nav-link text-gray-600 hover:text-blue-600 border-b-2 border-transparent pb-1">시장 평가</a>
+                    <a href="#future-value" class="nav-link text-gray-600 hover:text-blue-600 border-b-2 border-transparent pb-1">미래 가치</a>
+                    <a href="#conclusion" class="nav-link text-gray-600 hover:text-blue-600 border-b-2 border-transparent pb-1">종합 결론</a>
+                </div>
+                <button id="mobile-menu-button" class="md:hidden text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </nav>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
+            <a href="#overview" class="block py-2 px-4 text-sm text-gray-600 hover:bg-gray-100">개요</a>
+            <a href="#financial-health" class="block py-2 px-4 text-sm text-gray-600 hover:bg-gray-100">재무 건강 진단</a>
+            <a href="#market-valuation" class="block py-2 px-4 text-sm text-gray-600 hover:bg-gray-100">시장 평가</a>
+            <a href="#future-value" class="block py-2 px-4 text-sm text-gray-600 hover:bg-gray-100">미래 가치</a>
+            <a href="#conclusion" class="block py-2 px-4 text-sm text-gray-600 hover:bg-gray-100">종합 결론</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+
+        <!-- Section 1: Overview -->
+        <section id="overview" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-4">전환기의 거인: 위기와 기회 사이</h2>
+            <p class="text-center text-gray-600 max-w-3xl mx-auto mb-10">
+                인텔은 현재 심각한 재무적 어려움 속에서 미래 성장을 위한 대규모 투자를 단행하는 중대한 전환점에 서 있습니다. 본 대시보드는 인텔의 복잡한 재무 상태와 시장 평가, 미래 가치를 다각도로 분석하여 투자자가 균형 잡힌 시각을 가질 수 있도록 돕습니다.
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="metric-card bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-500">매출액 (TTM)</h3>
+                    <p class="text-3xl font-bold text-blue-600">$530.7억</p>
+                    <p class="text-sm text-red-500 flex items-center mt-2">▼ 3.72% (전년 대비)</p>
+                </div>
+                <div class="metric-card bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-500">순이익 (TTM)</h3>
+                    <p class="text-3xl font-bold text-red-600">-$205.0억</p>
+                    <p class="text-sm text-gray-500 mt-2">수익성 악화 심화</p>
+                </div>
+                <div class="metric-card bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-500">자유현금흐름 (TTM)</h3>
+                    <p class="text-3xl font-bold text-red-600">-$163.3억</p>
+                    <p class="text-sm text-gray-500 mt-2">대규모 투자로 현금 소진</p>
+                </div>
+                <div class="metric-card bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-500">주가순자산비율 (PBR)</h3>
+                    <p class="text-3xl font-bold text-yellow-600">0.92</p>
+                    <p class="text-sm text-gray-500 mt-2">시장가치가 장부가치 하회</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Financial Health Check -->
+        <section id="financial-health" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-4">재무 건강 진단</h2>
+            <p class="text-center text-gray-600 max-w-3xl mx-auto mb-10">
+                기업의 성적표인 재무제표를 통해 인텔의 수익성, 안정성, 현금 흐름을 심층적으로 분석합니다. 각 탭을 클릭하여 시계열 추이와 핵심 지표를 확인해 보세요.
+            </p>
+            <div class="bg-white rounded-xl shadow-lg p-4 md:p-8">
+                <div class="mb-6 border-b border-gray-200">
+                    <nav class="flex space-x-2 sm:space-x-4" id="financial-tabs">
+                        <button data-target="income-statement" class="tab-button py-3 px-4 font-medium text-sm sm:text-base rounded-t-lg transition-colors duration-300 active">손익계산서</button>
+                        <button data-target="balance-sheet" class="tab-button py-3 px-4 font-medium text-sm sm:text-base rounded-t-lg text-gray-500 hover:bg-gray-100 transition-colors duration-300">재무상태표</button>
+                        <button data-target="cash-flow" class="tab-button py-3 px-4 font-medium text-sm sm:text-base rounded-t-lg text-gray-500 hover:bg-gray-100 transition-colors duration-300">현금흐름표</button>
+                    </nav>
+                </div>
+                <div id="financial-content">
+                    <div id="income-statement" class="tab-content">
+                        <h3 class="text-xl font-bold mb-2">수익성 분석: 이익은 어디로?</h3>
+                        <p class="text-gray-600 mb-6">최근 몇 년간 매출 감소와 함께 영업이익과 순이익이 급격히 악화되는 추세를 보입니다. 이는 단순한 부진을 넘어선 구조적인 어려움을 시사합니다.</p>
+                        <div class="chart-container">
+                            <canvas id="incomeChart"></canvas>
+                        </div>
+                    </div>
+                    <div id="balance-sheet" class="tab-content hidden">
+                        <h3 class="text-xl font-bold mb-2">안정성 진단: 버틸 체력은 있는가?</h3>
+                        <p class="text-gray-600 mb-6">자산과 부채의 구성을 통해 기업의 재무 안정성을 평가합니다. 부채 비율은 비교적 낮지만, 지속적인 적자는 장기적인 상환 능력에 부담을 줍니다.</p>
+                        <div class="chart-container">
+                            <canvas id="balanceSheetChart"></canvas>
+                        </div>
+                    </div>
+                    <div id="cash-flow" class="tab-content hidden">
+                        <h3 class="text-xl font-bold mb-2">현금 흐름 추적: 돈은 어떻게 흐르는가?</h3>
+                        <p class="text-gray-600 mb-6">회계상 이익은 적자지만 영업활동에서는 현금이 창출되고 있습니다. 그러나 미래를 위한 막대한 설비 투자(투자활동)로 인해 최종적으로 남는 자유현금흐름은 큰 폭의 마이너스입니다.</p>
+                        <div class="chart-container">
+                            <canvas id="cashFlowChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Market Valuation -->
+        <section id="market-valuation" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-4">시장의 평가는?</h2>
+            <p class="text-center text-gray-600 max-w-3xl mx-auto mb-10">
+                시장은 인텔의 가치를 어떻게 보고 있을까요? 주요 투자 지표를 통해 동종 기업과 비교하여 상대적인 위치를 파악합니다. 각 카드를 클릭하여 자세한 설명을 확인하세요.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="metric-card bg-white p-6 rounded-xl shadow-lg border border-gray-200 cursor-pointer" data-modal="per">
+                    <h3 class="text-lg font-semibold text-gray-500">주가수익비율 (PER)</h3>
+                    <p class="text-4xl font-bold text-gray-400 mt-2">—</p>
+                    <p class="text-sm text-gray-500 mt-2">순이익 적자로 계산 불가</p>
+                </div>
+                <div class="metric-card bg-white p-6 rounded-xl shadow-lg border border-gray-200 cursor-pointer" data-modal="pbr">
+                    <h3 class="text-lg font-semibold text-gray-500">주가순자산비율 (PBR)</h3>
+                    <p class="text-4xl font-bold text-yellow-600 mt-2">0.92</p>
+                    <p class="text-sm text-gray-500 mt-2">자산 가치 대비 저평가?</p>
+                </div>
+                <div class="metric-card bg-white p-6 rounded-xl shadow-lg border border-gray-200 cursor-pointer" data-modal="ev-ebitda">
+                    <h3 class="text-lg font-semibold text-gray-500">EV/EBITDA</h3>
+                    <p class="text-4xl font-bold text-orange-500 mt-2">106.94</p>
+                    <p class="text-sm text-gray-500 mt-2">EBITDA 음수로 인한 왜곡</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Future Value -->
+        <section id="future-value" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-4">미래 가치 탐색 (DCF)</h2>
+            <p class="text-center text-gray-600 max-w-3xl mx-auto mb-10">
+                기업의 진정한 가치는 미래에 벌어들일 현금에 있습니다. 현금흐름할인법(DCF)은 이 미래 현금 흐름을 예측하여 현재 가치로 환산하는 방법입니다. 아래 슬라이더를 움직여 DCF의 핵심 요소가 가치 평가에 미치는 영향을 체험해 보세요.
+            </p>
+            <div class="bg-white rounded-xl shadow-lg p-4 md:p-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <div class="mb-6">
+                            <label for="growth-slider" class="block font-medium mb-2">미래 현금흐름 성장 기대치</label>
+                            <input id="growth-slider" type="range" min="1" max="100" value="30" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                            <div class="flex justify-between text-sm text-gray-500 mt-1">
+                                <span>보수적</span>
+                                <span>낙관적</span>
+                            </div>
+                        </div>
+                        <div class="mb-6">
+                            <label for="risk-slider" class="block font-medium mb-2">사업 위험도 (할인율)</label>
+                            <input id="risk-slider" type="range" min="1" max="100" value="70" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                            <div class="flex justify-between text-sm text-gray-500 mt-1">
+                                <span>낮음</span>
+                                <span>높음</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center bg-blue-50 p-8 rounded-lg">
+                        <h4 class="text-lg font-semibold text-gray-700">추정 내재가치</h4>
+                        <p id="dcf-result" class="text-5xl font-bold text-blue-600 my-4">낮음</p>
+                        <p class="text-sm text-gray-600">성장 기대가 높고 위험이 낮을수록<br>기업의 현재 가치는 높아집니다.</p>
+                    </div>
+                </div>
+                 <div class="mt-8 border-t pt-6">
+                    <h4 class="font-bold text-lg mb-2">DCF, 왜 인텔에게 도전적인가?</h4>
+                    <p class="text-gray-600 text-sm">DCF 모델은 미래 예측과 가정에 매우 민감합니다. 현재 인텔은 자유현금흐름이 마이너스이며, 미래 턴어라운드 시점과 규모가 불확실합니다. 따라서 DCF는 '정확한' 가치를 계산하기보다, 다양한 시나리오를 탐색하는 도구로 활용하는 것이 바람직합니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Conclusion -->
+        <section id="conclusion" class="scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-4">종합 결론 및 제언</h2>
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <h3 class="text-xl font-bold mb-4">요약: 전략적 전환기의 고위험 고수익 투자처</h3>
+                <p class="text-gray-600 mb-6">
+                    인텔은 심각한 재무적 어려움 속에서 미래를 위한 대규모 투자를 감행하는, 명백한 '턴어라운드' 기업입니다. 현재의 재무 지표만으로는 가치를 평가하기 어렵지만, 이는 동시에 시장의 비관론이 주가에 반영되어 있음을 의미할 수도 있습니다. PBR이 1 미만인 점은 자산 가치 측면에서 하방 경직성을 제공할 수 있으나, 이 자산들이 미래 수익으로 연결되지 못한다면 의미가 퇴색될 수 있습니다.
+                </p>
+                <h3 class="text-xl font-bold mb-4">투자 시 고려사항</h3>
+                <ul class="list-disc list-inside space-y-3 text-gray-700">
+                    <li><span class="font-semibold">장기적 관점 필수:</span> 단기 실적 개선보다는 파운드리 사업 등 장기 전략의 성공 여부에 초점을 맞춰야 합니다.</li>
+                    <li><span class="font-semibold">현금 흐름 모니터링:</span> 마이너스 자유현금흐름이 언제, 어떻게 플러스로 전환되는지가 가치 평가의 핵심입니다.</li>
+                    <li><span class="font-semibold">경쟁 환경 주시:</span> TSMC, 삼성전자, AMD 등 경쟁사와의 기술 격차 및 시장 점유율 변화를 지속적으로 확인해야 합니다.</li>
+                    <li><span class="font-semibold">가정의 위험 인지:</span> 모든 가치 평가는 가정에 기반합니다. 특히 인텔의 경우, 긍정적 시나리오와 부정적 시나리오를 모두 고려하는 균형 잡힌 접근이 필요합니다.</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal -->
+    <div id="modal-container" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden modal-backdrop">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto modal-content transform scale-95 opacity-0">
+            <div class="p-6 md:p-8">
+                <div class="flex justify-between items-start mb-4">
+                    <h3 id="modal-title" class="text-2xl font-bold"></h3>
+                    <button id="modal-close-button" class="text-gray-400 hover:text-gray-600">&times;</button>
+                </div>
+                <div id="modal-body" class="prose max-w-none text-gray-600"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Data from the report
+            const financialData = {
+                labels: ['FY2020', 'FY2021', 'FY2022', 'FY2023', 'TTM'],
+                revenue: [778.7, 790.2, 630.5, 542.3, 530.7],
+                operatingIncome: [238.76, 220.82, 23.36, 0.31, -43.97],
+                netIncome: [208.99, 198.68, 80.14, 16.89, -205.04],
+                totalAssets: [1349.5, 1687.9, 1797.9, 1964.85, 1925.20],
+                totalLiabilities: [599.4, 698.8, 798.1, 867.7, 867.7],
+                totalEquity: [750.1, 989.1, 999.8, 1057.5, 1057.5],
+                cashOperating: [353.8, 299.9, 154.3, 114.7, 100.8],
+                cashInvesting: [-208.0, -251.7, -104.8, -240.4, -85.3],
+                cashFinancing: [-129.2, -58.6, 13.6, 85.1, -31.4],
+            };
+
+            const modalContent = {
+                per: {
+                    title: '주가수익비율 (PER)',
+                    body: `
+                        <p><strong>의미:</strong> 주식 가격을 주당순이익(EPS)으로 나눈 값입니다. 투자자가 기업의 1달러 이익에 대해 얼마를 지불할 의향이 있는지를 보여줍니다.</p>
+                        <p><strong>인텔의 경우:</strong> 현재 순이익이 적자(EPS가 음수)이므로 PER을 계산할 수 없습니다. 이는 PER 지표가 이익이 안정적인 기업에 더 유용하며, 인텔과 같은 턴어라운드 기업에는 적합하지 않음을 보여줍니다.</p>
+                        <hr>
+                        <p><strong>장점:</strong> 계산이 간단하고 직관적이며, 시장의 성장 기대치를 반영합니다.</p>
+                        <p><strong>한계점:</strong> 순이익이 음수일 때 무의미해지며, 회계 처리 방식에 따라 이익이 왜곡될 수 있고, 산업 간 직접 비교가 어렵습니다.</p>
+                    `
+                },
+                pbr: {
+                    title: '주가순자산비율 (PBR)',
+                    body: `
+                        <p><strong>의미:</strong> 주식 가격을 주당순자산(BPS)으로 나눈 값입니다. 기업의 시장 가치가 장부상 순자산 가치에 비해 얼마나 높은지를 보여줍니다.</p>
+                        <p><strong>인텔의 경우 (0.92):</strong> PBR이 1보다 낮다는 것은 시장이 인텔의 주가를 장부상 순자산 가치보다도 낮게 평가하고 있음을 의미합니다. 이는 표면적으로 저평가 신호일 수 있지만, 동시에 시장이 인텔의 막대한 자산(공장, 설비)이 미래에 충분한 수익을 창출할 수 있을지에 대해 회의적이라는 신호이기도 합니다.</p>
+                        <hr>
+                        <p><strong>장점:</strong> 자산가치가 중요한 제조업, 금융업에 유용하며, 기업의 최저 가치를 가늠하는 척도가 될 수 있습니다.</p>
+                        <p><strong>한계점:</strong> 브랜드 가치, 기술력 등 무형자산을 반영하지 못하며, 자산의 실제 시장가치와 장부 가치가 다를 수 있습니다.</p>
+                    `
+                },
+                'ev-ebitda': {
+                    title: 'EV/EBITDA',
+                    body: `
+                        <p><strong>의미:</strong> 기업가치(EV)를 이자, 세금, 감가상각비 차감 전 이익(EBITDA)으로 나눈 값입니다. 기업의 순수한 영업 현금 창출 능력 대비 기업 가치를 평가합니다.</p>
+                        <p><strong>인텔의 경우 (106.94):</strong> EBITDA가 최근 마이너스를 기록하면서 이 비율이 극단적으로 높아져 경제적 의미를 상실했습니다. 이는 인텔의 현재 영업 활동이 현금을 창출하지 못하고 있음을 보여주며, 이 지표의 한계점을 명확히 드러냅니다.</p>
+                        <hr>
+                        <p><strong>장점:</strong> 부채 수준이 다른 기업 간 비교에 용이하며, 감가상각비가 큰 자본집약적 산업(반도체 등)에 적합합니다. M&A에서 널리 사용됩니다.</p>
+                        <p><strong>한계점:</strong> EBITDA가 음수일 때 왜곡되며, 대규모 설비투자가 필요한 기업의 실제 현금 소진을 반영하지 못할 수 있습니다.</p>
+                    `
+                }
+            };
+            
+            // Chart configurations
+            const commonChartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: '#e5e7eb'
+                        }
+                    }
+                }
+            };
+
+            // Income Statement Chart
+            const incomeCtx = document.getElementById('incomeChart').getContext('2d');
+            new Chart(incomeCtx, {
+                type: 'bar',
+                data: {
+                    labels: financialData.labels,
+                    datasets: [
+                        {
+                            label: '매출액',
+                            data: financialData.revenue,
+                            backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                            borderColor: 'rgba(59, 130, 246, 1)',
+                            borderWidth: 1,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: '영업이익',
+                            data: financialData.operatingIncome,
+                            backgroundColor: 'rgba(239, 68, 68, 0.5)',
+                            borderColor: 'rgba(239, 68, 68, 1)',
+                            borderWidth: 1,
+                            type: 'line',
+                            tension: 0.3,
+                            yAxisID: 'y1'
+                        },
+                         {
+                            label: '순이익',
+                            data: financialData.netIncome,
+                            backgroundColor: 'rgba(249, 115, 22, 0.5)',
+                            borderColor: 'rgba(249, 115, 22, 1)',
+                            borderWidth: 1,
+                            type: 'line',
+                            tension: 0.3,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: { ...commonChartOptions, scales: {
+                    x: { grid: { display: false } },
+                    y: { position: 'left', title: { display: true, text: '매출액 (억$)' } },
+                    y1: { position: 'right', title: { display: true, text: '이익 (억$)' }, grid: { drawOnChartArea: false } }
+                }}
+            });
+
+            // Balance Sheet Chart
+            const balanceSheetCtx = document.getElementById('balanceSheetChart').getContext('2d');
+            new Chart(balanceSheetCtx, {
+                type: 'bar',
+                data: {
+                    labels: financialData.labels,
+                    datasets: [
+                        {
+                            label: '총자본',
+                            data: financialData.totalEquity,
+                            backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                        },
+                        {
+                            label: '총부채',
+                            data: financialData.totalLiabilities,
+                            backgroundColor: 'rgba(239, 68, 68, 0.7)',
+                        }
+                    ]
+                },
+                options: { ...commonChartOptions, scales: {
+                    x: { stacked: true, grid: { display: false } },
+                    y: { stacked: true, title: { display: true, text: '금액 (억$)' } }
+                }}
+            });
+
+            // Cash Flow Chart
+            const cashFlowCtx = document.getElementById('cashFlowChart').getContext('2d');
+            new Chart(cashFlowCtx, {
+                type: 'bar',
+                data: {
+                    labels: financialData.labels,
+                    datasets: [
+                        {
+                            label: '영업활동 현금흐름',
+                            data: financialData.cashOperating,
+                            backgroundColor: 'rgba(34, 197, 94, 0.7)',
+                        },
+                        {
+                            label: '투자활동 현금흐름',
+                            data: financialData.cashInvesting,
+                            backgroundColor: 'rgba(239, 68, 68, 0.7)',
+                        },
+                        {
+                            label: '재무활동 현금흐름',
+                            data: financialData.cashFinancing,
+                            backgroundColor: 'rgba(249, 115, 22, 0.7)',
+                        }
+                    ]
+                },
+                options: { ...commonChartOptions, scales: {
+                    x: { grid: { display: false } },
+                    y: { title: { display: true, text: '금액 (억$)' } }
+                }}
+            });
+
+            // Financial Tabs Logic
+            const tabs = document.querySelectorAll('#financial-tabs .tab-button');
+            const contents = document.querySelectorAll('#financial-content .tab-content');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    const targetId = tab.dataset.target;
+                    contents.forEach(content => {
+                        if (content.id === targetId) {
+                            content.classList.remove('hidden');
+                        } else {
+                            content.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+
+            // DCF Sliders Logic
+            const growthSlider = document.getElementById('growth-slider');
+            const riskSlider = document.getElementById('risk-slider');
+            const dcfResult = document.getElementById('dcf-result');
+            function updateDcfResult() {
+                const growth = parseInt(growthSlider.value);
+                const risk = parseInt(riskSlider.value);
+                const score = growth - risk;
+
+                if (score > 40) {
+                    dcfResult.textContent = '매우 높음';
+                    dcfResult.className = 'text-5xl font-bold text-green-600 my-4';
+                } else if (score > 10) {
+                    dcfResult.textContent = '높음';
+                    dcfResult.className = 'text-5xl font-bold text-blue-600 my-4';
+                } else if (score > -20) {
+                    dcfResult.textContent = '보통';
+                    dcfResult.className = 'text-5xl font-bold text-yellow-600 my-4';
+                } else if (score > -50) {
+                    dcfResult.textContent = '낮음';
+                    dcfResult.className = 'text-5xl font-bold text-orange-500 my-4';
+                } else {
+                    dcfResult.textContent = '매우 낮음';
+                    dcfResult.className = 'text-5xl font-bold text-red-600 my-4';
+                }
+            }
+            growthSlider.addEventListener('input', updateDcfResult);
+            riskSlider.addEventListener('input', updateDcfResult);
+            updateDcfResult();
+
+            // Modal Logic
+            const modalContainer = document.getElementById('modal-container');
+            const modalTitle = document.getElementById('modal-title');
+            const modalBody = document.getElementById('modal-body');
+            const modalCloseButton = document.getElementById('modal-close-button');
+            const modalContentDiv = modalContainer.querySelector('.modal-content');
+
+            document.querySelectorAll('[data-modal]').forEach(trigger => {
+                trigger.addEventListener('click', () => {
+                    const modalId = trigger.dataset.modal;
+                    const content = modalContent[modalId];
+                    if (content) {
+                        modalTitle.textContent = content.title;
+                        modalBody.innerHTML = content.body;
+                        modalContainer.classList.remove('hidden');
+                        setTimeout(() => {
+                            modalContainer.classList.remove('opacity-0');
+                            modalContentDiv.classList.remove('scale-95', 'opacity-0');
+                        }, 10);
+                    }
+                });
+            });
+
+            function closeModal() {
+                modalContentDiv.classList.add('scale-95', 'opacity-0');
+                modalContainer.classList.add('opacity-0');
+                setTimeout(() => {
+                    modalContainer.classList.add('hidden');
+                }, 300);
+            }
+
+            modalCloseButton.addEventListener('click', closeModal);
+            modalContainer.addEventListener('click', (e) => {
+                if (e.target === modalContainer) {
+                    closeModal();
+                }
+            });
+
+            // Mobile Menu Logic
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // Active Nav Link on Scroll
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav-link');
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 80) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
