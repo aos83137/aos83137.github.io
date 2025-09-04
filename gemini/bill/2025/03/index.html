@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스마트 가계부</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        th {
+            background-color: #f9fafb;
+            font-weight: 700;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        .summary-card {
+            background-color: #f9fafb;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-4 sm:p-6">
+
+    <div class="container">
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800">나만의 가계부</h1>
+            <p class="text-xl text-gray-500 mt-2">2025년 2월 20일 ~ 2025년 3월 19일 지출 내역</p>
+        </header>
+
+        <!-- Summary & Chart Section -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <!-- Total Summary -->
+            <div class="summary-card">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">총 지출 요약</h2>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center text-lg">
+                        <span class="text-gray-600">총 지출 금액</span>
+                        <span id="total-expense" class="text-2xl font-bold text-red-600"></span>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <h3 class="text-lg font-bold text-gray-700 mb-2">항목별 지출 현황</h3>
+                    <div id="category-summary" class="text-sm space-y-2"></div>
+                </div>
+            </div>
+
+            <!-- Chart -->
+            <div class="p-6 bg-white rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">지출 카테고리 비율</h2>
+                <canvas id="expenseChart" class="w-full h-full"></canvas>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const transactionsData = [
+                // JEON YONGSEOK 님
+                { date: '2월 12일', description: '楽天モバイル 통신료', amount: 2687, user: 'JEON YONGSEOK' },
+                { date: '2월 19일', description: '퀵페이플러스 츠케멘야', amount: 2930, user: 'JEON YONGSEOK' },
+                { date: '2월 20일', description: '아마존 시오제이피', amount: 1511, user: 'JEON YONGSEOK' },
+                { date: '2월 20일', description: '퀵페이플러스 세븐-일레븐', amount: 991, user: 'JEON YONGSEOK' },
+                { date: '2월 20일', description: '京葉ガス', amount: 4919, user: 'JEON YONGSEOK' },
+                { date: '2월 21일', description: '아마존 시오제이피', amount: 2603, user: 'JEON YONGSEOK' },
+                { date: '2월 22일', description: '快活CLUB 혼나카야마점', amount: 6910, user: 'JEON YONGSEOK' },
+                { date: '2월 23일', description: '퀵페이플러스 벨크', amount: 4894, user: 'JEON YONGSEOK' },
+                { date: '2월 23일', description: '퀵페이플러스 이케아', amount: 4510, user: 'JEON YONGSEOK' },
+                { date: '2월 23일', description: '퀵페이플러스 이케아', amount: 200, user: 'JEON YONGSEOK' },
+                { date: '2월 23일', description: '퀵페이플러스 이케아', amount: 610, user: 'JEON YONGSEOK' },
+                { date: '2월 23일', description: '퀵페이플러스 이케아', amount: 9790, user: 'JEON YONGSEOK' },
+                { date: '2월 25일', description: 'ANA 인터넷 국제 항공권', amount: 69750, user: 'JEON YONGSEOK' },
+                { date: '2월 25일', description: 'ANA 인터넷 국제 항공권', amount: 69750, user: 'JEON YONGSEOK' },
+                { date: '2월 27일', description: '야요이켄 니시후나바시텐', amount: 1870, user: 'JEON YONGSEOK' },
+                { date: '2월 28일', description: '아마존 시오제이피', amount: 1173, user: 'JEON YONGSEOK' },
+                { date: '2월 28일', description: '아마존 시오제이피', amount: 13184, user: 'JEON YONGSEOK' },
+                { date: '2월 28일', description: 'Netflix', amount: 2290, user: 'JEON YONGSEOK' },
+                { date: '2월 28일', description: 'KDDI 통화요금', amount: 4180, user: 'JEON YONGSEOK' },
+                { date: '3월 1일', description: '아마존 시오제이피', amount: 538, user: 'JEON YONGSEOK' },
+                { date: '3월 2일', description: '유니클로', amount: 6280, user: 'JEON YONGSEOK' },
+                { date: '3월 2일', description: '니케 코튼 플라자', amount: 2970, user: 'JEON YONGSEOK' },
+                { date: '3월 2일', description: '퀵페이플러스 유니클로', amount: 5980, user: 'JEON YONGSEOK' },
+                { date: '3월 2일', description: '퀵페이플러스 니케 코튼 플라자', amount: 2980, user: 'JEON YONGSEOK' },
+                { date: '3월 2일', description: '퀵페이플러스 다이에이', amount: 2365, user: 'JEON YONGSEOK' },
+                { date: '3월 6일', description: '퀵페이플러스 하마즈시', amount: 3718, user: 'JEON YONGSEOK' },
+                { date: '3월 7일', description: '퀵페이플러스 로손', amount: 881, user: 'JEON YONGSEOK' },
+                { date: '3월 8일', description: 'PinT', amount: 15975, user: 'JEON YONGSEOK' },
+                { date: '3월 8일', description: '퀵페이플러스 더 프렌치 토스트 팩토리', amount: 5522, user: 'JEON YONGSEOK' },
+                { date: '3월 8일', description: '퀵페이플러스 페리에', amount: 621, user: 'JEON YONGSEOK' },
+                { date: '3월 9일', description: '퀵페이플러스 오케이 카이진', amount: 9939, user: 'JEON YONGSEOK' },
+                { date: '3월 11일', description: '아마존 JP 마켓플레이스', amount: 1400, user: 'JEON YONGSEOK' },
+                { date: '3월 11일', description: '메루카리', amount: 12000, user: 'JEON YONGSEOK' },
+                { date: '3월 12일', description: 'Qoo10', amount: 4848, user: 'JEON YONGSEOK' },
+                { date: '3월 12일', description: 'AIRBNB', amount: 4153, user: 'JEON YONGSEOK' },
+                { date: '3월 12일', description: '퀵페이플러스 그린데리', amount: 2655, user: 'JEON YONGSEOK' },
+                { date: '3월 12일', description: '퀵페이플러스 페리에', amount: 1240, user: 'JEON YONGSEOK' },
+                { date: '3월 13일', description: 'AIRBNB', amount: 56310, user: 'JEON YONGSEOK' },
+                { date: '3월 13일', description: '아마존 시오제이피', amount: 2960, user: 'JEON YONGSEOK' },
+                { date: '3월 14일', description: '퀵페이플러스 돈키호테', amount: 1810, user: 'JEON YONGSEOK' },
+                { date: '3월 14일', description: '퀵페이플러스 시치린야키니쿠 안안', amount: 4109, user: 'JEON YONGSEOK' },
+                { date: '3월 15일', description: '치바현영 수도요금', amount: 3540, user: 'JEON YONGSEOK' },
+                { date: '3월 15일', description: '퀵페이플러스 푸드마켓', amount: 3460, user: 'JEON YONGSEOK' },
+                { date: '3월 16일', description: '야요이켄 니시후나바시텐', amount: 1720, user: 'JEON YONGSEOK' },
+                { date: '3월 16일', description: '에쿠스프레스 예약 연회비', amount: 1100, user: 'JEON YONGSEOK' },
+                // KOJIMA YUMENO 님
+                { date: '2월 17일', description: '퀵페이플러스 오케이 카이진', amount: 1669, user: 'KOJIMA YUMENO' },
+                { date: '2월 23일', description: '타임즈카', amount: 6470, user: 'KOJIMA YUMENO' },
+                { date: '2월 28일', description: '퀵페이플러스 그린데리', amount: 785, user: 'KOJIMA YUMENO' },
+                { date: '2월 28일', description: '소프트뱅크 M', amount: 3281, user: 'KOJIMA YUMENO' },
+                { date: '3월 1일', description: 'Qoo10', amount: 5680, user: 'KOJIMA YUMENO' },
+                { date: '3월 1일', description: '이온몰 마쿠하리 신도심', amount: 1261, user: 'KOJIMA YUMENO' },
+                { date: '3월 1일', description: '페리에 니시후나바시', amount: 427, user: 'KOJIMA YUMENO' },
+                { date: '3월 1일', description: '마쿠하리 츠타야 서점', amount: 3520, user: 'KOJIMA YUMENO' },
+                { date: '3월 2일', description: '카메라노키타무라', amount: 9150, user: 'KOJIMA YUMENO' },
+                { date: '3월 2일', description: '퀵페이플러스 니케 코튼 플라자', amount: 2140, user: 'KOJIMA YONGSEOK' },
+                { date: '3월 8일', description: '아토레 아키하바라2', amount: 1930, user: 'KOJIMA YUMENO' },
+                { date: '3월 13일', description: 'Qoo10', amount: 1503, user: 'KOJIMA YUMENO' },
+                { date: '3월 16일', description: '타임즈카', amount: 880, user: 'KOJIMA YUMENO' },
+                { date: '3월 17일', description: '퀵페이플러스 와이즈마트', amount: 1378, user: 'KOJIMA YUMENO' },
+                { date: '3월 17일', description: 'Suica', amount: 2000, user: 'KOJIMA YUMENO' },
+            ];
+
+            // Category mapping function
+            function getCategory(description) {
+                if (description.includes('통신료') || description.includes('KDDI') || description.includes('소프트뱅크')) return '통신비';
+                if (description.includes('마트') || description.includes('슈퍼마켓') || description.includes('FRANPRIX') || description.includes('COOP') || description.includes('REWE') || description.includes('FUSAFOODHALL') || description.includes('베이 브랜드') || description.includes('와이즈마트') || description.includes('SCHLEMMEN AM MARKT') || description.includes('그린데리') || description.includes('푸드마켓') || description.includes('요우무기') || description.includes('イオンリテール') || description.includes('다이에이')) return '식료품';
+                if (description.includes('영화') || description.includes('넷플릭스') || description.includes('시네마') || description.includes('토호 시네마즈') || description.includes('EPML BILLETTERIE INTERNET')) return '여가/문화';
+                if (description.includes('가스') || description.includes('수도') || description.includes('전기') || description.includes('PinT') || description.includes('京葉ガス')) return '공과금';
+                if (description.includes('퀵페이플러스') || description.includes('돈키호테') || description.includes('세븐일레븐') || description.includes('스기약쿄쿠') || description.includes('사쿠라야키요쿠') || description.includes('마츠모토키요시') || description.includes('그린데리') || description.includes('유니클로') || description.includes('지유') || description.includes('한비 미용실') || description.includes('다이소') || description.includes('프린세스 플랜슈') || description.includes('미니스톱') || description.includes('벨크') || description.includes('이케아') || description.includes('니케') || description.includes('데일리 야마자키')) return '생활용품';
+                if (description.includes('음식') || description.includes('一番どり') || description.includes('松屋フーズ') || description.includes('맘스터치') || description.includes('잇키잇키테이') || description.includes('PAILHEROLS') || description.includes('SPATENHAUS') || description.includes('UBER EATS') || description.includes('히말라야') || description.includes('맥도날드') || description.includes('하마즈시') || description.includes('야요이켄') || description.includes('TOKYO NODE DINING') || description.includes('후라이보') || description.includes('natural Cafe') || description.includes('PHILOCALIA') || description.includes('FIVE GUYS') || description.includes('치메킹') || description.includes('스테이크노 아사쿠마') || description.includes('로손') || description.includes('페스티 카페') || description.includes('켄터키') || description.includes('ECCOLA 리소나') || description.includes('오케이 카이진') || description.includes('츠케멘야') || description.includes('시치린야키니쿠') || description.includes('프렌치 토스트')) return '외식비';
+                if (description.includes('아마존') || description.includes('Qoo10') || description.includes('CANDY SHOP') || description.includes('PIERRE HERME') || description.includes('BANDET JEAN') || description.includes('GOOGLE GOOGLE ONE') || description.includes('BSO. WEBSHOP') || description.includes('CONCENT') || description.includes('무인양품') || description.includes('메루카리')) return '온라인 쇼핑';
+                if (description.includes('타임즈카') || description.includes('Suica') || description.includes('SBB MOBILE') || description.includes('DB BAHN') || description.includes('SHOPS TERMINAL') || description.includes('EURAIL') || description.includes('제이알 히가시니혼') || description.includes('에쿠스프레스 예약')) return '교통비';
+                if (description.includes('아웃렛') || description.includes('미용실') || description.includes('DM-DROGERIE') || description.includes('COOP MINERALOEL AG') || description.includes('GRINDELWALD MEMORIES GMBH') || description.includes('TERMINAL') || description.includes('베이 브랜드 후사노에키') || description.includes('로열 마린 코트') || description.includes('쿠사카리후사노에키') || description.includes('TERRACELAND') || description.includes('카시요우몬') || description.includes('이온몰') || description.includes('페리에') || description.includes('츠타야 서점') || description.includes('카메라노키타무라') || description.includes('아토레 아키하바라')) return '쇼핑/미용';
+                if (description.includes('베네핏 원') || description.includes('E-RESERVERINGEN_EURAIL') || description.includes('HOTEL ON BOOKING. COM') || description.includes('SP HOLAFLY') || description.includes('AGODA') || description.includes('히카리') || description.includes('ANA')) return '여행';
+                if (description.includes('이비인후과') || description.includes('클리닉') || description.includes('아사히')) return '의료비';
+                return '기타';
+            }
+
+            // Process transactions and calculate totals
+            const categorizedTransactions = transactionsData.map(t => ({
+                ...t,
+                category: getCategory(t.description)
+            }));
+
+            const categoryTotals = {};
+            let totalExpense = 0;
+
+            categorizedTransactions.forEach(t => {
+                const category = t.category;
+                if (!categoryTotals[category]) {
+                    categoryTotals[category] = 0;
+                }
+                categoryTotals[category] += t.amount;
+                totalExpense += t.amount;
+            });
+
+            // Display total expense
+            document.getElementById('total-expense').innerText = `¥ ${totalExpense.toLocaleString()}`;
+
+            // Display category summary
+            const categorySummaryEl = document.getElementById('category-summary');
+            categorySummaryEl.innerHTML = ''; // Clear previous content
+            for (const category in categoryTotals) {
+                const amount = categoryTotals[category];
+                const percentage = ((amount / totalExpense) * 100).toFixed(1);
+                categorySummaryEl.innerHTML += `
+                    <div class="flex justify-between items-center text-gray-700">
+                        <span>${category}</span>
+                        <span class="font-semibold text-right">¥ ${amount.toLocaleString()} (${percentage}%)</span>
+                    </div>
+                `;
+            }
+
+            // Render Chart
+            const ctx = document.getElementById('expenseChart').getContext('2d');
+            const chartColors = [
+                '#60a5fa', '#34d399', '#f87171', '#facc15', '#a78bfa',
+                '#9ca3af', '#f472b6', '#3b82f6', '#10b981', '#ef4444'
+            ];
+            if (window.myChart) {
+                window.myChart.destroy();
+            }
+            window.myChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(categoryTotals),
+                    datasets: [{
+                        label: '지출 금액',
+                        data: Object.values(categoryTotals),
+                        backgroundColor: chartColors.slice(0, Object.keys(categoryTotals).length),
+                        borderColor: '#ffffff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    family: 'Noto Sans KR'
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((value / total) * 100).toFixed(1) + '%';
+                                    return `${label}: ¥ ${value.toLocaleString()} (${percentage})`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
