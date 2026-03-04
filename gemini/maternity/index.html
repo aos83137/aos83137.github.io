@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>모성건강관리 AI 가이드 (KO/JA)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&family=Noto+Sans+JP:wght@300;400;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans KR', 'Noto Sans JP', sans-serif;
+            background-color: #f3f4f6;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .lang-ja { display: none; }
+        .active-ja .lang-ja { display: block; }
+        .active-ja .lang-ko { display: none; }
+
+        .tab-active {
+            background-color: white;
+            color: #4f46e5;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .question-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .question-card:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-12">
+    <div class="max-w-md mx-auto bg-white min-h-screen shadow-xl md:max-w-2xl">
+        <!-- Sticky Header -->
+        <header class="sticky top-0 z-20 bg-indigo-600 text-white p-5 shadow-lg">
+            <div class="flex justify-between items-center mb-4">
+                <h1 class="text-xl font-bold leading-tight">
+                    <span class="lang-ko">임산부 건강관리 가이드</span>
+                    <span class="lang-ja">妊産婦健康管理ガイド</span>
+                </h1>
+                <!-- Language Toggle Switch -->
+                <button onclick="toggleLanguage()" class="bg-indigo-500 hover:bg-indigo-400 px-3 py-1.5 rounded-full text-xs font-bold border border-indigo-300 transition-colors">
+                    <span class="lang-ko">JP로 전환</span>
+                    <span class="lang-ja">KOへ変換</span>
+                </button>
+            </div>
+            
+            <!-- Phase Navigation -->
+            <nav class="flex bg-indigo-700/50 p-1 rounded-xl">
+                <button onclick="setPhase(1)" id="tab-1" class="flex-1 py-2 text-xs font-medium rounded-lg tab-active transition-all">
+                    <span class="lang-ko">의사 상담</span><span class="lang-ja">医師面談</span>
+                </button>
+                <button onclick="setPhase(2)" id="tab-2" class="flex-1 py-2 text-xs font-medium rounded-lg text-indigo-100 transition-all">
+                    <span class="lang-ko">사장 면담</span><span class="lang-ja">社長面談</span>
+                </button>
+                <button onclick="setPhase(3)" id="tab-3" class="flex-1 py-2 text-xs font-medium rounded-lg text-indigo-100 transition-all">
+                    <span class="lang-ko">외부/수입</span><span class="lang-ja">外部/収入</span>
+                </button>
+            </nav>
+        </header>
+
+        <!-- Main Content -->
+        <main class="p-4 space-y-4" id="content-list">
+            <!-- Content injected by JS -->
+        </main>
+
+        <!-- Quick Guide Footer -->
+        <div class="px-4 mt-4">
+            <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-900">
+                <p class="font-bold mb-1">
+                    <span class="lang-ko">⚠️ 주의사항</span>
+                    <span class="lang-ja">⚠️ 注意事項</span>
+                </p>
+                <p class="lang-ko">이 질문들은 AI에게 입력을 돕기 위한 예시입니다. 상황에 맞춰 내용을 수정하여 사용하세요.</p>
+                <p class="lang-ja">これらの質問はAIへの入力を補助する例です。状況に合わせて内容を修正してください。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-black/80 text-white px-6 py-3 rounded-full text-sm font-bold opacity-0 transition-opacity duration-300 pointer-events-none z-50">
+        복사되었습니다!
+    </div>
+
+    <script>
+        const questions = [
+            { phase: 1, id: 1, ko: { title: "효과적인 모건카드 작성 요청", text: "다음 주부터 현장 작업을 지시받았습니다. 사무직은 계속하고 싶지만, 현장 작업만 거절하기 위해 의사에게 어떻게 전달하면 좋을까요? 모성건강관리 연락카드의 가장 효과적인 작성 방법에 대해서도 알려주세요." }, ja: { title: "母健カードの具体的な記載依頼", text: "来週から現場作業を指示されています。事務職は続けたいけれど、現場仕事だけを断るために、医師にどう伝えればいい？ 母健連絡カードの最も効果的な書き方の指示も教えて。" } },
+            { phase: 1, id: 2, ko: { title: "휴업 지시를 위한 증상 전달", text: "산전 휴가까지 3주 남았습니다. 의사에게 '휴업이 필요함'이라고 판단받기 위한 구체적인 증상 전달법을 알려주세요. 또한 휴업 지시가 나올 경우 회사에 제출할 서류와 상병수당금의 관계도 알려주세요." }, ja: { title: "休業指示のための症状伝達", text: "産前休業開始まであと3週間ありますが、医師に「休業が必要」と判断してもらうための具体的な症状の伝え方を教えて。また、休業指示が出た場合、会社に提出する診断書（母健カード）と傷病手当金の関係を教えて。" } },
+            { phase: 1, id: 3, ko: { title: "법적 위험 업무 기준 확인", text: "임산부가 종사해서는 안 되는 '중량물', '유해 가스', '기타 유해한 업무'에 대한 일본 내 법적 정의와 기준을 알려주세요." }, ja: { title: "法的な危険業務基準の確認", text: "妊産婦が従事してはならない「重量物」「有害ガス」「その他有害な業務」の日本における法的な定義と基準を教えて。" } },
+            { phase: 2, id: 4, ko: { title: "사장님의 업무 강행 거절", text: "사장님께 '현장이 바빠서 사무직만 하겠다는 건 곤란하다'라는 말을 들었습니다. 법률을 근거로 정중하면서도 단호하게 거절하는 스크립트를 작성해 주세요." }, ja: { title: "業務強行に対する拒否", text: "社長に「現場が忙しいから事務だけというのは困る」と言われました。法律を根拠に、丁寧かつ断固として断るスクリプトを作成して。" } },
+            { phase: 2, id: 5, ko: { title: "회사의 법적 의무 고지", text: "사장님이 모건카드를 무시할 경우를 대비하여, 남녀고용평등법 제13조의 의무를 설명하고 회사가 지게 될 민사상 책임(안전배려의무 위반)을 경고하는 일본어 문서를 만들어 주세요." }, ja: { title: "会社の法的義務の告知", text: "社長が母健カードを無視した場合に、男女雇用機会均等法第13条の義務を説明し、会社が負う民事上の責任（安全配慮義務違反）を警告するための日本語文書を作成して。" } },
+            { phase: 2, id: 6, ko: { title: "보조금(조성금) 안내로 설득", text: "회사가 업무 조정을 거부해서 휴업하기로 했습니다. 사장님께 '양립 지원 조성금' 신청을 독려하는 메일 문구와 제가 '상병수당금'을 받기 위한 절차를 알려주세요." }, ja: { title: "助成金案内による説得", text: "会社が業務調整を拒否したので休業することにしました。社長に「両立支援等助成金」の申請を促すメール文面と、私が「傷病手当金」を受けるための手順を教えて。" } },
+            { phase: 2, id: 7, ko: { title: "즉시 휴업(결근) 통보", text: "의사의 지시에 근거하여 월요일부터 휴업(결근)할 경우, 업무 강행을 막기 위해 회사에 보내야 할 메일이나 LINE 문구를 작성해 주세요." }, ja: { title: "即時休業（欠勤）の通知", text: "医師の指示に基づき月曜日から休業（欠勤）する場合、業務強行を防ぐために、会社に送るべきメールまたはLINEの文面を作成して。" } },
+            { phase: 3, id: 8, ko: { title: "노동국 상담용 설명 정리", text: "사장님이 모건카드 지시를 따르지 않습니다. 노동국 고용균등부에 전화 상담할 때의 상황 설명 스크립트를 작성해 주세요. 회사명과 사업주가 한국인이라는 점을 명확히 하고 싶습니다." }, ja: { title: "労働局相談用スクリプト", text: "社長が母健カードの指示に従いません。労働局の雇用均等部に電話相談する際の状況説明スクリプトを作成して。会社名と事業主が韓国人であるという状況を明確に伝えたい。" } },
+            { phase: 3, id: 9, ko: { title: "상병수당금 서류 준비", text: "회사가 무급 휴업을 인정한 경우, 상병수당금을 확실히 받기 위한 절차를 알려주세요. 회사 작성 부분과 제가 준비할 서류 리스트를 알려주세요." }, ja: { title: "傷病手当金の書類準備", text: "会社が無給休業を認めた場合、傷病手当金を確実に受け取るための手続きを教えて。会社記入欄と、本人が準備する書類リストを作成して。" } },
+            { phase: 3, id: 10, ko: { title: "보조금 상세 정보 요약", text: "사장님께 제시하기 위한 '양립 지원 조성금(모성건강관리 코스)'의 지급액, 신청 시기, 흐름을 일본 정부 공식 정보를 바탕으로 정리해 주세요." }, ja: { title: "助成金の詳細サマリー", text: "社長に提示するための「両立支援等助成金（母性健康管理コース）」の支給額、申請時期、流れを公式情報を基にまとめて。" } }
+        ];
+
+        let currentLang = 'ko';
+        let currentPhase = 1;
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'ko' ? 'ja' : 'ko';
+            document.body.className = currentLang === 'ja' ? 'active-ja min-h-screen pb-12' : 'min-h-screen pb-12';
+            render();
+        }
+
+        function setPhase(phase) {
+            currentPhase = phase;
+            for (let i = 1; i <= 3; i++) {
+                const tab = document.getElementById(`tab-${i}`);
+                if (i === phase) {
+                    tab.classList.add('tab-active');
+                    tab.classList.remove('text-indigo-100');
+                } else {
+                    tab.classList.remove('tab-active');
+                    tab.classList.add('text-indigo-100');
+                }
+            }
+            render();
+        }
+
+        function copyText(text) {
+            const el = document.createElement('textarea');
+            el.value = text;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+
+            const toast = document.getElementById('toast');
+            toast.innerText = currentLang === 'ko' ? "복사되었습니다!" : "コピーされました！";
+            toast.style.opacity = "1";
+            setTimeout(() => { toast.style.opacity = "0"; }, 2000);
+        }
+
+        function render() {
+            const container = document.getElementById('content-list');
+            container.innerHTML = '';
+
+            const filtered = questions.filter(q => q.phase === currentPhase);
+
+            filtered.forEach(q => {
+                const card = document.createElement('div');
+                card.className = "question-card bg-white rounded-2xl p-5 border border-gray-100 shadow-sm overflow-hidden relative";
+                
+                const title = currentLang === 'ko' ? q.ko.title : q.ja.title;
+                const text = currentLang === 'ko' ? q.ko.text : q.ja.text;
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-[10px] font-black uppercase tracking-widest text-indigo-400">Step ${q.id}</span>
+                        <button onclick="copyText('${text.replace(/'/g, "\\'")}')" class="bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 active:bg-indigo-200 transition-colors">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+                            ${currentLang === 'ko' ? '복사' : 'コピー'}
+                        </button>
+                    </div>
+                    <h3 class="text-base font-bold text-gray-800 mb-3 leading-snug">${title}</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed bg-gray-50 p-3 rounded-xl border border-gray-100">
+                        ${text}
+                    </p>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Initialize
+        render();
+    </script>
+</body>
+</html>
